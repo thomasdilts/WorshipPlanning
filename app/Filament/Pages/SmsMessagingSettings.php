@@ -4,6 +4,7 @@ namespace App\Filament\Pages;
 
 use App\Core\Modules\ChurchModuleManager;
 use App\Core\Tenancy\CurrentChurch;
+use App\Enums\PasswordLinkKind;
 use App\Models\User;
 use BackedEnum;
 use Filament\Actions\Action;
@@ -85,6 +86,9 @@ class SmsMessagingSettings extends Page
             'api_token' => '',
             'sender' => $settings['sender'] ?? '',
             'confirmation_template_id' => $settings['confirmation_template_id'] ?? null,
+            ...collect(PasswordLinkKind::cases())->mapWithKeys(fn (PasswordLinkKind $kind): array => [
+                $kind->templateSettingKey() => $settings[$kind->templateSettingKey()] ?? null,
+            ])->all(),
         ]);
     }
 
@@ -120,6 +124,15 @@ class SmsMessagingSettings extends Page
                             ->searchable()
                             ->required(),
                     ]),
+                Section::make(__('Password links'))
+                    ->description(__('Sent by SMS to people who prefer SMS, to set a first password (invitation) and to reset a forgotten one. Without a template they get the email instead.'))
+                    ->schema(collect(PasswordLinkKind::cases())->map(fn (PasswordLinkKind $kind): Select => Select::make($kind->templateSettingKey())
+                        ->label($kind->label())
+                        ->options(fn (?string $state): array => app(TemplateMessages::class)->confirmationOptions($state))
+                        ->helperText(__('Templates marked “Other” are listed here. Use {{password_url}} for the link.'))
+                        ->searchable())
+                        ->all())
+                    ->columns(2),
             ])
             ->statePath('data');
     }
@@ -159,6 +172,9 @@ class SmsMessagingSettings extends Page
             'api_token' => $token,
             'sender' => $data['sender'] ?? '',
             'confirmation_template_id' => (int) $data['confirmation_template_id'],
+            ...collect(PasswordLinkKind::cases())->mapWithKeys(fn (PasswordLinkKind $kind): array => [
+                $kind->templateSettingKey() => filled($data[$kind->templateSettingKey()] ?? null) ? (int) $data[$kind->templateSettingKey()] : null,
+            ])->all(),
         ]);
 
         $manager->enable($church, MessagingAvailability::MODULE_SMS);

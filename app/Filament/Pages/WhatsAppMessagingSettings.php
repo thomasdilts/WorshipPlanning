@@ -4,6 +4,7 @@ namespace App\Filament\Pages;
 
 use App\Core\Modules\ChurchModuleManager;
 use App\Core\Tenancy\CurrentChurch;
+use App\Enums\PasswordLinkKind;
 use App\Models\User;
 use BackedEnum;
 use Filament\Actions\Action;
@@ -86,6 +87,9 @@ class WhatsAppMessagingSettings extends Page
             'phone_number_id' => $settings['phone_number_id'] ?? '',
             'business_account_id' => $settings['business_account_id'] ?? '',
             'confirmation_whatsapp_template' => $settings['confirmation_whatsapp_template'] ?? null,
+            ...collect(PasswordLinkKind::cases())->mapWithKeys(fn (PasswordLinkKind $kind): array => [
+                $kind->whatsAppSettingKey() => $settings[$kind->whatsAppSettingKey()] ?? null,
+            ])->all(),
         ]);
     }
 
@@ -121,6 +125,15 @@ class WhatsAppMessagingSettings extends Page
                             ->searchable()
                             ->helperText(fn (): string => trim(($this->whatsAppTemplateError() ?? '').' '.__('Until one is chosen, nobody can switch to WhatsApp. The templates load once the access token and account ID are saved.'))),
                     ]),
+                Section::make(__('Password links'))
+                    ->description(__('Sent by WhatsApp to people who prefer WhatsApp, to set a first password (invitation) and to reset a forgotten one. Without a template they get the email instead.'))
+                    ->schema(collect(PasswordLinkKind::cases())->map(fn (PasswordLinkKind $kind): Select => Select::make($kind->whatsAppSettingKey())
+                        ->label($kind->label())
+                        ->options(fn (?string $state): array => $this->whatsAppTemplateOptions($state))
+                        ->helperText(__('The template’s link button gets the password link; body variables can use {{first_name}}, {{church}} and {{expire_minutes}}.'))
+                        ->searchable())
+                        ->all())
+                    ->columns(2),
             ])
             ->statePath('data');
     }
@@ -192,6 +205,9 @@ class WhatsAppMessagingSettings extends Page
             'phone_number_id' => $data['phone_number_id'] ?? '',
             'business_account_id' => $data['business_account_id'] ?? '',
             'confirmation_whatsapp_template' => $data['confirmation_whatsapp_template'] ?? '',
+            ...collect(PasswordLinkKind::cases())->mapWithKeys(fn (PasswordLinkKind $kind): array => [
+                $kind->whatsAppSettingKey() => $data[$kind->whatsAppSettingKey()] ?? '',
+            ])->all(),
         ]);
 
         $manager->enable($church, MessagingAvailability::MODULE_WHATSAPP);

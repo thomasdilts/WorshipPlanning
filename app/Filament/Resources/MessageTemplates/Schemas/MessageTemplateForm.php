@@ -124,7 +124,7 @@ class MessageTemplateForm
 
     protected static function whatsAppTemplateHelp(): string
     {
-        $help = __('Variables use the placeholder names, e.g. {{task}}. Link buttons get {{accept_url}} (first) and {{decline_url}} (second).');
+        $help = __('Variables use the placeholder names, e.g. {{task}}. Link buttons get {{accept_url}} (first) and {{decline_url}} (second), or {{password_url}} in password messages.');
         $church = auth()->user()?->church;
 
         if ($church === null) {

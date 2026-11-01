@@ -94,8 +94,18 @@ class MessageSender
         return $result;
     }
 
+    /**
+     * Messages marked "sensitive" (password links) are logged without their body, so the history
+     * never shows a working password link.
+     */
     protected function log(User $user, OutboundMessageData $message, SendResult $result): void
     {
+        $body = match (true) {
+            (bool) ($message->meta['sensitive'] ?? false) => __('Not stored because it contains a password link.'),
+            $result->channel === MessagePreference::Email->value => $message->body,
+            default => $message->plainText(),
+        };
+
         OutboundMessage::query()->create([
             'church_id' => $user->church_id,
             'event_id' => $message->meta['event_id'] ?? null,
@@ -103,7 +113,7 @@ class MessageSender
             'user_id' => $user->id,
             'channel' => $result->channel,
             'subject' => $message->subject,
-            'body' => $result->channel === MessagePreference::Email->value ? $message->body : $message->plainText(),
+            'body' => $body,
             'status' => $result->success ? 'sent' : 'failed',
             'error' => $result->error,
             'template_key' => $message->templateKey,

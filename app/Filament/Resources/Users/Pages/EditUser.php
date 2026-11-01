@@ -32,7 +32,7 @@ class EditUser extends EditRecord
                 ->color('gray')
                 ->requiresConfirmation()
                 ->modalHeading(__('Send password invite?'))
-                ->modalDescription(__('They get an email to choose or reset their password. Limited to one send per minute.'))
+                ->modalDescription(__('They get a message to choose or reset their password, by their preferred messaging. Limited to one send per minute.'))
                 ->visible(fn (): bool => filled($this->getRecord()->email)
                     && app(UserInviter::class)->canInvite($this->getRecord()->loadMissing('church')))
                 ->action(function (): void {

@@ -13,7 +13,8 @@ use Modules\Messaging\Support\MessagingAvailability;
  * Message templates of the church's WhatsApp Business Account, and the parameters to send one.
  *
  * Body variables use the app's placeholder names ({{task}}, {{date}}, …). Link buttons get the accept and
- * decline links in button order: first link button = {{accept_url}}, second = {{decline_url}}.
+ * decline links in button order: first link button = {{accept_url}}, second = {{decline_url}}. In a password
+ * message the first link button gets {{password_url}} instead.
  *
  * @see https://developers.facebook.com/docs/whatsapp/business-management-api/message-templates
  */
@@ -214,6 +215,9 @@ class WhatsAppTemplates
     {
         $parameters = [];
         $linkButton = 0;
+        $linkKeys = filled($values[MessagePlaceholders::PASSWORD_URL] ?? null)
+            ? [MessagePlaceholders::PASSWORD_URL]
+            : self::BUTTON_LINKS;
 
         foreach ($buttons as $index => $button) {
             $url = (string) ($button['url'] ?? '');
@@ -222,7 +226,7 @@ class WhatsAppTemplates
                 continue;
             }
 
-            $link = $values[self::BUTTON_LINKS[$linkButton] ?? ''] ?? '';
+            $link = $values[$linkKeys[$linkButton] ?? ''] ?? '';
             $linkButton++;
 
             if (blank($link)) {

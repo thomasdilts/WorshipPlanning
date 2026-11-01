@@ -8,7 +8,7 @@ use App\Models\MessageTemplate;
 use Illuminate\Database\Seeder;
 
 /**
- * Starter message templates (Swedish). Only adds what a church is missing, so edited templates are never overwritten.
+ * Starter message templates (English). Only adds what a church is missing, so edited templates are never overwritten.
  */
 class MessageTemplatesSeeder extends Seeder
 {
@@ -47,24 +47,24 @@ class MessageTemplatesSeeder extends Seeder
     {
         return [
             [
-                'name' => 'Kräva svar',
+                'name' => 'Require response',
                 'key' => 'krava-svar',
                 'purpose' => MessageTemplatePurpose::Service,
-                'subject' => '{{church}}, {{task}},  {{event}},  {{date}}',
+                'subject' => '{{church}}, {{task}}, {{event}}, {{date}}',
                 'body' => <<<'HTML'
-                    <p>Du är schemalagt till att göra uppgiften {{task}} på {{event}}  {{date}}  {{time}}. Var snäll och meddela oss om du kan eller inte kan komma och göra uppgiften igenom att trycka på en av knapparna nedan.</p>
-                    <p>Tack och Gud Välsigna Dig!</p>
+                    <p>You are scheduled to do the task {{task}} at {{event}} {{date}} {{time}}. Please let us know whether you can come and do the task by pressing one of the buttons below.</p>
+                    <p>Thank you and God bless you!</p>
                     <table width="100%" border="0" cellspacing="0" cellpadding="0">
                       <tr>
                         <td>
                           <table border="0" cellspacing="0" cellpadding="0">
                             <tr>
                               <td align="center" bgcolor="#90EE90" style="border-radius: 6px; padding: 12px 24px;">
-                                <a href="{{accept_url}}" target="_blank" style="font-family: Helvetica, Arial, sans-serif; font-size: 16px; font-weight: bold; color: #14532D; text-decoration: none; display: block;">Ja, jag kommer</a>
+                                <a href="{{accept_url}}" target="_blank" style="font-family: Helvetica, Arial, sans-serif; font-size: 16px; font-weight: bold; color: #14532D; text-decoration: none; display: block;">Yes, I can come</a>
                               </td>
                               <td width="12" style="font-size: 0; line-height: 0;">&nbsp;</td>
                               <td align="center" bgcolor="#FAA0A0" style="border-radius: 6px; padding: 12px 24px;">
-                                <a href="{{decline_url}}" target="_blank" style="font-family: Helvetica, Arial, sans-serif; font-size: 16px; font-weight: bold; color: #7F1D1D; text-decoration: none; display: block;">Nej, jag kommer inte</a>
+                                <a href="{{decline_url}}" target="_blank" style="font-family: Helvetica, Arial, sans-serif; font-size: 16px; font-weight: bold; color: #7F1D1D; text-decoration: none; display: block;">No, I can't come</a>
                               </td>
                             </tr>
                           </table>
@@ -73,80 +73,128 @@ class MessageTemplatesSeeder extends Seeder
                     </table>
                     HTML,
                 'text_body' => <<<'TEXT'
-                    Du är schemalagt till att göra uppgiften {{task}} på {{event}}  {{date}}  {{time}}. Var snäll och meddela oss om du kan eller inte kan komma.
-                    Ja, jag kommer  {{accept_link}}
-                    Nej, jag kommer inte {{decline_link}}
+                    You are scheduled to do the task {{task}} at {{event}} {{date}} {{time}}. Please let us know whether you can come.
+                    Yes, I can come {{accept_link}}
+                    No, I can't come {{decline_link}}
                     TEXT,
-                'whatsapp_template' => 'krava_svar',
+                'whatsapp_template' => 'require_response',
             ],
             [
-                'name' => 'Påminnelse endast',
+                'name' => 'Reminder only',
                 'key' => 'paminnelse-endast',
                 'purpose' => MessageTemplatePurpose::Service,
-                'subject' => 'Påminnelse {{task}},  {{event}},  {{date}}',
+                'subject' => 'Reminder {{task}}, {{event}}, {{date}}',
                 'body' => <<<'HTML'
-                    <p>Detta är bara en påminnelse att du är schemalagt till att göra uppgiften {{task}} på {{event}}  {{date}}  {{time}}.</p>
-                    <p>Tack och Gud Välsigna Dig!</p>
+                    <p>This is just a reminder that you are scheduled to do the task {{task}} at {{event}} {{date}} {{time}}.</p>
+                    <p>Thank you and God bless you!</p>
                     HTML,
                 'text_body' => <<<'TEXT'
-                    Detta är bara en påminnelse att du är schemalagt till att göra uppgiften {{task}} på {{event}}  {{date}}  {{time}}.
-                    Tack och Gud Välsigna Dig!
+                    This is just a reminder that you are scheduled to do the task {{task}} at {{event}} {{date}} {{time}}.
+                    Thank you and God bless you!
                     TEXT,
-                'whatsapp_template' => 'paminnelse',
+                'whatsapp_template' => 'reminder',
             ],
             [
-                'name' => 'Gudstjänst anpassat meddelande',
+                'name' => 'Service custom message',
                 'key' => 'custom_service_mess',
                 'purpose' => MessageTemplatePurpose::Service,
-                'subject' => '{{church}}, {{task}}, {{event}}, {{date}}, uppdatering',
+                'subject' => '{{church}}, {{task}}, {{event}}, {{date}}, update',
                 'body' => <<<'HTML'
-                    <p>Detta är ett anpassat meddelande ifrån {{message_sender}} angående {{task}} på {{event}} {{date}}:</p>
+                    <p>This is a message from {{message_sender}} about {{task}} at {{event}} {{date}}:</p>
                     <p>{{custom_mess}}</p>
-                    <p>Tack och Gud Välsigna Dig!</p>
+                    <p>Thank you and God bless you!</p>
                     HTML,
                 'text_body' => <<<'TEXT'
-                    Detta är ett anpassat meddelande ifrån {{message_sender}} angående {{task}} på {{event}} {{date}}:
+                    This is a message from {{message_sender}} about {{task}} at {{event}} {{date}}:
 
                     {{custom_mess}}
 
-                    Tack och Gud Välsigna Dig!
+                    Thank you and God bless you!
                     TEXT,
-                'whatsapp_template' => 'gudstjanst_anpassat_meddelande',
+                'whatsapp_template' => 'service_custom_message',
             ],
             [
-                'name' => 'Team anpassat meddelande',
+                'name' => 'Team custom message',
                 'key' => 'team_custom_message',
                 'purpose' => MessageTemplatePurpose::Team,
-                'subject' => '{{team}} meddelande',
+                'subject' => '{{team}} message',
                 'body' => <<<'HTML'
-                    <p>Detta är ett anpassat meddelande ifrån {{message_sender}} till teamet {{team}}:</p>
+                    <p>This is a message from {{message_sender}} to the team {{team}}:</p>
                     <p>{{custom_mess}}</p>
-                    <p>Tack och Gud Välsigna Dig!</p>
+                    <p>Thank you and God bless you!</p>
                     HTML,
                 'text_body' => <<<'TEXT'
-                    Detta är ett anpassat meddelande ifrån {{message_sender}} till teamet {{team}}:
+                    This is a message from {{message_sender}} to the team {{team}}:
 
                     {{custom_mess}}
 
-                    Tack och Gud Välsigna Dig!
+                    Thank you and God bless you!
                     TEXT,
-                'whatsapp_template' => 'team_anpassat_meddelande',
+                'whatsapp_template' => 'team_custom_message',
             ],
             [
-                'name' => 'Föredragen meddelandekanal',
+                'name' => 'Preferred messaging',
                 'key' => 'preferred_messageing',
                 'purpose' => MessageTemplatePurpose::Other,
-                'subject' => "{{message_sender}} har ändrat din 'Föredragen meddelandekanal'",
+                'subject' => '{{message_sender}} has changed your preferred messaging',
                 'body' => <<<'HTML'
-                    <p>Hej {{first_name}}! {{message_sender}} har ändrat din föredragna meddelandekanal.</p>
-                    <p>Du kommer att fortsätta att få meddelanden ifrån gudstjänstplaneringssystemet för {{church}} på detta sätt.</p>
+                    <p>Hi {{first_name}}! {{message_sender}} has changed your preferred messaging.</p>
+                    <p>From now on you will get messages from the worship planning system of {{church}} this way.</p>
                     HTML,
                 'text_body' => <<<'TEXT'
-                    Hej {{first_name}}! {{message_sender}} har ändrat din föredragna meddelandekanal.
+                    Hi {{first_name}}! {{message_sender}} has changed your preferred messaging.
 
-                    Du kommer att fortsätta att få meddelanden ifrån gudstjänstplaneringssystemet för {{church}} på detta sätt.
+                    From now on you will get messages from the worship planning system of {{church}} this way.
                     TEXT,
-                'whatsapp_template' => 'foredragen_meddelandekanal',
+                'whatsapp_template' => 'preferred_messaging',
+            ],
+            [
+                'name' => 'Set password',
+                'key' => 'set_password',
+                'purpose' => MessageTemplatePurpose::Other,
+                'subject' => 'Set your password for {{church}}',
+                'body' => <<<'HTML'
+                    <p>Welcome to {{church}}, {{first_name}}!</p>
+                    <p>{{message_sender}} has invited you to WorshipPlanner. Choose your own password to get started.</p>
+                    <table border="0" cellspacing="0" cellpadding="0">
+                      <tr>
+                        <td align="center" bgcolor="#0F766E" style="border-radius: 6px; padding: 12px 24px;">
+                          <a href="{{password_url}}" target="_blank" style="font-family: Helvetica, Arial, sans-serif; font-size: 16px; font-weight: bold; color: #FFFFFF; text-decoration: none; display: block;">Set password</a>
+                        </td>
+                      </tr>
+                    </table>
+                    <p>This link expires in {{expire_minutes}} minutes.</p>
+                    <p>If you did not expect this invitation, you can ignore this message.</p>
+                    HTML,
+                'text_body' => <<<'TEXT'
+                    Welcome to {{church}}, {{first_name}}! {{message_sender}} has invited you to WorshipPlanner. Choose your password here: {{password_url}}
+                    The link expires in {{expire_minutes}} minutes.
+                    TEXT,
+                'whatsapp_template' => 'set_password',
+            ],
+            [
+                'name' => 'Reset password',
+                'key' => 'reset_password',
+                'purpose' => MessageTemplatePurpose::Other,
+                'subject' => 'Reset your password for {{church}}',
+                'body' => <<<'HTML'
+                    <p>Hi {{first_name}}!</p>
+                    <p>You are receiving this message because we received a password reset request for your account.</p>
+                    <table border="0" cellspacing="0" cellpadding="0">
+                      <tr>
+                        <td align="center" bgcolor="#0F766E" style="border-radius: 6px; padding: 12px 24px;">
+                          <a href="{{password_url}}" target="_blank" style="font-family: Helvetica, Arial, sans-serif; font-size: 16px; font-weight: bold; color: #FFFFFF; text-decoration: none; display: block;">Reset password</a>
+                        </td>
+                      </tr>
+                    </table>
+                    <p>This link expires in {{expire_minutes}} minutes.</p>
+                    <p>If you did not request a password reset, no further action is required.</p>
+                    HTML,
+                'text_body' => <<<'TEXT'
+                    Hi {{first_name}}! Reset your password for {{church}} here: {{password_url}}
+                    The link expires in {{expire_minutes}} minutes. If you did not ask for this, ignore this message.
+                    TEXT,
+                'whatsapp_template' => 'reset_password',
             ],
         ];
     }

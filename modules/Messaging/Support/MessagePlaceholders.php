@@ -25,6 +25,12 @@ class MessagePlaceholders
     /** The team's name; only filled in for team messages. */
     public const TEAM = 'team';
 
+    /** The link to set or reset a password; only filled in for password messages. */
+    public const PASSWORD_URL = 'password_url';
+
+    /** How many minutes the password link works; only filled in for password messages. */
+    public const EXPIRE_MINUTES = 'expire_minutes';
+
     /**
      * Every placeholder a template can use, in the order the help lists them.
      *
@@ -32,7 +38,7 @@ class MessagePlaceholders
      */
     public static function templateKeys(): array
     {
-        return [...self::KEYS, self::SENDER, self::TEAM, self::CUSTOM_MESSAGE];
+        return [...self::KEYS, self::SENDER, self::TEAM, self::CUSTOM_MESSAGE, self::PASSWORD_URL, self::EXPIRE_MINUTES];
     }
 
     /**

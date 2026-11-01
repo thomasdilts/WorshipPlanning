@@ -20,14 +20,14 @@ class MessageTemplatesSeederTest extends TestCase
 
         foreach ($churches as $church) {
             $this->assertEqualsCanonicalizing(
-                ['krava-svar', 'paminnelse-endast', 'custom_service_mess', 'team_custom_message', 'preferred_messageing'],
+                ['krava-svar', 'paminnelse-endast', 'custom_service_mess', 'team_custom_message', 'preferred_messageing', 'set_password', 'reset_password'],
                 MessageTemplate::query()->withoutGlobalScope('church')->where('church_id', $church->id)->pluck('key')->all(),
             );
         }
         $this->assertDatabaseHas('message_templates', [
             'church_id' => $churches[0]->id,
             'key' => 'krava-svar',
-            'whatsapp_template' => 'krava_svar',
+            'whatsapp_template' => 'require_response',
             'is_active' => true,
         ]);
     }
@@ -42,7 +42,25 @@ class MessageTemplatesSeederTest extends TestCase
         MessageTemplatesSeeder::seedForChurch($church);
 
         $templates = MessageTemplate::query()->withoutGlobalScope('church')->where('church_id', $church->id)->get();
-        $this->assertCount(5, $templates);
+        $this->assertCount(7, $templates);
         $this->assertSame('Edited', $templates->firstWhere('key', 'krava-svar')->text_body);
+    }
+
+    public function test_password_template_migration_adds_swedish_templates_to_swedish_churches_only(): void
+    {
+        $swedish = Church::factory()->create(['locale' => 'sv']);
+        $english = Church::factory()->create(['locale' => 'en']);
+        MessageTemplate::query()->create(['church_id' => $english->id, 'name' => 'Own reset', 'key' => 'reset_password', 'body' => 'Mine', 'is_active' => true]);
+
+        (require database_path('migrations/2026_11_01_083619_add_password_message_templates.php'))->up();
+
+        $this->assertSame(
+            ['reset_password' => 'Återställ lösenord', 'set_password' => 'Sätt lösenord'],
+            MessageTemplate::query()->withoutGlobalScope('church')->where('church_id', $swedish->id)->orderBy('key')->pluck('name', 'key')->all(),
+        );
+        $this->assertSame(
+            ['reset_password' => 'Own reset', 'set_password' => 'Set password'],
+            MessageTemplate::query()->withoutGlobalScope('church')->where('church_id', $english->id)->orderBy('key')->pluck('name', 'key')->all(),
+        );
     }
 }
