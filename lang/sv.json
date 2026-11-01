@@ -929,8 +929,12 @@
     "ntfy settings saved": "ntfy-inställningar sparade",
     "No confirmation template is chosen in the ntfy settings.": "Ingen bekräftelsemall är vald i ntfy-inställningarna.",
     "ntfy topic": "ntfy-ämne",
-    "Use :min–64 letters, digits, dashes or underscores.": "Använd :min–64 bokstäver, siffror, bindestreck eller understreck.",
-    "Make a random topic": "Skapa ett slumpat ämne",
-    "Subscribe to this topic in the ntfy app. Anyone who knows the topic can read the messages, so keep it hard to guess — use the button to make one.": "Prenumerera på det här ämnet i appen ntfy. Alla som känner till ämnet kan läsa meddelandena, så gör det svårt att gissa – använd knappen för att skapa ett.",
-    "No ntfy topic": "Inget ntfy-ämne"
+    "No ntfy topic": "Inget ntfy-ämne",
+    "Make a new topic with the button next to the field.": "Skapa ett nytt ämne med knappen bredvid fältet.",
+    "Make a new topic": "Skapa ett nytt ämne",
+    "Copied": "Kopierat",
+    "Set the server in the ntfy app": "Ange servern i appen ntfy",
+    "When you subscribe to the topic below in the ntfy app, turn on “Use another server” and enter :server. Without it the app listens on ntfy.sh and no messages arrive.": "När du prenumererar på ämnet nedan i appen ntfy, slå på ”Använd en annan server” och ange :server. Annars lyssnar appen på ntfy.sh och inga meddelanden kommer fram.",
+    "In the ntfy app, subscribe to the topic below on the default server, ntfy.sh.": "Prenumerera på ämnet nedan i appen ntfy, på standardservern ntfy.sh.",
+    "Copy this topic into the ntfy app. Keep it private: anyone who knows it can read the messages. Make a new one if it has been shared.": "Kopiera det här ämnet till appen ntfy. Håll det hemligt: alla som känner till det kan läsa meddelandena. Skapa ett nytt om det har delats."
 }

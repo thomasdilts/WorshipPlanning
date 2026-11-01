@@ -929,8 +929,12 @@
     "ntfy settings saved": "ntfy settings saved",
     "No confirmation template is chosen in the ntfy settings.": "No confirmation template is chosen in the ntfy settings.",
     "ntfy topic": "ntfy topic",
-    "Use :min–64 letters, digits, dashes or underscores.": "Use :min–64 letters, digits, dashes or underscores.",
-    "Make a random topic": "Make a random topic",
-    "Subscribe to this topic in the ntfy app. Anyone who knows the topic can read the messages, so keep it hard to guess — use the button to make one.": "Subscribe to this topic in the ntfy app. Anyone who knows the topic can read the messages, so keep it hard to guess — use the button to make one.",
-    "No ntfy topic": "No ntfy topic"
+    "No ntfy topic": "No ntfy topic",
+    "Make a new topic with the button next to the field.": "Make a new topic with the button next to the field.",
+    "Make a new topic": "Make a new topic",
+    "Copied": "Copied",
+    "Set the server in the ntfy app": "Set the server in the ntfy app",
+    "When you subscribe to the topic below in the ntfy app, turn on “Use another server” and enter :server. Without it the app listens on ntfy.sh and no messages arrive.": "When you subscribe to the topic below in the ntfy app, turn on “Use another server” and enter :server. Without it the app listens on ntfy.sh and no messages arrive.",
+    "In the ntfy app, subscribe to the topic below on the default server, ntfy.sh.": "In the ntfy app, subscribe to the topic below on the default server, ntfy.sh.",
+    "Copy this topic into the ntfy app. Keep it private: anyone who knows it can read the messages. Make a new one if it has been shared.": "Copy this topic into the ntfy app. Keep it private: anyone who knows it can read the messages. Make a new one if it has been shared."
 }

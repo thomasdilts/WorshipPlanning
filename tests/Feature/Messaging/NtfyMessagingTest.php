@@ -37,7 +37,7 @@ class NtfyMessagingTest extends TestCase
 
     protected const SERVER_URL = 'https://ntfy.sh/';
 
-    protected const TOPIC = 'worship-anna-k3j9x2qp7m';
+    protected const TOPIC = 'worship-k3j9x2qp7m4tz8w1bq5n';
 
     protected Church $church;
 
@@ -141,13 +141,48 @@ class NtfyMessagingTest extends TestCase
             ->assertFormFieldVisible('ntfy_topic');
     }
 
-    public function test_topic_button_fills_a_long_random_topic(): void
+    public function test_choosing_ntfy_warns_to_enter_the_churchs_own_server_in_the_app(): void
+    {
+        app(ChurchModuleManager::class)->updateSettings($this->church, MessagingAvailability::MODULE_NTFY, [
+            'server_url' => 'https://ntfy.example.org',
+            'access_token' => '',
+        ]);
+
+        Livewire::test(EditProfile::class)
+            ->assertDontSee('Set the server in the ntfy app')
+            ->fillForm(['message_preference' => MessagePreference::Ntfy->value])
+            ->assertSee('Set the server in the ntfy app')
+            ->assertSeeHtml('<strong>https://ntfy.example.org</strong>');
+    }
+
+    public function test_choosing_ntfy_makes_a_long_random_topic(): void
     {
         $component = Livewire::test(EditProfile::class)
-            ->fillForm(['message_preference' => MessagePreference::Ntfy->value])
-            ->callAction(TestAction::make('generateNtfyTopic')->schemaComponent('ntfy_topic'));
+            ->fillForm(['message_preference' => MessagePreference::Ntfy->value]);
 
         $this->assertMatchesRegularExpression('/^worship-[a-z0-9]{20}$/', $component->get('data.ntfy_topic'));
+    }
+
+    public function test_choosing_ntfy_again_keeps_the_saved_topic(): void
+    {
+        $this->user->update(['ntfy_topic' => self::TOPIC]);
+
+        $component = Livewire::test(EditProfile::class)
+            ->fillForm(['message_preference' => MessagePreference::Ntfy->value]);
+
+        $this->assertSame(self::TOPIC, $component->get('data.ntfy_topic'));
+    }
+
+    public function test_topic_button_replaces_the_topic_with_a_new_random_one(): void
+    {
+        $this->user->update(['message_preference' => MessagePreference::Ntfy, 'ntfy_topic' => self::TOPIC]);
+
+        $component = Livewire::test(EditProfile::class)
+            ->callAction(TestAction::make('generateNtfyTopic')->schemaComponent('ntfy_topic'));
+
+        $topic = $component->get('data.ntfy_topic');
+        $this->assertNotSame(self::TOPIC, $topic);
+        $this->assertMatchesRegularExpression('/^worship-[a-z0-9]{20}$/', $topic);
     }
 
     public function test_choosing_ntfy_requires_a_topic(): void
@@ -161,13 +196,25 @@ class NtfyMessagingTest extends TestCase
         $this->assertSame(MessagePreference::Email, $this->user->fresh()->message_preference);
     }
 
-    public function test_choosing_ntfy_rejects_a_short_guessable_topic(): void
+    public function test_choosing_ntfy_rejects_a_topic_the_app_did_not_make(): void
     {
         Http::preventStrayRequests();
         Http::fake([self::SERVER_URL => Http::response(['code' => 42901, 'http' => 429, 'error' => 'limit reached: too many requests'], 429)]);
 
-        $this->saveProfile(['message_preference' => MessagePreference::Ntfy->value, 'ntfy_topic' => 'anna'])
+        $this->saveProfile(['message_preference' => MessagePreference::Ntfy->value, 'ntfy_topic' => 'anna-svensson-2024'])
             ->assertHasFormErrors(['ntfy_topic' => 'regex']);
+
+        $this->assertNull($this->user->fresh()->ntfy_topic);
+    }
+
+    public function test_choosing_ntfy_rejects_a_topic_someone_else_already_has(): void
+    {
+        Http::preventStrayRequests();
+        Http::fake([self::SERVER_URL => Http::response(['id' => 'msg-1'], 200)]);
+        User::factory()->create(['church_id' => $this->church->id, 'ntfy_topic' => self::TOPIC]);
+
+        $this->saveProfile(['message_preference' => MessagePreference::Ntfy->value, 'ntfy_topic' => self::TOPIC])
+            ->assertHasFormErrors(['ntfy_topic' => 'unique']);
 
         $this->assertNull($this->user->fresh()->ntfy_topic);
     }
@@ -177,7 +224,7 @@ class NtfyMessagingTest extends TestCase
         Http::preventStrayRequests();
         Http::fake([self::SERVER_URL => Http::response(['id' => 'msg-1', 'event' => 'message'], 200)]);
 
-        $this->saveProfile(['message_preference' => MessagePreference::Ntfy->value, 'ntfy_topic' => ' '.self::TOPIC.' '])
+        $this->saveProfile(['message_preference' => MessagePreference::Ntfy->value, 'ntfy_topic' => self::TOPIC])
             ->assertHasNoFormErrors();
 
         $user = $this->user->fresh();

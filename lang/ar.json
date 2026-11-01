@@ -929,8 +929,12 @@
     "ntfy settings saved": "تم حفظ إعدادات ntfy",
     "No confirmation template is chosen in the ntfy settings.": "لم يتم اختيار قالب تأكيد في إعدادات ntfy.",
     "ntfy topic": "موضوع ntfy",
-    "Use :min–64 letters, digits, dashes or underscores.": "استخدم من :min إلى 64 حرفًا أو رقمًا أو شرطة أو شرطة سفلية.",
-    "Make a random topic": "إنشاء موضوع عشوائي",
-    "Subscribe to this topic in the ntfy app. Anyone who knows the topic can read the messages, so keep it hard to guess — use the button to make one.": "اشترك في هذا الموضوع في تطبيق ntfy. يمكن لأي شخص يعرف الموضوع قراءة الرسائل، لذا اجعله صعب التخمين — استخدم الزر لإنشاء واحد.",
-    "No ntfy topic": "لا يوجد موضوع ntfy"
+    "No ntfy topic": "لا يوجد موضوع ntfy",
+    "Make a new topic with the button next to the field.": "أنشئ موضوعًا جديدًا بالزر بجانب الحقل.",
+    "Make a new topic": "إنشاء موضوع جديد",
+    "Copied": "تم النسخ",
+    "Set the server in the ntfy app": "اضبط الخادم في تطبيق ntfy",
+    "When you subscribe to the topic below in the ntfy app, turn on “Use another server” and enter :server. Without it the app listens on ntfy.sh and no messages arrive.": "عند الاشتراك في الموضوع أدناه في تطبيق ntfy، فعّل «استخدام خادم آخر» وأدخل :server. بدون ذلك يستمع التطبيق إلى ntfy.sh ولن تصل أي رسائل.",
+    "In the ntfy app, subscribe to the topic below on the default server, ntfy.sh.": "في تطبيق ntfy، اشترك في الموضوع أدناه على الخادم الافتراضي ntfy.sh.",
+    "Copy this topic into the ntfy app. Keep it private: anyone who knows it can read the messages. Make a new one if it has been shared.": "انسخ هذا الموضوع إلى تطبيق ntfy. احتفظ به سرًا: يمكن لأي شخص يعرفه قراءة الرسائل. أنشئ موضوعًا جديدًا إذا تمت مشاركته."
 }

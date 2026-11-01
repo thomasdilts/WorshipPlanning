@@ -103,6 +103,7 @@ class UserForm
                     ->visible(fn (): bool => app(MessagingAvailability::class)->shouldAskPreference(auth()->user()?->church))
                     ->native(false)
                     ->live()
+                    ->afterStateUpdated(NtfyTopicField::generateWhenChosen())
                     ->rule(fn (Get $get, ?User $record): Closure => MessagePreferenceRule::make(
                         current: $record?->message_preference,
                         recipient: fn (): User => ($record ? clone $record : new User(['church_id' => auth()->user()?->church_id]))
@@ -116,7 +117,7 @@ class UserForm
                         languageId: filled($get('language_id')) ? (int) $get('language_id') : null,
                     ))
                     ->helperText(__('A short test message is sent when you change this. SMS, WhatsApp and ntfy must arrive for the choice to be saved.')),
-                NtfyTopicField::make(),
+                ...NtfyTopicField::components(),
                 Section::make(__('Roles'))
                     ->description(__('Choose one or more roles. Permissions for each role are configured under Administration → Roles.'))
                     ->schema([

@@ -38,7 +38,7 @@ class EditProfile extends BaseEditProfile
                 $this->getLanguageFormComponent(),
                 $this->getPhoneFormComponent(),
                 $this->getMessagePreferenceFormComponent(),
-                NtfyTopicField::make(),
+                ...NtfyTopicField::components(),
                 Section::make(__('Abilities'))
                     ->description(__('Task types you are approved to be assigned to as a person.'))
                     ->visible(fn (): bool => AbilitiesForm::profileVisible())
@@ -128,6 +128,7 @@ class EditProfile extends BaseEditProfile
             ->visible(fn (): bool => $availability->shouldAskPreference($church))
             ->native(false)
             ->live()
+            ->afterStateUpdated(NtfyTopicField::generateWhenChosen())
             ->rule(fn (Get $get): Closure => MessagePreferenceRule::make(
                 current: $this->getUser()->message_preference,
                 recipient: fn (): User => (clone $this->getUser())->forceFill([
