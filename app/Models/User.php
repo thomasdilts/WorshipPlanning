@@ -31,6 +31,7 @@ use Spatie\Permission\Traits\HasRoles;
     'avatar_path',
     'email',
     'phone',
+    'ntfy_topic',
     'password',
     'is_platform_admin',
     'message_preference',

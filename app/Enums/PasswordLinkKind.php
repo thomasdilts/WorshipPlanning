@@ -20,7 +20,7 @@ enum PasswordLinkKind: string
     }
 
     /**
-     * Module setting holding the chosen message template ID (email and SMS settings).
+     * Module setting holding the chosen message template ID (email, SMS and ntfy settings).
      */
     public function templateSettingKey(): string
     {

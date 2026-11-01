@@ -13,13 +13,18 @@ use Modules\Messaging\Support\MessagingAvailability;
 
 /**
  * Sends a set-password or reset-password link from the templates chosen in the channel settings:
- * first by SMS when the person prefers SMS, then by email. WhatsApp never carries password links,
+ * first by SMS or ntfy when the person prefers that, then by email. WhatsApp never carries password links,
  * because Meta does not accept link templates for them as Utility, so WhatsApp users get the email.
  *
  * When neither has a template chosen (or sending fails), the caller sends the built-in email instead.
  */
 class PasswordLinkMessages
 {
+    /**
+     * Preferred channels that may carry a password link before falling back to email.
+     */
+    protected const LINK_CHANNELS = [MessagePreference::Sms, MessagePreference::Ntfy];
+
     public function __construct(
         protected MessageSender $sender,
         protected ChurchModuleManager $modules,
@@ -28,13 +33,13 @@ class PasswordLinkMessages
     ) {}
 
     /**
-     * Whether the person's preferred SMS is set up to carry this password link.
+     * Whether the person's preferred SMS or ntfy is set up to carry this password link.
      */
     public function canSendByPreferredChannel(User $user, PasswordLinkKind $kind): bool
     {
         $preference = $user->message_preference ?? MessagePreference::Email;
 
-        if ($preference !== MessagePreference::Sms || $user->church === null) {
+        if (! in_array($preference, self::LINK_CHANNELS, true) || $user->church === null) {
             return false;
         }
 
@@ -52,8 +57,8 @@ class PasswordLinkMessages
     public function send(User $user, PasswordLinkKind $kind, string $url, ?User $sentBy = null): bool
     {
         $preference = $user->message_preference ?? MessagePreference::Email;
-        $preferences = $preference === MessagePreference::Sms
-            ? [MessagePreference::Sms, MessagePreference::Email]
+        $preferences = in_array($preference, self::LINK_CHANNELS, true)
+            ? [$preference, MessagePreference::Email]
             : [MessagePreference::Email];
 
         foreach ($preferences as $channel) {

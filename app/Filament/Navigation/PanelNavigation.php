@@ -11,6 +11,7 @@ use App\Filament\Pages\MessagingSettings;
 use App\Filament\Pages\MyMessages;
 use App\Filament\Pages\MyTasks;
 use App\Filament\Pages\MyUnavailability;
+use App\Filament\Pages\NtfyMessagingSettings;
 use App\Filament\Pages\SmsMessagingSettings;
 use App\Filament\Pages\SongStatistics;
 use App\Filament\Pages\WhatsAppMessagingSettings;
@@ -74,6 +75,7 @@ class PanelNavigation
                 $this->forClass(MessagingSettings::class),
                 $this->forClass(SmsMessagingSettings::class),
                 $this->forClass(WhatsAppMessagingSettings::class),
+                $this->forClass(NtfyMessagingSettings::class),
                 $this->forClass(BibleSettings::class),
                 $this->forClass(LanguageResource::class),
             ]),

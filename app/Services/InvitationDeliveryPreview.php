@@ -166,6 +166,11 @@ class InvitationDeliveryPreview
             $detail = __('No valid mobile number');
         }
 
+        if ($canDeliver && $channel === MessagePreference::Ntfy && blank($user->ntfy_topic)) {
+            $canDeliver = false;
+            $detail = __('No ntfy topic');
+        }
+
         return [
             'channel' => $channel->value,
             'channel_label' => $channel->label(),

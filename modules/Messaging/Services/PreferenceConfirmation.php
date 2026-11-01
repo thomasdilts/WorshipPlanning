@@ -14,7 +14,7 @@ use Modules\Messaging\Support\MessagePlaceholders;
 use Modules\Messaging\Support\MessagingAvailability;
 
 /**
- * Confirms a newly chosen messaging type through that channel: email and SMS send the message template
+ * Confirms a newly chosen messaging type through that channel: email, SMS and ntfy send the message template
  * chosen in their settings, WhatsApp the Meta template chosen in the WhatsApp settings.
  */
 class PreferenceConfirmation
@@ -51,6 +51,12 @@ class PreferenceConfirmation
                 __('No confirmation template is chosen in the SMS settings.'),
             ),
             MessagePreference::WhatsApp => $this->whatsAppMessage($recipient),
+            MessagePreference::Ntfy => $this->templateMessage(
+                $recipient,
+                $preference,
+                MessagingAvailability::MODULE_NTFY,
+                __('No confirmation template is chosen in the ntfy settings.'),
+            ),
         });
 
         if ($message instanceof SendResult) {

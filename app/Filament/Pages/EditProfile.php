@@ -3,6 +3,7 @@
 namespace App\Filament\Pages;
 
 use App\Enums\MessagePreference;
+use App\Filament\Forms\NtfyTopicField;
 use App\Models\Language;
 use App\Models\User;
 use App\Support\MessagePreferenceRule;
@@ -37,6 +38,7 @@ class EditProfile extends BaseEditProfile
                 $this->getLanguageFormComponent(),
                 $this->getPhoneFormComponent(),
                 $this->getMessagePreferenceFormComponent(),
+                NtfyTopicField::make(),
                 Section::make(__('Abilities'))
                     ->description(__('Task types you are approved to be assigned to as a person.'))
                     ->visible(fn (): bool => AbilitiesForm::profileVisible())
@@ -125,16 +127,18 @@ class EditProfile extends BaseEditProfile
             ->required(fn (): bool => $availability->shouldAskPreference($church))
             ->visible(fn (): bool => $availability->shouldAskPreference($church))
             ->native(false)
+            ->live()
             ->rule(fn (Get $get): Closure => MessagePreferenceRule::make(
                 current: $this->getUser()->message_preference,
                 recipient: fn (): User => (clone $this->getUser())->forceFill([
                     'display_name' => $get('display_name'),
                     'email' => $get('email'),
                     'phone' => $get('phone'),
+                    'ntfy_topic' => filled($get('ntfy_topic')) ? trim((string) $get('ntfy_topic')) : null,
                 ]),
                 languageId: filled($get('language_id')) ? (int) $get('language_id') : null,
             ))
-            ->helperText(__('A short test message is sent when you change this. SMS and WhatsApp must arrive for the choice to be saved.'));
+            ->helperText(__('A short test message is sent when you change this. SMS, WhatsApp and ntfy must arrive for the choice to be saved.'));
     }
 
     protected function getDisplayNameFormComponent(): Component

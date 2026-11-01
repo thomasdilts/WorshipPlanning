@@ -122,6 +122,10 @@ class ChurchModuleManager
                 'access_token' => '',
                 'phone_number_id' => '',
             ],
+            'messaging_ntfy' => [
+                'server_url' => 'https://ntfy.sh',
+                'access_token' => '',
+            ],
             'bible_verses' => [
                 'base_url' => (string) config('services.zamar_bible.base_url', ''),
                 'api_key' => '',

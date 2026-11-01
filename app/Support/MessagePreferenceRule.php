@@ -10,7 +10,7 @@ use Modules\Messaging\Services\PreferenceConfirmation;
 use Modules\Messaging\Support\PhoneNumber;
 
 /**
- * Form validation for a changed "preferred messaging": SMS / WhatsApp must deliver a confirmation
+ * Form validation for a changed "preferred messaging": SMS / WhatsApp / ntfy must deliver a confirmation
  * message or the choice is refused; email is tried too, but a failure only warns the editor.
  */
 final class MessagePreferenceRule
@@ -22,7 +22,7 @@ final class MessagePreferenceRule
     public const CONFIRMED_SESSION_KEY = 'preference-confirmed';
 
     /**
-     * @param  Closure(): User  $recipient  The person as entered in the form (unsaved phone, email, …).
+     * @param  Closure(): User  $recipient  The person as entered in the form (unsaved phone, email, ntfy topic, …).
      */
     public static function make(?MessagePreference $current, Closure $recipient, ?int $languageId): Closure
     {
@@ -39,7 +39,7 @@ final class MessagePreferenceRule
 
             $person = $recipient();
             $alreadyConfirmed = self::CONFIRMED_SESSION_KEY.'.'.sha1(implode('|', [
-                $person->getKey(), $chosen->value, PhoneNumber::toMsisdn($person->phone), $person->email,
+                $person->getKey(), $chosen->value, PhoneNumber::toMsisdn($person->phone), $person->email, $person->ntfy_topic,
             ]));
 
             if (session()->has($alreadyConfirmed)) {

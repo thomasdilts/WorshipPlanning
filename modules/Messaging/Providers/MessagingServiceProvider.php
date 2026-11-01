@@ -8,6 +8,7 @@ use App\Core\Modules\ModuleRegistry;
 use App\Core\Permissions\PermissionRegistry;
 use Illuminate\Support\ServiceProvider;
 use Modules\Messaging\Channels\EmailChannel;
+use Modules\Messaging\Channels\NtfyChannel;
 use Modules\Messaging\Channels\SmsChannel;
 use Modules\Messaging\Channels\WhatsAppChannel;
 use Modules\Messaging\Contracts\MessageChannel;
@@ -26,6 +27,7 @@ class MessagingServiceProvider extends ServiceProvider
             EmailChannel::class,
             SmsChannel::class,
             WhatsAppChannel::class,
+            NtfyChannel::class,
         ], 'messaging.channels');
 
         $this->app->singleton(MessageSender::class, function ($app) {
@@ -68,6 +70,16 @@ class MessagingServiceProvider extends ServiceProvider
             settings: [
                 'access_token' => 'string',
                 'phone_number_id' => 'string',
+            ],
+            required: false,
+        ));
+
+        $modules->register(new ModuleDefinition(
+            key: MessagingAvailability::MODULE_NTFY,
+            name: 'Messaging via ntfy',
+            description: 'Send invitations as free push notifications through the ntfy app. Each person subscribes to their own topic.',
+            settings: [
+                'server_url' => 'string',
             ],
             required: false,
         ));

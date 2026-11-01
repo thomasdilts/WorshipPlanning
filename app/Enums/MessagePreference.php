@@ -7,6 +7,7 @@ enum MessagePreference: string
     case Email = 'email';
     case Sms = 'sms';
     case WhatsApp = 'whatsapp';
+    case Ntfy = 'ntfy';
 
     public function label(): string
     {
@@ -14,6 +15,7 @@ enum MessagePreference: string
             self::Email => __('Email'),
             self::Sms => __('SMS'),
             self::WhatsApp => __('WhatsApp'),
+            self::Ntfy => __('ntfy'),
         };
     }
 
