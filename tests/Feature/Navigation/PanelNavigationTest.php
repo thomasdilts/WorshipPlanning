@@ -106,7 +106,7 @@ class PanelNavigationTest extends TestCase
         $this->assertContains('Activity types', $navigation['groups']['Settings']);
     }
 
-    public function test_a_custom_role_name_gets_planner_navigation_from_permissions(): void
+    public function test_tasks_by_event_follows_its_own_permission_not_role_names(): void
     {
         app(PermissionRegistrar::class)->setPermissionsTeamId($this->church->id);
         $role = Role::findOrCreate('Sunday Wizard', 'web');
@@ -115,7 +115,24 @@ class PanelNavigationTest extends TestCase
         $user = User::factory()->create(['church_id' => $this->church->id]);
         $user->assignRole('Sunday Wizard');
 
-        $this->assertContains('Tasks by event', $this->navigationFor($user)['top']);
+        $this->assertNotContains('Tasks by event', $this->navigationFor($user)['top']);
+
+        $role->givePermissionTo('events.tasks_by_event');
+        app(PermissionRegistrar::class)->forgetCachedPermissions();
+
+        $this->assertContains('Tasks by event', $this->navigationFor($user->fresh())['top']);
+    }
+
+    public function test_volunteer_role_with_the_permission_sees_tasks_by_event(): void
+    {
+        $member = $this->userWithRole('Member');
+        $this->assertNotContains('Tasks by event', $this->navigationFor($member)['top']);
+
+        app(PermissionRegistrar::class)->setPermissionsTeamId($this->church->id);
+        Role::findByName('Member', 'web')->givePermissionTo('events.tasks_by_event');
+        app(PermissionRegistrar::class)->forgetCachedPermissions();
+
+        $this->assertContains('Tasks by event', $this->navigationFor($member->fresh())['top']);
     }
 
     public function test_a_disabled_module_removes_its_destinations(): void

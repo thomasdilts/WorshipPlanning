@@ -904,5 +904,6 @@
     "System": "System",
     "WorshipPlanner": "WorshipPlanner",
     "Every message sent in this church, to whom, and whether it arrived.": "Alla meddelanden som skickats i den här kyrkan, till vem och om de kom fram.",
-    "View all messages": "Visa alla meddelanden"
+    "View all messages": "Visa alla meddelanden",
+    "View tasks by event": "Visa uppgifter per evenemang"
 }

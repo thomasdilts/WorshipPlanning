@@ -37,6 +37,7 @@ use Illuminate\Support\Collection;
 use Illuminate\Support\HtmlString;
 use Illuminate\Support\Str;
 use Livewire\Attributes\Url;
+use Spatie\Permission\PermissionRegistrar;
 
 class TaskSpreadsheet extends Page implements HasTable
 {
@@ -105,7 +106,15 @@ class TaskSpreadsheet extends Page implements HasTable
 
     public static function canAccess(array $parameters = []): bool
     {
-        return EventResource::canViewAny();
+        $user = auth()->user();
+
+        if (! $user instanceof User || $user->church_id === null || ! EventResource::canViewAny()) {
+            return false;
+        }
+
+        app(PermissionRegistrar::class)->setPermissionsTeamId($user->church_id);
+
+        return $user->can('events.tasks_by_event');
     }
 
     public function getBreadcrumbs(): array

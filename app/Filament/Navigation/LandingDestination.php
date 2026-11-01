@@ -65,7 +65,7 @@ class LandingDestination
     private function urlFor(LandingDestinationKey $key): ?string
     {
         return match ($key) {
-            LandingDestinationKey::TasksByEvent => $this->audience->isPlanner() && TaskSpreadsheet::canAccess()
+            LandingDestinationKey::TasksByEvent => TaskSpreadsheet::canAccess()
                 ? EventResource::getUrl('task-spreadsheet')
                 : null,
             LandingDestinationKey::MySchedule => MyTasks::canAccess()

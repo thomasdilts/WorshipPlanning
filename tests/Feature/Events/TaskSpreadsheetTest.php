@@ -6,12 +6,14 @@ use App\Core\Modules\ChurchModuleManager;
 use App\Core\Tenancy\CurrentChurch;
 use App\Enums\AssignmentResponseStatus;
 use App\Enums\FieldUsage;
+use App\Filament\Resources\Events\EventResource;
 use App\Filament\Resources\Events\Pages\ListEvents;
 use App\Filament\Resources\Events\Pages\TaskSpreadsheet;
 use App\Models\Church;
 use App\Models\Event;
 use App\Models\EventTask;
 use App\Models\EventTaskResponse;
+use App\Models\Role;
 use App\Models\TaskTemplate;
 use App\Models\Team;
 use App\Models\Unavailability;
@@ -22,6 +24,7 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Carbon;
 use Livewire\Livewire;
 use PHPUnit\Framework\Attributes\DataProvider;
+use Spatie\Permission\Models\Permission;
 use Spatie\Permission\PermissionRegistrar;
 use Tests\TestCase;
 
@@ -699,5 +702,37 @@ class TaskSpreadsheetTest extends TestCase
 
         $this->assertCount(0, $component->instance()->getTableRecords());
         $this->assertSame([], $component->instance()->listRows());
+    }
+
+    public function test_tasks_by_event_page_requires_its_permission(): void
+    {
+        $role = Role::findOrCreate('Sunday Wizard', 'web');
+        $role->givePermissionTo(['events.view', 'events.update']);
+        $editor = User::factory()->create(['church_id' => $this->church->id]);
+        $editor->assignRole('Sunday Wizard');
+
+        $this->actingAs($editor)
+            ->get(EventResource::getUrl('task-spreadsheet'))
+            ->assertForbidden();
+
+        $this->actingAs($this->admin)
+            ->get(EventResource::getUrl('task-spreadsheet'))
+            ->assertOk();
+    }
+
+    public function test_existing_roles_that_edit_events_keep_tasks_by_event(): void
+    {
+        Permission::query()->where('name', 'events.tasks_by_event')->delete();
+        app(PermissionRegistrar::class)->forgetCachedPermissions();
+
+        $editorRole = Role::findOrCreate('Sunday Wizard', 'web');
+        $editorRole->givePermissionTo(['events.view', 'events.update']);
+
+        (require base_path('database/migrations/2026_11_01_062412_add_tasks_by_event_permission.php'))->up();
+        app(PermissionRegistrar::class)->forgetCachedPermissions();
+
+        $this->assertTrue($editorRole->fresh()->hasPermissionTo('events.tasks_by_event'));
+        $this->assertTrue(Role::findByName('Church Admin', 'web')->hasPermissionTo('events.tasks_by_event'));
+        $this->assertFalse(Role::findByName('Member', 'web')->hasPermissionTo('events.tasks_by_event'));
     }
 }

@@ -904,5 +904,6 @@
     "System": "System",
     "WorshipPlanner": "WorshipPlanner",
     "Every message sent in this church, to whom, and whether it arrived.": "Every message sent in this church, to whom, and whether it arrived.",
-    "View all messages": "View all messages"
+    "View all messages": "View all messages",
+    "View tasks by event": "View tasks by event"
 }

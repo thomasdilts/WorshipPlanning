@@ -103,7 +103,7 @@ class PanelNavigation
             ->icon(Heroicon::OutlinedTableCells)
             ->url(fn (): string => EventResource::getUrl('task-spreadsheet'))
             ->isActiveWhen(fn (): bool => original_request()->routeIs(TaskSpreadsheet::getRouteName()))
-            ->visible(fn (): bool => $this->audience->isPlanner() && TaskSpreadsheet::canAccess());
+            ->visible(fn (): bool => TaskSpreadsheet::canAccess());
         $services = $this->forClass(EventResource::class)
             ->isActiveWhen(fn (): bool => original_request()->routeIs(EventResource::getRouteBaseName().'.*')
                 && ! original_request()->routeIs(TaskSpreadsheet::getRouteName()));
@@ -114,7 +114,7 @@ class PanelNavigation
 
         return $this->audience->isPlanner()
             ? [$tasksByEvent, $services, $mySchedule, $availability, $myMessages, $churches]
-            : [$mySchedule, $availability, $services, $myMessages, $churches];
+            : [$mySchedule, $availability, $services, $tasksByEvent, $myMessages, $churches];
     }
 
     /**

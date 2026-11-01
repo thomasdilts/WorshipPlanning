@@ -54,6 +54,7 @@ final class PermissionLabels
             'events.create' => __('Create events'),
             'events.update' => __('Edit events'),
             'events.delete' => __('Delete events'),
+            'events.tasks_by_event' => __('View tasks by event'),
             'task_templates.view' => __('Use task templates'),
             'task_templates.manage' => __('Manage task templates'),
             'messaging.view' => __('View all messages'),
