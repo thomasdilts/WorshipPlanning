@@ -6,7 +6,6 @@ use App\Filament\Resources\Churches\ChurchResource;
 use App\Models\Church;
 use App\Models\Language;
 use App\Models\User;
-use App\Services\UserInviter;
 use App\Support\SeedsDefaultTeamTypes;
 use Database\Seeders\RolesAndPermissionsSeeder;
 use Filament\Actions\CreateAction;
@@ -24,6 +23,8 @@ class ManageChurches extends ManageRecords
 
     protected ?string $pendingAdminEmail = null;
 
+    protected ?string $pendingAdminPassword = null;
+
     public function getTitle(): string|Htmlable
     {
         return __('Churches');
@@ -31,7 +32,7 @@ class ManageChurches extends ManageRecords
 
     public function getSubheading(): string|Htmlable|null
     {
-        return __('Create a church, optionally invite its first admin, then they finish setup in the app.');
+        return __('Create a church, optionally with its first admin, then they finish setup in the app.');
     }
 
     protected function getHeaderActions(): array
@@ -46,7 +47,11 @@ class ManageChurches extends ManageRecords
                         ? trim((string) $data['admin_email'])
                         : null;
 
-                    unset($data['admin_name'], $data['admin_email']);
+                    $this->pendingAdminPassword = filled($data['admin_password'] ?? null)
+                        ? (string) $data['admin_password']
+                        : null;
+
+                    unset($data['admin_name'], $data['admin_email'], $data['admin_password']);
 
                     return $data;
                 })
@@ -56,10 +61,12 @@ class ManageChurches extends ManageRecords
 
                     $adminEmail = $this->pendingAdminEmail;
                     $adminName = $this->pendingAdminName;
+                    $adminPassword = $this->pendingAdminPassword;
                     $this->pendingAdminEmail = null;
                     $this->pendingAdminName = null;
+                    $this->pendingAdminPassword = null;
 
-                    if (! filled($adminEmail)) {
+                    if (! filled($adminEmail) || ! filled($adminPassword)) {
                         return;
                     }
 
@@ -72,7 +79,7 @@ class ManageChurches extends ManageRecords
                         'name' => $adminName,
                         'display_name' => $adminName,
                         'email' => $adminEmail,
-                        'password' => app(UserInviter::class)->randomPassword(),
+                        'password' => $adminPassword,
                         'language_id' => Language::query()->where('iso', $record->locale ?: 'en')->value('id')
                             ?? Language::query()->where('iso', 'en')->value('id'),
                     ]);
@@ -80,20 +87,11 @@ class ManageChurches extends ManageRecords
                     app(PermissionRegistrar::class)->setPermissionsTeamId($record->id);
                     $admin->syncRoles(['Church Admin']);
 
-                    try {
-                        app(UserInviter::class)->send($admin->loadMissing('church'), auth()->user());
-
-                        Notification::make()
-                            ->title(__('Church created and admin invited'))
-                            ->success()
-                            ->send();
-                    } catch (\Throwable $e) {
-                        Notification::make()
-                            ->title(__('Church created, but the admin invite failed'))
-                            ->body($e->getMessage())
-                            ->warning()
-                            ->send();
-                    }
+                    Notification::make()
+                        ->title(__('Church created with its first admin'))
+                        ->body(__('Give the admin their password yourself — no email was sent.'))
+                        ->success()
+                        ->send();
                 }),
         ];
     }

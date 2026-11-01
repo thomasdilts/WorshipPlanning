@@ -113,7 +113,7 @@ class RoleManagementTest extends TestCase
                 'name' => 'New Member',
                 'display_name' => 'Member',
                 'email' => 'member@example.test',
-                'send_invite' => true,
+                'password' => 'Chosen-Pass-2026',
                 'roles' => ['Member'],
             ])
             ->call('create')

@@ -2,20 +2,19 @@
 
 namespace Modules\Messaging\Channels;
 
-use App\Core\Modules\ChurchModuleManager;
 use App\Models\Church;
 use App\Models\User;
-use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Mail;
 use Modules\Messaging\Contracts\MessageChannel;
 use Modules\Messaging\Data\OutboundMessageData;
 use Modules\Messaging\Data\SendResult;
 use Modules\Messaging\Mail\GenericMessageMail;
+use Modules\Messaging\Support\ChurchMailer;
 
 class EmailChannel implements MessageChannel
 {
     public function __construct(
-        protected ChurchModuleManager $modules,
+        protected ChurchMailer $mailer,
     ) {}
 
     public function key(): string
@@ -30,14 +29,7 @@ class EmailChannel implements MessageChannel
 
     public function isConfigured(Church $church): bool
     {
-        if (! $this->modules->isEnabled($church, 'messaging')) {
-            return false;
-        }
-
-        $email = $this->modules->settings($church, 'messaging')['email'] ?? [];
-
-        return filled($email['host'] ?? null)
-            && filled($email['from_address'] ?? null);
+        return $this->mailer->isConfigured($church);
     }
 
     public function send(User $recipient, OutboundMessageData $message): SendResult
@@ -56,27 +48,12 @@ class EmailChannel implements MessageChannel
             return SendResult::fail($this->key(), 'Recipient has no email address.');
         }
 
-        $settings = $this->modules->settings($church, 'messaging')['email'] ?? [];
-        $password = $this->modules->decryptSecret($settings['password'] ?? null);
-
-        Config::set('mail.mailers.church_smtp', [
-            'transport' => 'smtp',
-            'host' => $settings['host'],
-            'port' => (int) ($settings['port'] ?? 587),
-            'encryption' => ($settings['encryption'] ?? 'tls') ?: null,
-            'username' => ($settings['username'] ?? null) ?: null,
-            'password' => $password ?: null,
-            'timeout' => null,
-        ]);
-
-        Config::set('mail.from', [
-            'address' => $settings['from_address'],
-            'name' => ($settings['from_name'] ?? null) ?: $church->name,
-        ]);
+        $mailerName = $this->mailer->mailerFor($church);
+        $sender = $this->mailer->senderFor($church);
 
         try {
-            Mail::mailer('church_smtp')->to($recipient->email, $recipient->display_name ?: $recipient->name)
-                ->send(new GenericMessageMail($message->subject, $message->body));
+            Mail::mailer($mailerName)->to($recipient->email, $recipient->display_name ?: $recipient->name)
+                ->send((new GenericMessageMail($message->subject, $message->body))->from($sender['address'], $sender['name']));
 
             return SendResult::ok($this->key());
         } catch (\Throwable $e) {

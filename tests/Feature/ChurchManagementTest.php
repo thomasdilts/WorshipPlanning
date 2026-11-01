@@ -11,6 +11,8 @@ use App\Support\SeedsDefaultTeamTypes;
 use Database\Seeders\LanguagesSeeder;
 use Database\Seeders\RolesAndPermissionsSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Notification;
 use Livewire\Livewire;
 use Spatie\Permission\PermissionRegistrar;
 use Tests\TestCase;
@@ -89,6 +91,37 @@ class ChurchManagementTest extends TestCase
                 'name' => $name,
             ]);
         }
+    }
+
+    public function test_first_church_admin_gets_a_password_instead_of_an_invite(): void
+    {
+        Notification::fake();
+        $this->seed(RolesAndPermissionsSeeder::class);
+        $this->actingAs(User::factory()->platformAdmin()->create());
+
+        $churchData = [
+            'name' => 'New Hope',
+            'slug' => 'new-hope',
+            'timezone' => 'Europe/Stockholm',
+            'locale' => 'en',
+            'is_active' => true,
+            'admin_name' => 'Anna Admin',
+            'admin_email' => 'anna@example.test',
+        ];
+
+        Livewire::test(ManageChurches::class)
+            ->callAction('create', data: $churchData)
+            ->assertHasActionErrors(['admin_password' => 'required']);
+
+        $this->assertDatabaseMissing('churches', ['slug' => 'new-hope']);
+
+        Livewire::test(ManageChurches::class)
+            ->callAction('create', data: [...$churchData, 'admin_password' => 'Chosen-Pass-2026'])
+            ->assertHasNoActionErrors();
+
+        $admin = User::query()->where('email', 'anna@example.test')->firstOrFail();
+        $this->assertTrue(Hash::check('Chosen-Pass-2026', $admin->password));
+        Notification::assertNothingSent();
     }
 
     public function test_platform_admin_can_update_and_delete_church(): void

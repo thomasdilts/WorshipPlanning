@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\Users\Pages;
 
+use App\Filament\Resources\Users\Schemas\UserForm;
 use App\Filament\Resources\Users\UserResource;
 use App\Services\UserInviter;
 use Filament\Notifications\Notification;
@@ -38,9 +39,9 @@ class CreateUser extends CreateRecord
 
         unset($data['ability_template_ids']);
 
-        $this->shouldSendInvite = (bool) ($this->data['send_invite'] ?? true);
+        $this->shouldSendInvite = UserForm::churchCanEmail() && (bool) ($this->data['send_invite'] ?? true);
 
-        if ($this->shouldSendInvite) {
+        if (blank($data['password'] ?? null)) {
             $data['password'] = app(UserInviter::class)->randomPassword();
         }
 
@@ -67,7 +68,7 @@ class CreateUser extends CreateRecord
 
             Notification::make()
                 ->title(__('Invite sent'))
-                ->body(__('They can set their own password from the email link.'))
+                ->body(__('They can choose their own password from the email link.'))
                 ->success()
                 ->send();
         } catch (\Throwable $e) {

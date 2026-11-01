@@ -8,14 +8,21 @@ use Illuminate\Support\Facades\Password;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
+use Modules\Messaging\Support\ChurchMailer;
 
 /**
  * Invite a person to set their own password (admin never invents one).
  *
  * Uses the same signed reset tokens as password recovery; church-scoped via the user record.
+ * Only possible when the church's email module has SMTP settings — there is no system mailer fallback.
  */
 class UserInviter
 {
+    public function canInvite(User $user): bool
+    {
+        return app(ChurchMailer::class)->isConfigured($user->church);
+    }
+
     public function randomPassword(): string
     {
         return Str::password(32);
@@ -29,6 +36,12 @@ class UserInviter
         if (blank($user->email)) {
             throw ValidationException::withMessages([
                 'email' => __('This person needs an email address before you can send an invite.'),
+            ]);
+        }
+
+        if (! $this->canInvite($user)) {
+            throw ValidationException::withMessages([
+                'email' => __('Set up the church email settings before sending invites.'),
             ]);
         }
 

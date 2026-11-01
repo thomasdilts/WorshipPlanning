@@ -7,6 +7,7 @@ use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Auth\CanResetPassword;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
+use Modules\Messaging\Support\ChurchMailer;
 
 class UserInvitationNotification extends Notification
 {
@@ -23,7 +24,7 @@ class UserInvitationNotification extends Notification
      */
     public function via(object $notifiable): array
     {
-        return ['mail'];
+        return app(ChurchMailer::class)->channelsFor($notifiable->church ?? null);
     }
 
     public function toMail(object $notifiable): MailMessage
@@ -40,12 +41,14 @@ class UserInvitationNotification extends Notification
             $mail->line(__('Invited by :name.', ['name' => $this->invitedByName]));
         }
 
-        return $mail
+        $mail
             ->action(__('Set password'), $url)
             ->line(__('This link expires in :count minutes.', [
                 'count' => (int) config('auth.passwords.'.config('auth.defaults.passwords').'.expire', 60),
             ]))
             ->line(__('If you did not expect this invitation, you can ignore this email.'));
+
+        return app(ChurchMailer::class)->applyTo($mail, $notifiable->church ?? null);
     }
 
     protected function setPasswordUrl(object $notifiable): string

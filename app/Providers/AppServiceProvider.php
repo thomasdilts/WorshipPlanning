@@ -3,6 +3,8 @@
 namespace App\Providers;
 
 use App\Http\Middleware\SetCurrentChurch;
+use App\Notifications\ChurchResetPasswordNotification;
+use Filament\Auth\Notifications\ResetPassword;
 use Illuminate\Support\ServiceProvider;
 use Livewire\Livewire;
 
@@ -10,7 +12,7 @@ class AppServiceProvider extends ServiceProvider
 {
     public function register(): void
     {
-        //
+        $this->app->bind(ResetPassword::class, ChurchResetPasswordNotification::class);
     }
 
     public function boot(): void

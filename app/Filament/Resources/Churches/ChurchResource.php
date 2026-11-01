@@ -13,12 +13,14 @@ use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
 use Filament\Resources\Resource;
 use Filament\Schemas\Components\Section;
+use Filament\Schemas\Components\Utilities\Get;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Support\Str;
+use Illuminate\Validation\Rules\Password;
 use UnitEnum;
 
 class ChurchResource extends Resource
@@ -93,7 +95,7 @@ class ChurchResource extends Resource
                     ->label(__('Active'))
                     ->default(true),
                 Section::make(__('First church admin (optional)'))
-                    ->description(__('Invite someone to set their own password and manage this church. Leave blank to add people later.'))
+                    ->description(__('A new church has no email settings yet, so no invite can be sent — give the admin this password yourself. Leave blank to add people later.'))
                     ->visibleOn('create')
                     ->schema([
                         TextInput::make('admin_name')
@@ -102,7 +104,14 @@ class ChurchResource extends Resource
                         TextInput::make('admin_email')
                             ->label(__('Admin email'))
                             ->email()
+                            ->live(onBlur: true)
                             ->maxLength(255),
+                        TextInput::make('admin_password')
+                            ->label(__('Admin password'))
+                            ->password()
+                            ->revealable()
+                            ->rule(Password::defaults())
+                            ->required(fn (Get $get): bool => filled($get('admin_email'))),
                     ]),
             ]);
     }

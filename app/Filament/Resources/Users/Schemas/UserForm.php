@@ -18,6 +18,7 @@ use Filament\Schemas\Schema;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\Rules\Password;
 use Modules\Abilities\Support\AbilitiesForm;
+use Modules\Messaging\Support\ChurchMailer;
 use Modules\Messaging\Support\MessagingAvailability;
 
 class UserForm
@@ -50,34 +51,28 @@ class UserForm
                             ->ignore($record?->getKey());
                     }),
                 Toggle::make('send_invite')
-                    ->label(__('Send invite to set their own password'))
+                    ->label(__('Email them a link to choose their own password'))
                     ->default(true)
                     ->live()
                     ->dehydrated(false)
-                    ->visibleOn('create')
-                    ->helperText(__('Recommended. They receive an email link — you do not invent a password.')),
+                    ->visible(fn (string $operation): bool => $operation === 'create' && self::churchCanEmail())
+                    ->helperText(__('Recommended. You can also set a password below; they can change it from the link.')),
                 TextInput::make('password')
                     ->password()
                     ->revealable()
                     ->rule(Password::defaults())
                     ->dehydrated(fn (?string $state): bool => filled($state))
-                    ->required(function (string $operation, Get $get): bool {
-                        if ($operation !== 'create') {
-                            return false;
-                        }
-
-                        return ! (bool) $get('send_invite');
-                    })
-                    ->visible(function (string $operation, Get $get): bool {
+                    ->required(fn (string $operation, Get $get): bool => $operation === 'create'
+                        && ! (self::churchCanEmail() && (bool) $get('send_invite')))
+                    ->helperText(function (string $operation): string {
                         if ($operation === 'edit') {
-                            return true;
+                            return __('Leave blank to keep the current password.');
                         }
 
-                        return ! (bool) $get('send_invite');
-                    })
-                    ->helperText(fn (string $operation): ?string => $operation === 'edit'
-                        ? __('Leave blank to keep the current password.')
-                        : __('Only when you are not sending an invite.')),
+                        return self::churchCanEmail()
+                            ? __('Optional when you send the email link. Required if you do not.')
+                            : __('Required. Email is not set up for this church, so no invite can be sent — give them this password yourself.');
+                    }),
                 Select::make('language_id')
                     ->label(__('app.language'))
                     ->options(fn (): array => Language::query()
@@ -136,5 +131,13 @@ class UserForm
                     ]),
                 AbilitiesForm::adminSection(),
             ]);
+    }
+
+    /**
+     * Invites and other emails can only be sent when the church's email module has SMTP settings.
+     */
+    public static function churchCanEmail(): bool
+    {
+        return app(ChurchMailer::class)->isConfigured(auth()->user()?->church);
     }
 }
