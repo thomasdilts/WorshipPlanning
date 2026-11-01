@@ -28,6 +28,16 @@ class MembersRelationManager extends RelationManager
         return __('Members');
     }
 
+    /**
+     * Anyone who can open the team sees its roster; changing it is gated by manageMembers.
+     * Without this, Filament would require the church-wide "view people" permission.
+     */
+    public static function canViewForRecord(Model $ownerRecord, string $pageClass): bool
+    {
+        return $ownerRecord instanceof Team
+            && (auth()->user()?->can('view', $ownerRecord) ?? false);
+    }
+
     public function form(Schema $schema): Schema
     {
         return $schema->components([]);

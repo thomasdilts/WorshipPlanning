@@ -5,6 +5,8 @@ namespace Tests\Feature\Teams;
 use App\Core\Modules\ChurchModuleManager;
 use App\Core\Tenancy\CurrentChurch;
 use App\Filament\Resources\Teams\Pages\CreateTeam;
+use App\Filament\Resources\Teams\Pages\ViewTeam;
+use App\Filament\Resources\Teams\RelationManagers\MembersRelationManager;
 use App\Filament\Resources\Teams\TeamResource;
 use App\Models\Church;
 use App\Models\Event;
@@ -236,6 +238,54 @@ class TeamsModuleTest extends TestCase
         );
 
         $this->assertSame(1, $result['sent'] + $result['failed']);
+    }
+
+    public function test_leader_with_member_role_can_add_remove_and_promote_members(): void
+    {
+        $leader = User::factory()->create(['church_id' => $this->church->id]);
+        $member = User::factory()->create(['church_id' => $this->church->id]);
+        $newcomer = User::factory()->create(['church_id' => $this->church->id]);
+        foreach ([$leader, $member, $newcomer] as $person) {
+            RolesAndPermissionsSeeder::assignDefaultRoles($person, 'Member');
+        }
+
+        $team = Team::factory()->create(['church_id' => $this->church->id]);
+        $team->syncRoster([$leader->id, $member->id], [$leader->id]);
+        $this->actingAs($leader);
+
+        $members = fn () => Livewire::test(MembersRelationManager::class, [
+            'ownerRecord' => $team,
+            'pageClass' => ViewTeam::class,
+        ]);
+
+        $members()->callTableAction('addMember', data: ['user_id' => $newcomer->id, 'is_leader' => false])
+            ->assertHasNoTableActionErrors();
+        $this->assertTrue($team->fresh()->isMember($newcomer));
+
+        $members()->callTableAction('toggleLeader', $member);
+        $this->assertTrue($team->fresh()->isLeader($member));
+
+        $members()->callTableAction('detach', $newcomer);
+        $this->assertFalse($team->fresh()->isMember($newcomer));
+    }
+
+    public function test_regular_member_cannot_change_the_roster(): void
+    {
+        $leader = User::factory()->create(['church_id' => $this->church->id]);
+        $member = User::factory()->create(['church_id' => $this->church->id]);
+        RolesAndPermissionsSeeder::assignDefaultRoles($member, 'Member');
+
+        $team = Team::factory()->create(['church_id' => $this->church->id]);
+        $team->syncRoster([$leader->id, $member->id], [$leader->id]);
+        $this->actingAs($member);
+
+        Livewire::test(MembersRelationManager::class, [
+            'ownerRecord' => $team,
+            'pageClass' => ViewTeam::class,
+        ])
+            ->assertTableActionHidden('addMember')
+            ->assertTableActionHidden('toggleLeader', $leader)
+            ->assertTableActionHidden('detach', $leader);
     }
 
     public function test_teams_nav_forbidden_when_module_disabled(): void
