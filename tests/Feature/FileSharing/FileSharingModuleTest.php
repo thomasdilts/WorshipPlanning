@@ -90,7 +90,7 @@ class FileSharingModuleTest extends TestCase
     public function test_team_leader_can_upload_file_on_team(): void
     {
         $leader = User::factory()->create(['church_id' => $this->church->id]);
-        RolesAndPermissionsSeeder::assignDefaultRoles($leader, 'Team Leader');
+        RolesAndPermissionsSeeder::assignDefaultRoles($leader, 'Member');
 
         $type = TeamType::factory()->create(['church_id' => $this->church->id]);
         $team = Team::factory()->create([

@@ -168,6 +168,6 @@ class UnavailabilitiesRelationManager extends RelationManager
             return true;
         }
 
-        return $user->can('teams.manage_members') && $team->isLeader($user);
+        return $team->isLeader($user);
     }
 }

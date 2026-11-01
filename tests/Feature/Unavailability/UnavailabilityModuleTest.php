@@ -197,7 +197,7 @@ class UnavailabilityModuleTest extends TestCase
 
         $type = TeamType::factory()->create(['church_id' => $church->id]);
         $leader = User::factory()->create(['church_id' => $church->id]);
-        RolesAndPermissionsSeeder::assignDefaultRoles($leader, 'Team Leader');
+        RolesAndPermissionsSeeder::assignDefaultRoles($leader, 'Member');
 
         $team = Team::factory()->create([
             'church_id' => $church->id,
@@ -226,6 +226,39 @@ class UnavailabilityModuleTest extends TestCase
             'user_id' => null,
             'note' => 'Retreat',
         ]);
+    }
+
+    public function test_team_member_sees_team_unavailability_but_cannot_change_it(): void
+    {
+        $church = Church::factory()->create();
+        $this->seed(RolesAndPermissionsSeeder::class);
+        app(ChurchModuleManager::class)->enable($church, 'unavailability');
+        app(ChurchModuleManager::class)->enable($church, 'teams');
+
+        $leader = User::factory()->create(['church_id' => $church->id]);
+        $member = User::factory()->create(['church_id' => $church->id]);
+        RolesAndPermissionsSeeder::assignDefaultRoles($member, 'Member');
+
+        $team = Team::factory()->create(['church_id' => $church->id]);
+        $team->syncRoster([$leader->id, $member->id], [$leader->id]);
+        $retreat = Unavailability::factory()->create([
+            'church_id' => $church->id,
+            'team_id' => $team->id,
+            'user_id' => null,
+        ]);
+
+        app(PermissionRegistrar::class)->setPermissionsTeamId($church->id);
+        $this->actingAs($member);
+
+        Livewire::test(UnavailabilitiesRelationManager::class, [
+            'ownerRecord' => $team,
+            'pageClass' => ViewTeam::class,
+        ])
+            ->assertCanSeeTableRecords([$retreat])
+            ->assertTableActionHidden('addUnavailability');
+
+        $this->assertFalse($member->can('update', $retreat));
+        $this->assertFalse($member->can('delete', $retreat));
     }
 
     public function test_unavailability_nav_hidden_when_module_disabled(): void

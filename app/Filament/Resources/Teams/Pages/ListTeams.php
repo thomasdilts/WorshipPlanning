@@ -38,7 +38,7 @@ class ListTeams extends ListRecords
             ->modifyQueryUsing(fn (Builder $query): Builder => $query
                 ->whereHas('members', fn (Builder $q) => $q->where('users.id', $user->id)));
 
-        if (! $user->can('teams.manage')) {
+        if (! $user->can('teams.manage') && ! $user->can('teams.view')) {
             return [
                 'mine' => $mine,
             ];

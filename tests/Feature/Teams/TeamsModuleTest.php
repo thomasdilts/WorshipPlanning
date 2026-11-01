@@ -5,6 +5,7 @@ namespace Tests\Feature\Teams;
 use App\Core\Modules\ChurchModuleManager;
 use App\Core\Tenancy\CurrentChurch;
 use App\Filament\Resources\Teams\Pages\CreateTeam;
+use App\Filament\Resources\Teams\TeamResource;
 use App\Models\Church;
 use App\Models\Event;
 use App\Models\EventTask;
@@ -66,7 +67,7 @@ class TeamsModuleTest extends TestCase
         app(TeamRosterService::class)->syncRoster($team, [$member->id], []);
     }
 
-    public function test_creating_team_assigns_leader_role(): void
+    public function test_creating_team_makes_leaders_without_giving_them_a_role(): void
     {
         $leader = User::factory()->create(['church_id' => $this->church->id]);
         $member = User::factory()->create(['church_id' => $this->church->id]);
@@ -92,7 +93,7 @@ class TeamsModuleTest extends TestCase
         $this->assertFalse($team->isLeader($member));
 
         app(PermissionRegistrar::class)->setPermissionsTeamId($this->church->id);
-        $this->assertTrue($leader->fresh()->hasRole(TeamRosterService::LEADER_ROLE));
+        $this->assertTrue($leader->fresh()->getRoleNames()->isEmpty());
     }
 
     public function test_leader_can_add_member_regular_member_cannot_edit(): void
@@ -101,7 +102,7 @@ class TeamsModuleTest extends TestCase
         $member = User::factory()->create(['church_id' => $this->church->id]);
         $newbie = User::factory()->create(['church_id' => $this->church->id]);
 
-        RolesAndPermissionsSeeder::assignDefaultRoles($leader, 'Team Leader');
+        RolesAndPermissionsSeeder::assignDefaultRoles($leader, 'Member');
         RolesAndPermissionsSeeder::assignDefaultRoles($member, 'Member');
 
         $team = Team::factory()->create(['church_id' => $this->church->id]);
@@ -110,12 +111,62 @@ class TeamsModuleTest extends TestCase
         app(PermissionRegistrar::class)->setPermissionsTeamId($this->church->id);
 
         $this->assertTrue($leader->can('manageMembers', $team));
+        $this->assertTrue($leader->can('update', $team));
+        $this->assertFalse($leader->can('delete', $team));
         $this->assertFalse($member->can('manageMembers', $team));
         $this->assertTrue($member->can('view', $team));
+        $this->assertTrue($member->can('message', $team));
         $this->assertFalse($member->can('update', $team));
+        $this->assertFalse($member->can('delete', $team));
 
         app(TeamRosterService::class)->addMember($team, $newbie);
         $this->assertTrue($team->fresh()->isMember($newbie));
+    }
+
+    public function test_leaders_only_lead_their_own_teams(): void
+    {
+        $leader = User::factory()->create(['church_id' => $this->church->id]);
+        RolesAndPermissionsSeeder::assignDefaultRoles($leader, 'Member');
+
+        $ledTeam = Team::factory()->create(['church_id' => $this->church->id]);
+        $ledTeam->syncRoster([$leader->id], [$leader->id]);
+
+        $otherTeam = Team::factory()->create(['church_id' => $this->church->id]);
+        $otherLeader = User::factory()->create(['church_id' => $this->church->id]);
+        $otherTeam->syncRoster([$otherLeader->id, $leader->id], [$otherLeader->id]);
+
+        $this->assertTrue($leader->can('manageMembers', $ledTeam));
+        $this->assertFalse($leader->can('manageMembers', $otherTeam));
+        $this->assertFalse($leader->can('update', $otherTeam));
+    }
+
+    public function test_teams_menu_shows_for_members_only_while_they_are_on_a_team(): void
+    {
+        $member = User::factory()->create(['church_id' => $this->church->id]);
+        RolesAndPermissionsSeeder::assignDefaultRoles($member, 'Member');
+        $this->actingAs($member);
+
+        $this->assertFalse(TeamResource::canViewAny());
+
+        $team = Team::factory()->create(['church_id' => $this->church->id]);
+        $team->syncRoster([$this->admin->id, $member->id], [$this->admin->id]);
+
+        $this->assertTrue(TeamResource::canViewAny());
+    }
+
+    public function test_view_all_teams_permission_shows_every_team_read_only(): void
+    {
+        $planner = User::factory()->create(['church_id' => $this->church->id]);
+        RolesAndPermissionsSeeder::assignDefaultRoles($planner, 'Event Planner');
+        $team = Team::factory()->create(['church_id' => $this->church->id]);
+        $team->syncRoster([$this->admin->id], [$this->admin->id]);
+        $this->actingAs($planner);
+
+        $this->assertTrue(TeamResource::canViewAny());
+        $this->assertTrue($planner->can('view', $team));
+        $this->assertFalse($planner->can('update', $team));
+        $this->assertFalse($planner->can('manageMembers', $team));
+        $this->assertSame([$team->id], TeamResource::getEloquentQuery()->pluck('teams.id')->all());
     }
 
     public function test_event_message_to_team_goes_to_leaders_only(): void

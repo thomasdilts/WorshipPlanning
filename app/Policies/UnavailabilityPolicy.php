@@ -54,7 +54,7 @@ class UnavailabilityPolicy
                 fn () => $user->can('unavailability.manage')
                     || $user->can('unavailability.manage_own')
                     || $user->can('teams.manage')
-                    || $user->can('teams.manage_members')
+                    || $user->leadsAnyTeam()
             );
     }
 
@@ -96,7 +96,7 @@ class UnavailabilityPolicy
                     return true;
                 }
 
-                return $user->can('teams.manage_members') && $team->isLeader($user);
+                return $team->isLeader($user);
             }
         );
     }

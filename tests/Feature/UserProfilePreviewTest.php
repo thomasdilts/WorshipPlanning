@@ -67,7 +67,6 @@ class UserProfilePreviewTest extends TestCase
     }
 
     #[TestWith(['Member'])]
-    #[TestWith(['Team Leader'])]
     public function test_preview_requires_permission_even_when_the_action_is_called_directly(string $role): void
     {
         [$church] = $this->signInAsAdmin();

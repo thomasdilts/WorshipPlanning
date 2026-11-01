@@ -18,13 +18,11 @@ class TeamPolicy
             && $this->withChurchPermissions(
                 $user,
                 function () use ($user) {
-                    if ($user->can('teams.view')
-                        || $user->can('teams.manage')
-                        || $user->can('teams.manage_members')
-                        || $user->can('teams.message')) {
+                    if ($user->can('teams.manage') || $user->can('teams.view')) {
                         return true;
                     }
 
+                    // Everyone else sees Teams only while they are on at least one team.
                     return $user->teams()
                         ->where('teams.church_id', $user->church_id)
                         ->exists();
@@ -41,7 +39,7 @@ class TeamPolicy
         return $this->withChurchPermissions(
             $user,
             function () use ($user, $team) {
-                if ($user->can('teams.manage')) {
+                if ($user->can('teams.manage') || $user->can('teams.view')) {
                     return true;
                 }
 
@@ -65,20 +63,22 @@ class TeamPolicy
 
         return $this->withChurchPermissions(
             $user,
-            function () use ($user) {
+            function () use ($user, $team) {
                 if ($user->can('teams.manage')) {
                     return true;
                 }
 
-                // Leaders may update roster only (handled separately); name/description = manage
-                return false;
+                // A team's own leaders may edit its details, whatever their role.
+                return $team->isLeader($user);
             }
         );
     }
 
     public function delete(User $user, Team $team): bool
     {
-        return $this->update($user, $team);
+        return $this->sameChurch($user, $team)
+            && $this->teamsAllowed($user)
+            && $this->withChurchPermissions($user, fn () => $user->can('teams.manage'));
     }
 
     public function manageMembers(User $user, Team $team): bool
@@ -94,7 +94,7 @@ class TeamPolicy
                     return true;
                 }
 
-                return $user->can('teams.manage_members') && $team->isLeader($user);
+                return $team->isLeader($user);
             }
         );
     }
@@ -112,11 +112,11 @@ class TeamPolicy
         return $this->withChurchPermissions(
             $user,
             function () use ($user, $team) {
-                if ($user->can('teams.manage') && $user->can('teams.message')) {
+                if ($user->can('teams.manage')) {
                     return true;
                 }
 
-                return $user->can('teams.message') && $team->isMember($user);
+                return $team->isMember($user);
             }
         );
     }

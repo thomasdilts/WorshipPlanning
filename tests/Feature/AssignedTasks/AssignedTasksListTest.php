@@ -66,7 +66,7 @@ class AssignedTasksListTest extends TestCase
             'church_id' => $church->id,
             'display_name' => 'Alex',
         ]);
-        RolesAndPermissionsSeeder::assignDefaultRoles($leader, 'Team Leader');
+        RolesAndPermissionsSeeder::assignDefaultRoles($leader, 'Member');
 
         $type = TeamType::factory()->create(['church_id' => $church->id]);
         $team = Team::factory()->create([
@@ -126,7 +126,7 @@ class AssignedTasksListTest extends TestCase
         app(CurrentChurch::class)->set($church);
 
         $leader = User::factory()->create(['church_id' => $church->id]);
-        RolesAndPermissionsSeeder::assignDefaultRoles($leader, 'Team Leader');
+        RolesAndPermissionsSeeder::assignDefaultRoles($leader, 'Member');
 
         $type = TeamType::factory()->create(['church_id' => $church->id]);
         $team = Team::factory()->create([
@@ -163,7 +163,7 @@ class AssignedTasksListTest extends TestCase
         app(CurrentChurch::class)->set($church);
 
         $leader = User::factory()->create(['church_id' => $church->id]);
-        RolesAndPermissionsSeeder::assignDefaultRoles($leader, 'Team Leader');
+        RolesAndPermissionsSeeder::assignDefaultRoles($leader, 'Member');
 
         $type = TeamType::factory()->create(['church_id' => $church->id]);
         $team = Team::factory()->create([
@@ -198,7 +198,7 @@ class AssignedTasksListTest extends TestCase
         app(CurrentChurch::class)->set($church);
 
         $leader = User::factory()->create(['church_id' => $church->id]);
-        RolesAndPermissionsSeeder::assignDefaultRoles($leader, 'Team Leader');
+        RolesAndPermissionsSeeder::assignDefaultRoles($leader, 'Member');
 
         $type = TeamType::factory()->create(['church_id' => $church->id]);
         $team = Team::factory()->create([

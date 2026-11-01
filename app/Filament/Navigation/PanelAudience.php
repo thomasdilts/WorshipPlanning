@@ -23,11 +23,12 @@ class PanelAudience
     }
 
     /**
-     * A planner edits services or manages team members; everyone else is a volunteer with personal commitments.
+     * A planner edits services or leads a team; everyone else is a volunteer with personal commitments.
      */
     public function isPlanner(): bool
     {
-        return $this->hasAnyChurchPermission(['events.update', 'teams.manage_members']);
+        return $this->hasAnyChurchPermission(['events.update'])
+            || $this->user()?->leadsAnyTeam() === true;
     }
 
     /**

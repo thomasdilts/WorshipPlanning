@@ -35,7 +35,6 @@
     "Add file": "Lägg till fil",
     "Add from template": "Lägg till från mall",
     "Add member": "Lägg till medlem",
-    "Add members to led teams": "Lägg till medlemmar i ledda team",
     "Add message": "Lägg till meddelande",
     "Add message for this event": "Lägg till meddelande för detta evenemang",
     "Add passage": "Lägg till ställe",
@@ -220,7 +219,6 @@
     "Events from today onward appear here once they have person/team tasks.": "Evenemang från och med idag visas här när de har person-/teamuppgifter.",
     "Events ≤": "Evenemang ≤",
     "Events ≥": "Evenemang ≥",
-    "Every team needs at least one leader. Leaders can add members and message the team.": "Varje team behöver minst en ledare. Ledare kan lägga till medlemmar och meddela teamet.",
     "Example: Sound tech, Worship leader, Greeter": "Exempel: Ljudtekniker, Lovsångsledare, Värd",
     "Examples: Music team, Prayer team, Greeter team": "Exempel: Musikteam, Bönteam, Värdteam",
     "Expected users": "Förväntat antal användare",
@@ -414,7 +412,6 @@
     "Number of weeks to copy to": "Antal veckor att kopiera till",
     "Off = save as draft; you can send later from the list.": "Av = spara som utkast; du kan skicka senare från listan.",
     "On for this church": "På för denna församling",
-    "One or more. Leaders get the Team Leader role.": "En eller flera. Ledare får rollen Teamledare.",
     "One service is enough to try the planner.": "En gudstjänst räcker för att testa planeraren.",
     "Only teams of this type can be assigned on the service order.": "Endast team av denna typ kan tilldelas i gudstjänstordningen.",
     "Only templates with Person set to Optional or Required are listed.": "Endast mallar där Person är Valfri eller Obligatorisk visas.",
@@ -697,7 +694,6 @@
     "View song list": "Visa sånglista",
     "View song usage statistics": "Visa sånganvändningsstatistik",
     "View task": "Visa uppgift",
-    "View teams": "Visa team",
     "View unavailability": "Visa otillgänglighet",
     "View users": "Visa användare",
     "View/edit others’ abilities": "Visa/redigera andras förmågor",
@@ -899,5 +895,8 @@
     "Admin password": "Administratörens lösenord",
     "Church created with its first admin": "Kyrkan skapad med sin första administratör",
     "Give the admin their password yourself — no email was sent.": "Ge administratören lösenordet själv — inget mejl skickades.",
-    "Create a church, optionally with its first admin, then they finish setup in the app.": "Skapa en kyrka, eventuellt med dess första administratör, som sedan slutför inställningarna i appen."
+    "Create a church, optionally with its first admin, then they finish setup in the app.": "Skapa en kyrka, eventuellt med dess första administratör, som sedan slutför inställningarna i appen.",
+    "View all teams": "Visa alla team",
+    "Every team needs at least one leader. Leaders run their team: members, leaders, availability and files.": "Varje team behöver minst en ledare. Ledare sköter sitt team: medlemmar, ledare, tillgänglighet och filer.",
+    "One or more. Leading a team gives these powers for that team — no special role is needed.": "En eller flera. Att leda ett team ger dessa befogenheter för det teamet — ingen särskild roll behövs."
 }

@@ -35,7 +35,6 @@
     "Add file": "Add file",
     "Add from template": "Add from template",
     "Add member": "Add member",
-    "Add members to led teams": "Add members to led teams",
     "Add message": "Add message",
     "Add message for this event": "Add message for this event",
     "Add passage": "Add passage",
@@ -220,7 +219,6 @@
     "Events from today onward appear here once they have person/team tasks.": "Events from today onward appear here once they have person/team tasks.",
     "Events ≤": "Events ≤",
     "Events ≥": "Events ≥",
-    "Every team needs at least one leader. Leaders can add members and message the team.": "Every team needs at least one leader. Leaders can add members and message the team.",
     "Example: Sound tech, Worship leader, Greeter": "Example: Sound tech, Worship leader, Greeter",
     "Examples: Music team, Prayer team, Greeter team": "Examples: Music team, Prayer team, Greeter team",
     "Expected users": "Expected users",
@@ -414,7 +412,6 @@
     "Number of weeks to copy to": "Number of weeks to copy to",
     "Off = save as draft; you can send later from the list.": "Off = save as draft; you can send later from the list.",
     "On for this church": "On for this church",
-    "One or more. Leaders get the Team Leader role.": "One or more. Leaders get the Team Leader role.",
     "One service is enough to try the planner.": "One service is enough to try the planner.",
     "Only teams of this type can be assigned on the service order.": "Only teams of this type can be assigned on the service order.",
     "Only templates with Person set to Optional or Required are listed.": "Only templates with Person set to Optional or Required are listed.",
@@ -697,7 +694,6 @@
     "View song list": "View song list",
     "View song usage statistics": "View song usage statistics",
     "View task": "View task",
-    "View teams": "View teams",
     "View unavailability": "View unavailability",
     "View users": "View users",
     "View/edit others’ abilities": "View/edit others’ abilities",
@@ -899,5 +895,8 @@
     "Admin password": "Admin password",
     "Church created with its first admin": "Church created with its first admin",
     "Give the admin their password yourself — no email was sent.": "Give the admin their password yourself — no email was sent.",
-    "Create a church, optionally with its first admin, then they finish setup in the app.": "Create a church, optionally with its first admin, then they finish setup in the app."
+    "Create a church, optionally with its first admin, then they finish setup in the app.": "Create a church, optionally with its first admin, then they finish setup in the app.",
+    "View all teams": "View all teams",
+    "Every team needs at least one leader. Leaders run their team: members, leaders, availability and files.": "Every team needs at least one leader. Leaders run their team: members, leaders, availability and files.",
+    "One or more. Leading a team gives these powers for that team — no special role is needed.": "One or more. Leading a team gives these powers for that team — no special role is needed."
 }

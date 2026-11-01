@@ -2,16 +2,12 @@
 
 namespace Modules\Teams\Services;
 
-use App\Models\Role;
 use App\Models\Team;
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
-use Spatie\Permission\PermissionRegistrar;
 
 class TeamRosterService
 {
-    public const LEADER_ROLE = 'Team Leader';
-
     /**
      * @param  list<int>  $memberIds
      * @param  list<int>  $leaderIds
@@ -21,31 +17,8 @@ class TeamRosterService
         return DB::transaction(function () use ($team, $memberIds, $leaderIds) {
             $team->syncRoster($memberIds, $leaderIds);
 
-            foreach ($leaderIds as $leaderId) {
-                $leader = User::query()->find($leaderId);
-
-                if ($leader !== null) {
-                    $this->ensureLeaderRole($leader);
-                }
-            }
-
             return $team->fresh(['members']);
         });
-    }
-
-    public function ensureLeaderRole(User $user): void
-    {
-        if ($user->church_id === null) {
-            return;
-        }
-
-        app(PermissionRegistrar::class)->setPermissionsTeamId($user->church_id);
-
-        Role::findOrCreate(self::LEADER_ROLE, 'web');
-
-        if (! $user->hasRole(self::LEADER_ROLE)) {
-            $user->assignRole(self::LEADER_ROLE);
-        }
     }
 
     public function addMember(Team $team, User $user, bool $asLeader = false): void
@@ -57,10 +30,6 @@ class TeamRosterService
         $team->members()->syncWithoutDetaching([
             $user->id => ['is_leader' => $asLeader],
         ]);
-
-        if ($asLeader) {
-            $this->ensureLeaderRole($user);
-        }
 
         if (! $team->hasLeader()) {
             throw new \InvalidArgumentException('A team must have at least one team leader.');
@@ -90,9 +59,5 @@ class TeamRosterService
         }
 
         $team->members()->updateExistingPivot($user->id, ['is_leader' => $isLeader]);
-
-        if ($isLeader) {
-            $this->ensureLeaderRole($user);
-        }
     }
 }

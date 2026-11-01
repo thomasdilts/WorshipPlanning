@@ -34,7 +34,7 @@ class SharedFilePolicy
                 $user,
                 fn () => $user->can('file_sharing.manage')
                     || $user->can('teams.manage')
-                    || $user->can('teams.manage_members')
+                    || $user->leadsAnyTeam()
             );
     }
 
@@ -68,7 +68,7 @@ class SharedFilePolicy
                     return true;
                 }
 
-                return $user->can('teams.manage_members') && $team->isLeader($user);
+                return $team->isLeader($user);
             }
         );
     }

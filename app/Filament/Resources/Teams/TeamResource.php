@@ -106,7 +106,7 @@ class TeamResource extends Resource
 
         app(PermissionRegistrar::class)->setPermissionsTeamId($churchId);
 
-        if ($user->can('teams.manage')) {
+        if ($user->can('teams.manage') || $user->can('teams.view')) {
             // Coordinators see everything; membership still floats to the top of the default sort.
             return $query
                 ->orderByRaw(

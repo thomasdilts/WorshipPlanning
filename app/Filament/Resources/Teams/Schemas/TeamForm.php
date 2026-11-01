@@ -47,7 +47,7 @@ class TeamForm
                     ->rows(2)
                     ->columnSpanFull(),
                 Section::make(__('Roster'))
-                    ->description(__('Every team needs at least one leader. Leaders can add members and message the team.'))
+                    ->description(__('Every team needs at least one leader. Leaders run their team: members, leaders, availability and files.'))
                     ->visibleOn('create')
                     ->schema([
                         Select::make('member_ids')
@@ -75,7 +75,7 @@ class TeamForm
                             ->searchable()
                             ->preload()
                             ->required()
-                            ->helperText(__('One or more. Leaders get the Team Leader role.')),
+                            ->helperText(__('One or more. Leading a team gives these powers for that team — no special role is needed.')),
                     ])
                     ->columnSpanFull(),
             ]);

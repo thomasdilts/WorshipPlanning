@@ -120,6 +120,15 @@ class User extends Authenticatable implements CanResetPasswordContract, Filament
     }
 
     /**
+     * Leading a team (not holding a role) is what grants team-leader powers.
+     */
+    public function leadsAnyTeam(): bool
+    {
+        return $this->church_id !== null
+            && $this->ledTeams()->where('teams.church_id', $this->church_id)->exists();
+    }
+
+    /**
      * Task templates this user is approved to fill as the person assignee.
      *
      * @return BelongsToMany<TaskTemplate, $this>

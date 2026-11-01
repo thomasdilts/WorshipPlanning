@@ -71,8 +71,6 @@ class RolesAndPermissionsSeeder extends Seeder
             'unavailability.manage',
             'teams.view',
             'teams.manage',
-            'teams.manage_members',
-            'teams.message',
             'pictures.view',
             'pictures.manage',
             'file_sharing.view',
@@ -108,26 +106,6 @@ class RolesAndPermissionsSeeder extends Seeder
             'abilities.manage',
         ]));
 
-        $teamLeader = Role::findOrCreate('Team Leader', 'web');
-        $teamLeader->syncPermissions($this->existingPermissions([
-            'events.view',
-            'task_templates.view',
-            'messaging.view',
-            'messaging.send',
-            'unavailability.view',
-            'unavailability.manage_own',
-            'teams.view',
-            'teams.manage_members',
-            'teams.message',
-            'pictures.view',
-            'file_sharing.view',
-            'bible_verses.view',
-            'song_list.view',
-            'song_statistics.view',
-            'abilities.view_own',
-            'abilities.edit_own',
-        ]));
-
         $member = Role::findOrCreate('Member', 'web');
         $member->syncPermissions($this->existingPermissions([
             'events.view',
@@ -135,8 +113,6 @@ class RolesAndPermissionsSeeder extends Seeder
             'messaging.view',
             'unavailability.view',
             'unavailability.manage_own',
-            'teams.view',
-            'teams.message',
             'pictures.view',
             'file_sharing.view',
             'bible_verses.view',

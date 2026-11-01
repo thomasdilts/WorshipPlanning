@@ -28,7 +28,7 @@ class PeopleDirectoryTest extends TestCase
         $sound = TaskTemplate::factory()->create(['church_id' => $church->id, 'name' => 'Sound', 'person_usage' => FieldUsage::Required]);
         $preacher = TaskTemplate::factory()->create(['church_id' => $church->id, 'name' => 'Preacher', 'person_usage' => FieldUsage::Optional]);
         $alice = $this->person($church, 'Alice', 'Member', $sound);
-        $beth = $this->person($church, 'Beth', 'Team Leader', $sound);
+        $beth = $this->person($church, 'Beth', 'Event Planner', $sound);
         $carl = $this->person($church, 'Carl', 'Member', $preacher);
         $memberRole = $alice->roles->first();
 
@@ -50,7 +50,7 @@ class PeopleDirectoryTest extends TestCase
         [$church, $admin] = $this->signInAsAdmin();
         $sound = TaskTemplate::factory()->create(['church_id' => $church->id, 'person_usage' => FieldUsage::Required]);
         $alice = $this->person($church, 'Alice', 'Member', $sound);
-        $beth = $this->person($church, 'Beth', 'Team Leader', $sound);
+        $beth = $this->person($church, 'Beth', 'Event Planner', $sound);
         $carl = User::factory()->create(['church_id' => $church->id]);
 
         Livewire::test(ListUsers::class)

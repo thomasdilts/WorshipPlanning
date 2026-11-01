@@ -29,8 +29,6 @@ class TeamsServiceProvider extends ServiceProvider
         $permissions->register('teams', [
             'teams.view',
             'teams.manage',
-            'teams.manage_members',
-            'teams.message',
         ]);
     }
 }

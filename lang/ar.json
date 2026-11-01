@@ -35,7 +35,6 @@
     "Add file": "إضافة ملف",
     "Add from template": "إضافة من قالب",
     "Add member": "إضافة عضو",
-    "Add members to led teams": "إضافة أعضاء إلى الفرق التي تقودها",
     "Add message": "إضافة رسالة",
     "Add message for this event": "إضافة رسالة لهذا الحدث",
     "Add passage": "إضافة مقطع",
@@ -220,7 +219,6 @@
     "Events from today onward appear here once they have person/team tasks.": "تظهر الأحداث من اليوم فصاعدًا هنا عندما تحتوي على مهام شخص/فريق.",
     "Events ≤": "الأحداث ≤",
     "Events ≥": "الأحداث ≥",
-    "Every team needs at least one leader. Leaders can add members and message the team.": "كل فريق يحتاج قائدًا واحدًا على الأقل. يمكن للقادة إضافة أعضاء ومراسلة الفريق.",
     "Example: Sound tech, Worship leader, Greeter": "مثال: فني صوت، قائد عبادة، مُستقبل",
     "Examples: Music team, Prayer team, Greeter team": "أمثلة: فريق موسيقى، فريق صلاة، فريق استقبال",
     "Expected users": "عدد المستخدمين المتوقع",
@@ -414,7 +412,6 @@
     "Number of weeks to copy to": "عدد الأسابيع للنسخ إليها",
     "Off = save as draft; you can send later from the list.": "إيقاف = حفظ كمسودة؛ يمكنك الإرسال لاحقًا من القائمة.",
     "On for this church": "مفعّل لهذه الكنيسة",
-    "One or more. Leaders get the Team Leader role.": "واحد أو أكثر. يحصل القادة على دور قائد الفريق.",
     "One service is enough to try the planner.": "خدمة واحدة تكفي لتجربة المخطّط.",
     "Only teams of this type can be assigned on the service order.": "يمكن تعيين فرق من هذا النوع فقط في ترتيب الخدمة.",
     "Only templates with Person set to Optional or Required are listed.": "تُعرض فقط القوالب التي يكون فيها الشخص اختياريًا أو مطلوبًا.",
@@ -697,7 +694,6 @@
     "View song list": "عرض قائمة الأغاني",
     "View song usage statistics": "عرض إحصائيات استخدام الأغاني",
     "View task": "عرض المهمة",
-    "View teams": "عرض الفرق",
     "View unavailability": "عرض عدم التوفر",
     "View users": "عرض المستخدمين",
     "View/edit others’ abilities": "عرض/تعديل قدرات الآخرين",
@@ -899,5 +895,8 @@
     "Admin password": "كلمة مرور المسؤول",
     "Church created with its first admin": "تم إنشاء الكنيسة مع أول مسؤول لها",
     "Give the admin their password yourself — no email was sent.": "أعطِ المسؤول كلمة المرور بنفسك — لم يُرسل أي بريد.",
-    "Create a church, optionally with its first admin, then they finish setup in the app.": "أنشئ كنيسة، مع أول مسؤول لها اختياريًا، ثم يُكمل الإعداد في التطبيق."
+    "Create a church, optionally with its first admin, then they finish setup in the app.": "أنشئ كنيسة، مع أول مسؤول لها اختياريًا، ثم يُكمل الإعداد في التطبيق.",
+    "View all teams": "عرض كل الفرق",
+    "Every team needs at least one leader. Leaders run their team: members, leaders, availability and files.": "يحتاج كل فريق إلى قائد واحد على الأقل. يدير القادة فريقهم: الأعضاء والقادة والتوفر والملفات.",
+    "One or more. Leading a team gives these powers for that team — no special role is needed.": "واحد أو أكثر. قيادة فريق تمنح هذه الصلاحيات لذلك الفريق — لا حاجة لدور خاص."
 }
