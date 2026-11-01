@@ -38,9 +38,7 @@ final class MessagePreferenceRule
             }
 
             $person = $recipient();
-            $alreadyConfirmed = self::CONFIRMED_SESSION_KEY.'.'.sha1(implode('|', [
-                $person->getKey(), $chosen->value, PhoneNumber::toMsisdn($person->phone), $person->email, $person->ntfy_topic,
-            ]));
+            $alreadyConfirmed = self::confirmationKey($person, $chosen);
 
             if (session()->has($alreadyConfirmed)) {
                 return;
@@ -70,6 +68,16 @@ final class MessagePreferenceRule
                 'error' => $result->error,
             ]));
         };
+    }
+
+    /**
+     * Session key marking that a confirmation reached this person by this channel with these details.
+     */
+    public static function confirmationKey(User $person, MessagePreference $preference): string
+    {
+        return self::CONFIRMED_SESSION_KEY.'.'.sha1(implode('|', [
+            $person->getKey(), $preference->value, PhoneNumber::toMsisdn($person->phone), $person->email, $person->ntfy_topic,
+        ]));
     }
 
     /**

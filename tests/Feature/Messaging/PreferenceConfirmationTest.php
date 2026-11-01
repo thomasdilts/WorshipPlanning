@@ -15,9 +15,11 @@ use App\Models\MessageTemplate;
 use App\Models\User;
 use Database\Seeders\LanguagesSeeder;
 use Database\Seeders\RolesAndPermissionsSeeder;
+use Filament\Actions\Testing\TestAction;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\RateLimiter;
 use Livewire\Livewire;
 use Modules\Messaging\Mail\GenericMessageMail;
 use Modules\Messaging\Support\MessagingAvailability;
@@ -226,6 +228,60 @@ class PreferenceConfirmationTest extends TestCase
 
         $this->assertSame(MessagePreference::Email, $this->user->fresh()->message_preference);
         Mail::assertNothingSent();
+    }
+
+    public function test_resend_test_message_sends_the_confirmation_again_to_the_details_in_the_form(): void
+    {
+        Http::fake(['api.ip1sms.com/*' => Http::response(['id' => 'batch-1'], 200)]);
+        $this->user->update(['message_preference' => MessagePreference::Sms]);
+
+        Livewire::test(EditProfile::class)
+            ->fillForm(['phone' => '070-999 88 77'])
+            ->callAction(TestAction::make('resendPreferenceTestMessage')->schemaComponent('preferenceTestMessage'))
+            ->assertNotified('Test message sent by SMS');
+
+        Http::assertSentCount(1);
+        Http::assertSent(fn ($request): bool => $request['recipients'] === ['46709998877']);
+        $this->assertSame('070-123 45 67', $this->user->fresh()->phone);
+    }
+
+    public function test_resend_test_message_after_choosing_a_new_channel_is_not_sent_again_on_save(): void
+    {
+        Http::fake(['api.ip1sms.com/*' => Http::response(['id' => 'batch-1'], 200)]);
+
+        Livewire::test(EditProfile::class)
+            ->fillForm(['message_preference' => MessagePreference::Sms->value])
+            ->callAction(TestAction::make('resendPreferenceTestMessage')->schemaComponent('preferenceTestMessage'))
+            ->call('save')
+            ->assertHasNoFormErrors();
+
+        $this->assertSame(MessagePreference::Sms, $this->user->fresh()->message_preference);
+        Http::assertSentCount(1);
+    }
+
+    public function test_resend_test_message_reports_why_it_failed(): void
+    {
+        Http::fake(['api.ip1sms.com/*' => Http::response(['Sender' => ['Invalid sender']], 400)]);
+        $this->user->update(['message_preference' => MessagePreference::Sms]);
+
+        Livewire::test(EditProfile::class)
+            ->callAction(TestAction::make('resendPreferenceTestMessage')->schemaComponent('preferenceTestMessage'))
+            ->assertNotified('The test message by SMS could not be sent');
+    }
+
+    public function test_resend_test_message_is_limited_per_minute(): void
+    {
+        Http::fake(['api.ip1sms.com/*' => Http::response(['id' => 'batch-1'], 200)]);
+        $this->user->update(['message_preference' => MessagePreference::Sms]);
+        RateLimiter::clear('preference-test:'.$this->user->id);
+
+        $component = Livewire::test(EditProfile::class);
+
+        foreach (range(1, 4) as $attempt) {
+            $component->callAction(TestAction::make('resendPreferenceTestMessage')->schemaComponent('preferenceTestMessage'));
+        }
+
+        Http::assertSentCount(3);
     }
 
     public function test_saving_without_changing_the_preference_sends_nothing(): void

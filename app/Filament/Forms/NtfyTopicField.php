@@ -27,14 +27,35 @@ class NtfyTopicField
 
     public const RANDOM_LENGTH = 20;
 
+    public const APP_STORE_URL = 'https://apps.apple.com/app/ntfy/id1625396347';
+
+    public const GOOGLE_PLAY_URL = 'https://play.google.com/store/apps/details?id=io.heckel.ntfy';
+
     /**
-     * The warning on which server to use in the ntfy app, followed by the topic field.
+     * Links to install the ntfy app, the warning on which server to use in it, and the topic field.
      *
-     * @return array{0: Callout, 1: TextInput}
+     * @return array{0: Callout, 1: Callout, 2: TextInput}
      */
     public static function components(): array
     {
         return [
+            Callout::make(__('Get the ntfy app'))
+                ->info()
+                ->icon(Heroicon::OutlinedDevicePhoneMobile)
+                ->description(__('Install the free ntfy app on your phone to receive the messages.'))
+                ->actions([
+                    Action::make('ntfyAppStore')
+                        ->label(__('iPhone (App Store)'))
+                        ->icon(Heroicon::OutlinedArrowDownTray)
+                        ->color('gray')
+                        ->url(self::APP_STORE_URL, shouldOpenInNewTab: true),
+                    Action::make('ntfyGooglePlay')
+                        ->label(__('Android (Google Play)'))
+                        ->icon(Heroicon::OutlinedArrowDownTray)
+                        ->color('gray')
+                        ->url(self::GOOGLE_PLAY_URL, shouldOpenInNewTab: true),
+                ])
+                ->visible(fn (Get $get): bool => self::prefersNtfy($get('message_preference'))),
             Callout::make(__('Set the server in the ntfy app'))
                 ->warning()
                 ->description(fn (): HtmlString => self::serverInstructions())

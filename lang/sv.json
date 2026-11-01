@@ -936,5 +936,13 @@
     "Set the server in the ntfy app": "Ange servern i appen ntfy",
     "When you subscribe to the topic below in the ntfy app, turn on “Use another server” and enter :server. Without it the app listens on ntfy.sh and no messages arrive.": "När du prenumererar på ämnet nedan i appen ntfy, slå på ”Använd en annan server” och ange :server. Annars lyssnar appen på ntfy.sh och inga meddelanden kommer fram.",
     "In the ntfy app, subscribe to the topic below on the default server, ntfy.sh.": "Prenumerera på ämnet nedan i appen ntfy, på standardservern ntfy.sh.",
-    "Copy this topic into the ntfy app. Keep it private: anyone who knows it can read the messages. Make a new one if it has been shared.": "Kopiera det här ämnet till appen ntfy. Håll det hemligt: alla som känner till det kan läsa meddelandena. Skapa ett nytt om det har delats."
+    "Copy this topic into the ntfy app. Keep it private: anyone who knows it can read the messages. Make a new one if it has been shared.": "Kopiera det här ämnet till appen ntfy. Håll det hemligt: alla som känner till det kan läsa meddelandena. Skapa ett nytt om det har delats.",
+    "Get the ntfy app": "Skaffa ntfy-appen",
+    "Install the free ntfy app on your phone to receive the messages.": "Installera den kostnadsfria ntfy-appen på din telefon för att få meddelandena.",
+    "iPhone (App Store)": "iPhone (App Store)",
+    "Android (Google Play)": "Android (Google Play)",
+    "Resend test message": "Skicka testmeddelande igen",
+    "Too many test messages. Try again in :seconds seconds.": "För många testmeddelanden. Försök igen om :seconds sekunder.",
+    "The test message by :channel could not be sent": "Testmeddelandet via :channel kunde inte skickas",
+    "Test message sent by :channel": "Testmeddelande skickat via :channel"
 }

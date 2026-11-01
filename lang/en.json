@@ -936,5 +936,13 @@
     "Set the server in the ntfy app": "Set the server in the ntfy app",
     "When you subscribe to the topic below in the ntfy app, turn on “Use another server” and enter :server. Without it the app listens on ntfy.sh and no messages arrive.": "When you subscribe to the topic below in the ntfy app, turn on “Use another server” and enter :server. Without it the app listens on ntfy.sh and no messages arrive.",
     "In the ntfy app, subscribe to the topic below on the default server, ntfy.sh.": "In the ntfy app, subscribe to the topic below on the default server, ntfy.sh.",
-    "Copy this topic into the ntfy app. Keep it private: anyone who knows it can read the messages. Make a new one if it has been shared.": "Copy this topic into the ntfy app. Keep it private: anyone who knows it can read the messages. Make a new one if it has been shared."
+    "Copy this topic into the ntfy app. Keep it private: anyone who knows it can read the messages. Make a new one if it has been shared.": "Copy this topic into the ntfy app. Keep it private: anyone who knows it can read the messages. Make a new one if it has been shared.",
+    "Get the ntfy app": "Get the ntfy app",
+    "Install the free ntfy app on your phone to receive the messages.": "Install the free ntfy app on your phone to receive the messages.",
+    "iPhone (App Store)": "iPhone (App Store)",
+    "Android (Google Play)": "Android (Google Play)",
+    "Resend test message": "Resend test message",
+    "Too many test messages. Try again in :seconds seconds.": "Too many test messages. Try again in :seconds seconds.",
+    "The test message by :channel could not be sent": "The test message by :channel could not be sent",
+    "Test message sent by :channel": "Test message sent by :channel"
 }

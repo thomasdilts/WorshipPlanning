@@ -7,6 +7,7 @@ use App\Core\Tenancy\CurrentChurch;
 use App\Enums\FieldUsage;
 use App\Enums\MessagePreference;
 use App\Enums\PasswordLinkKind;
+use App\Filament\Forms\NtfyTopicField;
 use App\Filament\Pages\EditProfile;
 use App\Filament\Pages\NtfyMessagingSettings;
 use App\Models\Church;
@@ -153,6 +154,15 @@ class NtfyMessagingTest extends TestCase
             ->fillForm(['message_preference' => MessagePreference::Ntfy->value])
             ->assertSee('Set the server in the ntfy app')
             ->assertSeeHtml('<strong>https://ntfy.example.org</strong>');
+    }
+
+    public function test_choosing_ntfy_shows_links_to_install_the_app(): void
+    {
+        Livewire::test(EditProfile::class)
+            ->assertDontSeeHtml(NtfyTopicField::APP_STORE_URL)
+            ->fillForm(['message_preference' => MessagePreference::Ntfy->value])
+            ->assertSeeHtml(NtfyTopicField::APP_STORE_URL)
+            ->assertSeeHtml(NtfyTopicField::GOOGLE_PLAY_URL);
     }
 
     public function test_choosing_ntfy_makes_a_long_random_topic(): void

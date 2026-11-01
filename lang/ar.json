@@ -936,5 +936,13 @@
     "Set the server in the ntfy app": "اضبط الخادم في تطبيق ntfy",
     "When you subscribe to the topic below in the ntfy app, turn on “Use another server” and enter :server. Without it the app listens on ntfy.sh and no messages arrive.": "عند الاشتراك في الموضوع أدناه في تطبيق ntfy، فعّل «استخدام خادم آخر» وأدخل :server. بدون ذلك يستمع التطبيق إلى ntfy.sh ولن تصل أي رسائل.",
     "In the ntfy app, subscribe to the topic below on the default server, ntfy.sh.": "في تطبيق ntfy، اشترك في الموضوع أدناه على الخادم الافتراضي ntfy.sh.",
-    "Copy this topic into the ntfy app. Keep it private: anyone who knows it can read the messages. Make a new one if it has been shared.": "انسخ هذا الموضوع إلى تطبيق ntfy. احتفظ به سرًا: يمكن لأي شخص يعرفه قراءة الرسائل. أنشئ موضوعًا جديدًا إذا تمت مشاركته."
+    "Copy this topic into the ntfy app. Keep it private: anyone who knows it can read the messages. Make a new one if it has been shared.": "انسخ هذا الموضوع إلى تطبيق ntfy. احتفظ به سرًا: يمكن لأي شخص يعرفه قراءة الرسائل. أنشئ موضوعًا جديدًا إذا تمت مشاركته.",
+    "Get the ntfy app": "احصل على تطبيق ntfy",
+    "Install the free ntfy app on your phone to receive the messages.": "ثبّت تطبيق ntfy المجاني على هاتفك لتلقي الرسائل.",
+    "iPhone (App Store)": "iPhone (App Store)",
+    "Android (Google Play)": "Android (Google Play)",
+    "Resend test message": "إعادة إرسال رسالة الاختبار",
+    "Too many test messages. Try again in :seconds seconds.": "رسائل اختبار كثيرة جدًا. حاول مرة أخرى بعد :seconds ثانية.",
+    "The test message by :channel could not be sent": "تعذّر إرسال رسالة الاختبار عبر :channel",
+    "Test message sent by :channel": "تم إرسال رسالة الاختبار عبر :channel"
 }
