@@ -6,14 +6,15 @@ use App\Filament\Pages\BibleSettings;
 use App\Filament\Pages\ChurchSettings;
 use App\Filament\Pages\ChurchStarter;
 use App\Filament\Pages\ManageModules;
+use App\Filament\Pages\MessageHistory;
 use App\Filament\Pages\MessagingSettings;
+use App\Filament\Pages\MyMessages;
 use App\Filament\Pages\MyTasks;
 use App\Filament\Pages\MyUnavailability;
 use App\Filament\Pages\SmsMessagingSettings;
 use App\Filament\Pages\SongStatistics;
 use App\Filament\Pages\WhatsAppMessagingSettings;
 use App\Filament\Resources\Churches\ChurchResource;
-use App\Filament\Resources\EventMessages\EventMessageResource;
 use App\Filament\Resources\Events\EventResource;
 use App\Filament\Resources\Events\Pages\TaskSpreadsheet;
 use App\Filament\Resources\Languages\LanguageResource;
@@ -54,7 +55,7 @@ class PanelNavigation
                 $this->forClass(UserResource::class, __('People')),
                 $this->forClass(UnavailabilityResource::class, __('Unavailabilities'), Heroicon::OutlinedCalendarDays),
                 $this->forClass(TeamTypeResource::class, __('Team types')),
-                $this->forClass(EventMessageResource::class, __('Message history')),
+                $this->forClass(MessageHistory::class, __('Message history')),
             ]),
             $this->group(__('Library'), [
                 $this->forClass(SongResource::class, __('Songs')),
@@ -108,11 +109,12 @@ class PanelNavigation
                 && ! original_request()->routeIs(TaskSpreadsheet::getRouteName()));
         $mySchedule = $this->forClass(MyTasks::class, __('My schedule'), Heroicon::OutlinedClipboardDocumentCheck);
         $availability = $this->forClass(MyUnavailability::class, __('Availability'), Heroicon::OutlinedCalendarDateRange);
+        $myMessages = $this->forClass(MyMessages::class, __('My messages'), Heroicon::OutlinedInbox);
         $churches = $this->forClass(ChurchResource::class);
 
         return $this->audience->isPlanner()
-            ? [$tasksByEvent, $services, $mySchedule, $availability, $churches]
-            : [$mySchedule, $availability, $services, $churches];
+            ? [$tasksByEvent, $services, $mySchedule, $availability, $myMessages, $churches]
+            : [$mySchedule, $availability, $services, $myMessages, $churches];
     }
 
     /**

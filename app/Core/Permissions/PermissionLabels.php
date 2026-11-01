@@ -56,7 +56,7 @@ final class PermissionLabels
             'events.delete' => __('Delete events'),
             'task_templates.view' => __('Use task templates'),
             'task_templates.manage' => __('Manage task templates'),
-            'messaging.view' => __('View messaging'),
+            'messaging.view' => __('View all messages'),
             'messaging.templates.manage' => __('Manage message templates'),
             'messaging.settings.manage' => __('Manage messaging / email settings'),
             'messaging.send' => __('Send messages'),

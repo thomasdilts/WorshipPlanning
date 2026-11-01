@@ -6,8 +6,9 @@ use App\Core\Modules\ChurchModuleManager;
 use App\Core\Tenancy\CurrentChurch;
 use App\Filament\Pages\ChurchSettings;
 use App\Filament\Pages\ManageModules;
+use App\Filament\Pages\MessageHistory;
+use App\Filament\Pages\MyMessages;
 use App\Filament\Resources\Churches\ChurchResource;
-use App\Filament\Resources\EventMessages\EventMessageResource;
 use App\Filament\Resources\Languages\LanguageResource;
 use App\Filament\Resources\Pictures\PictureResource;
 use App\Filament\Resources\Roles\RoleResource;
@@ -118,7 +119,7 @@ class NavigationMenuTest extends TestCase
         $this->assertTrue(ChurchSettings::shouldRegisterNavigation());
         $this->assertTrue(PictureResource::shouldRegisterNavigation());
         $this->assertTrue(LanguageResource::shouldRegisterNavigation());
-        $this->assertTrue(EventMessageResource::shouldRegisterNavigation());
+        $this->assertTrue(MessageHistory::canAccess());
 
         $member = User::factory()->create(['church_id' => $this->church->id]);
         RolesAndPermissionsSeeder::assignDefaultRoles($member, 'Member');
@@ -129,7 +130,8 @@ class NavigationMenuTest extends TestCase
         $this->assertFalse(ManageModules::canAccess());
         $this->assertFalse(ChurchSettings::canAccess());
         $this->assertFalse(LanguageResource::canViewAny());
-        $this->assertTrue(EventMessageResource::canViewAny());
+        $this->assertFalse(MessageHistory::canAccess());
+        $this->assertTrue(MyMessages::canAccess());
     }
 
     public function test_top_level_nav_labels_and_groups(): void
@@ -142,12 +144,11 @@ class NavigationMenuTest extends TestCase
         $this->assertSame(__('Admin'), ChurchSettings::getNavigationGroup());
         $this->assertSame(__('Admin'), ChurchResource::getNavigationGroup());
         $this->assertSame(__('Admin'), LanguageResource::getNavigationGroup());
-        $this->assertSame(__('Admin'), EventMessageResource::getNavigationGroup());
         $this->assertSame(__('Church'), ChurchSettings::getNavigationLabel());
         $this->assertSame(__('Churches'), ChurchResource::getNavigationLabel());
         $this->assertSame(__('Team'), TeamResource::getNavigationLabel());
         $this->assertSame(__('Songs'), SongResource::getNavigationLabel());
-        $this->assertSame(__('Messages'), EventMessageResource::getNavigationLabel());
+        $this->assertSame(__('Message history'), MessageHistory::getNavigationLabel());
     }
 
     public function test_platform_admin_sees_churches_nav_not_church_settings(): void

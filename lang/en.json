@@ -686,7 +686,6 @@
     "View bible verses on tasks": "View bible verses on tasks",
     "View church settings": "View church settings",
     "View events": "View events",
-    "View messaging": "View messaging",
     "View own abilities": "View own abilities",
     "View picture library": "View picture library",
     "View roles": "View roles",
@@ -898,5 +897,12 @@
     "Create a church, optionally with its first admin, then they finish setup in the app.": "Create a church, optionally with its first admin, then they finish setup in the app.",
     "View all teams": "View all teams",
     "Every team needs at least one leader. Leaders run their team: members, leaders, availability and files.": "Every team needs at least one leader. Leaders run their team: members, leaders, availability and files.",
-    "One or more. Leading a team gives these powers for that team — no special role is needed.": "One or more. Leading a team gives these powers for that team — no special role is needed."
+    "One or more. Leading a team gives these powers for that team — no special role is needed.": "One or more. Leading a team gives these powers for that team — no special role is needed.",
+    "My messages": "My messages",
+    "Received": "Received",
+    "About": "About",
+    "System": "System",
+    "WorshipPlanner": "WorshipPlanner",
+    "Every message sent in this church, to whom, and whether it arrived.": "Every message sent in this church, to whom, and whether it arrived.",
+    "View all messages": "View all messages"
 }

@@ -40,13 +40,17 @@ class EventMessagePolicy
             );
     }
 
+    /**
+     * Only the message's author, or someone who oversees all messages, may delete it.
+     */
     public function delete(User $user, EventMessage $message): bool
     {
         return $this->sameChurch($user, $message)
             && $this->canUseMessaging($user)
             && $this->withChurchPermissions(
                 $user,
-                fn () => $user->can('messaging.send')
+                fn () => $user->can('messaging.view')
+                    || ($user->can('messaging.send') && (int) $message->created_by_user_id === (int) $user->id)
             );
     }
 

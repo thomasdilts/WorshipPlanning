@@ -686,7 +686,6 @@
     "View bible verses on tasks": "Visa bibelverser i uppgifter",
     "View church settings": "Visa församlingsinställningar",
     "View events": "Visa evenemang",
-    "View messaging": "Visa meddelanden",
     "View own abilities": "Visa egna förmågor",
     "View picture library": "Visa bildbibliotek",
     "View roles": "Visa roller",
@@ -898,5 +897,12 @@
     "Create a church, optionally with its first admin, then they finish setup in the app.": "Skapa en kyrka, eventuellt med dess första administratör, som sedan slutför inställningarna i appen.",
     "View all teams": "Visa alla team",
     "Every team needs at least one leader. Leaders run their team: members, leaders, availability and files.": "Varje team behöver minst en ledare. Ledare sköter sitt team: medlemmar, ledare, tillgänglighet och filer.",
-    "One or more. Leading a team gives these powers for that team — no special role is needed.": "En eller flera. Att leda ett team ger dessa befogenheter för det teamet — ingen särskild roll behövs."
+    "One or more. Leading a team gives these powers for that team — no special role is needed.": "En eller flera. Att leda ett team ger dessa befogenheter för det teamet — ingen särskild roll behövs.",
+    "My messages": "Mina meddelanden",
+    "Received": "Mottagna",
+    "About": "Gäller",
+    "System": "System",
+    "WorshipPlanner": "WorshipPlanner",
+    "Every message sent in this church, to whom, and whether it arrived.": "Alla meddelanden som skickats i den här kyrkan, till vem och om de kom fram.",
+    "View all messages": "Visa alla meddelanden"
 }

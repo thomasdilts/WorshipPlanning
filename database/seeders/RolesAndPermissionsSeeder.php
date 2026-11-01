@@ -92,7 +92,6 @@ class RolesAndPermissionsSeeder extends Seeder
             'events.update',
             'events.delete',
             'task_templates.view',
-            'messaging.view',
             'messaging.send',
             'unavailability.view',
             'unavailability.manage_own',
@@ -110,7 +109,6 @@ class RolesAndPermissionsSeeder extends Seeder
         $member->syncPermissions($this->existingPermissions([
             'events.view',
             'task_templates.view',
-            'messaging.view',
             'unavailability.view',
             'unavailability.manage_own',
             'pictures.view',

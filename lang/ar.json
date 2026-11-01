@@ -686,7 +686,6 @@
     "View bible verses on tasks": "عرض آيات الكتاب في المهام",
     "View church settings": "عرض إعدادات الكنيسة",
     "View events": "عرض الأحداث",
-    "View messaging": "عرض المراسلة",
     "View own abilities": "عرض القدرات الخاصة",
     "View picture library": "عرض مكتبة الصور",
     "View roles": "عرض الأدوار",
@@ -898,5 +897,12 @@
     "Create a church, optionally with its first admin, then they finish setup in the app.": "أنشئ كنيسة، مع أول مسؤول لها اختياريًا، ثم يُكمل الإعداد في التطبيق.",
     "View all teams": "عرض كل الفرق",
     "Every team needs at least one leader. Leaders run their team: members, leaders, availability and files.": "يحتاج كل فريق إلى قائد واحد على الأقل. يدير القادة فريقهم: الأعضاء والقادة والتوفر والملفات.",
-    "One or more. Leading a team gives these powers for that team — no special role is needed.": "واحد أو أكثر. قيادة فريق تمنح هذه الصلاحيات لذلك الفريق — لا حاجة لدور خاص."
+    "One or more. Leading a team gives these powers for that team — no special role is needed.": "واحد أو أكثر. قيادة فريق تمنح هذه الصلاحيات لذلك الفريق — لا حاجة لدور خاص.",
+    "My messages": "رسائلي",
+    "Received": "المستلمة",
+    "About": "بخصوص",
+    "System": "النظام",
+    "WorshipPlanner": "WorshipPlanner",
+    "Every message sent in this church, to whom, and whether it arrived.": "كل رسالة أُرسلت في هذه الكنيسة، ولمن، وهل وصلت.",
+    "View all messages": "عرض كل الرسائل"
 }
