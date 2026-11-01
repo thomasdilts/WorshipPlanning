@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Enums\MessagePreference;
 use App\Services\UserAvatarProcessor;
+use App\Support\MessagePreferenceRule;
 use Database\Factories\UserFactory;
 use Filament\Models\Contracts\FilamentUser;
 use Filament\Models\Contracts\HasAvatar;
@@ -70,6 +71,12 @@ class User extends Authenticatable implements CanResetPasswordContract, Filament
 
             if (filled($previous) && $previous !== $user->avatar_path) {
                 Storage::disk('public')->delete($previous);
+            }
+        });
+
+        static::saved(function (User $user): void {
+            if ($user->wasChanged('message_preference') || $user->wasRecentlyCreated) {
+                MessagePreferenceRule::forgetConfirmations();
             }
         });
 

@@ -79,6 +79,19 @@ class PreferenceConfirmationTest extends TestCase
             && $request['body'] === 'Hej Anna, SMS fungerar! /Anna Svensson');
     }
 
+    public function test_switching_back_to_a_channel_later_in_the_same_session_confirms_it_again(): void
+    {
+        Http::fake(['api.ip1sms.com/*' => Http::response(['id' => 'batch-1'], 200)]);
+        Mail::fake();
+
+        $this->saveProfile(['message_preference' => MessagePreference::Sms->value])->assertHasNoFormErrors();
+        $this->saveProfile(['message_preference' => MessagePreference::Email->value])->assertHasNoFormErrors();
+        $this->saveProfile(['message_preference' => MessagePreference::Sms->value])->assertHasNoFormErrors();
+
+        $this->assertSame(MessagePreference::Sms, $this->user->fresh()->message_preference);
+        Http::assertSentCount(2);
+    }
+
     public function test_sms_choice_is_refused_when_no_confirmation_template_is_chosen(): void
     {
         Http::fake();

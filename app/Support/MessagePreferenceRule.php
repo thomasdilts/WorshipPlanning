@@ -16,6 +16,12 @@ use Modules\Messaging\Support\PhoneNumber;
 final class MessagePreferenceRule
 {
     /**
+     * Session key holding the confirmations already delivered for a change that is not saved yet, so a
+     * resubmit after another field's validation error does not send the message again.
+     */
+    public const CONFIRMED_SESSION_KEY = 'preference-confirmed';
+
+    /**
      * @param  Closure(): User  $recipient  The person as entered in the form (unsaved phone, email, …).
      */
     public static function make(?MessagePreference $current, Closure $recipient, ?int $languageId): Closure
@@ -32,7 +38,7 @@ final class MessagePreferenceRule
             }
 
             $person = $recipient();
-            $alreadyConfirmed = 'preference-confirmed.'.sha1(implode('|', [
+            $alreadyConfirmed = self::CONFIRMED_SESSION_KEY.'.'.sha1(implode('|', [
                 $person->getKey(), $chosen->value, PhoneNumber::toMsisdn($person->phone), $person->email,
             ]));
 
@@ -64,5 +70,13 @@ final class MessagePreferenceRule
                 'error' => $result->error,
             ]));
         };
+    }
+
+    /**
+     * Once a preference change is saved, the next change must be confirmed again.
+     */
+    public static function forgetConfirmations(): void
+    {
+        session()->forget(self::CONFIRMED_SESSION_KEY);
     }
 }
