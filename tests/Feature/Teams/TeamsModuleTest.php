@@ -111,7 +111,7 @@ class TeamsModuleTest extends TestCase
         app(PermissionRegistrar::class)->setPermissionsTeamId($this->church->id);
 
         $this->assertTrue($leader->can('manageMembers', $team));
-        $this->assertTrue($leader->can('update', $team));
+        $this->assertFalse($leader->can('update', $team));
         $this->assertFalse($leader->can('delete', $team));
         $this->assertFalse($member->can('manageMembers', $team));
         $this->assertTrue($member->can('view', $team));

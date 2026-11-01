@@ -63,14 +63,7 @@ class TeamPolicy
 
         return $this->withChurchPermissions(
             $user,
-            function () use ($user, $team) {
-                if ($user->can('teams.manage')) {
-                    return true;
-                }
-
-                // A team's own leaders may edit its details, whatever their role.
-                return $team->isLeader($user);
-            }
+            fn () => $user->can('teams.manage')
         );
     }
 
