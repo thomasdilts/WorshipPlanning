@@ -26,12 +26,4 @@ enum PasswordLinkKind: string
     {
         return $this->value.'_template_id';
     }
-
-    /**
-     * Module setting holding the chosen Meta template name (WhatsApp settings).
-     */
-    public function whatsAppSettingKey(): string
-    {
-        return $this->value.'_whatsapp_template';
-    }
 }

@@ -912,7 +912,5 @@
     "The invite could not be sent by their preferred messaging.": "تعذّر إرسال الدعوة عبر وسيلة المراسلة المفضلة لديهم.",
     "Sent by email to set a first password (invitation) and to reset a forgotten one. Without a template the built-in email is sent.": "يُرسل بالبريد الإلكتروني لتعيين أول كلمة مرور (دعوة) ولإعادة تعيين كلمة مرور منسية. بدون قالب يُرسل البريد المدمج.",
     "Sent by SMS to people who prefer SMS, to set a first password (invitation) and to reset a forgotten one. Without a template they get the email instead.": "يُرسل عبر الرسائل القصيرة لمن يفضلونها، لتعيين أول كلمة مرور (دعوة) ولإعادة تعيين كلمة مرور منسية. بدون قالب يتلقون البريد الإلكتروني بدلاً من ذلك.",
-    "Sent by WhatsApp to people who prefer WhatsApp, to set a first password (invitation) and to reset a forgotten one. Without a template they get the email instead.": "يُرسل عبر واتساب لمن يفضلونه، لتعيين أول كلمة مرور (دعوة) ولإعادة تعيين كلمة مرور منسية. بدون قالب يتلقون البريد الإلكتروني بدلاً من ذلك.",
-    "Templates marked “Other” are listed here. Use {{password_url}} for the link.": "تظهر هنا القوالب المصنفة «أخرى». استخدم {{password_url}} للرابط.",
-    "The template’s link button gets the password link; body variables can use {{first_name}}, {{church}} and {{expire_minutes}}.": "يحصل زر الرابط في القالب على رابط كلمة المرور؛ ويمكن لمتغيرات النص استخدام {{first_name}} و{{church}} و{{expire_minutes}}."
+    "Templates marked “Other” are listed here. Use {{password_url}} for the link.": "تظهر هنا القوالب المصنفة «أخرى». استخدم {{password_url}} للرابط."
 }

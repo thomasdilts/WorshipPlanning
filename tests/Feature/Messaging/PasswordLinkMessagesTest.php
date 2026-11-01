@@ -63,31 +63,19 @@ class PasswordLinkMessagesTest extends TestCase
         app(UserInviter::class)->send($user);
     }
 
-    public function test_reset_request_goes_by_the_whatsapp_template_with_the_link_in_its_button(): void
+    public function test_reset_for_someone_who_prefers_whatsapp_goes_by_email_even_with_a_whatsapp_template_saved(): void
     {
         Http::preventStrayRequests();
-        Http::fake([
-            'graph.facebook.com/v21.0/111222333/message_templates*' => Http::response(['data' => [[
-                'name' => 'aterstall_losenord',
-                'language' => 'sv',
-                'status' => 'APPROVED',
-                'components' => [
-                    ['type' => 'BODY', 'text' => 'Hej {{first_name}}! Länken går ut om {{expire_minutes}} minuter.'],
-                    ['type' => 'BUTTONS', 'buttons' => [['type' => 'URL', 'text' => 'Återställ lösenord', 'url' => 'https://jesusislord.se/admin/password-reset/{{1}}']]],
-                ],
-            ]]]),
-            'graph.facebook.com/v21.0/123456789/messages' => Http::response(['messages' => [['id' => 'wamid.1']]]),
-        ]);
         Notification::fake();
         Filament::setCurrentPanel(Filament::getPanel('admin'));
-        $church = Church::factory()->create();
+        $church = Church::factory()->withEmailSettings()->create();
         $manager = app(ChurchModuleManager::class);
         $manager->enable($church, MessagingAvailability::MODULE_WHATSAPP, [
             'api_version' => 'v21.0',
             'access_token' => $manager->encryptSecret('wa-token'),
             'phone_number_id' => '123456789',
             'business_account_id' => '111222333',
-            PasswordLinkKind::ResetPassword->whatsAppSettingKey() => 'aterstall_losenord',
+            'reset_password_whatsapp_template' => 'aterstall_losenord',
         ]);
         $user = $this->member($church, MessagePreference::WhatsApp);
 
@@ -96,12 +84,8 @@ class PasswordLinkMessagesTest extends TestCase
             ->call('request')
             ->assertNotified();
 
-        Http::assertSent(fn ($request): bool => str_ends_with($request->url(), '/messages')
-            && $request['template']['name'] === 'aterstall_losenord'
-            && $request['template']['components'][0]['parameters'][0]['text'] === 'Anna'
-            && $request['template']['components'][1]['sub_type'] === 'url'
-            && str_starts_with($request['template']['components'][1]['parameters'][0]['text'], 'reset?'));
-        Notification::assertNotSentTo($user, ChurchResetPasswordNotification::class);
+        Http::assertNothingSent();
+        Notification::assertSentTo($user, ChurchResetPasswordNotification::class);
     }
 
     public function test_reset_falls_back_to_the_email_template_when_the_preferred_sms_has_none(): void

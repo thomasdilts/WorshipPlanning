@@ -912,7 +912,5 @@
     "The invite could not be sent by their preferred messaging.": "Inbjudan kunde inte skickas via deras föredragna meddelandetyp.",
     "Sent by email to set a first password (invitation) and to reset a forgotten one. Without a template the built-in email is sent.": "Skickas med mejl för att sätta ett första lösenord (inbjudan) och för att återställa ett glömt. Utan mall skickas det inbyggda mejlet.",
     "Sent by SMS to people who prefer SMS, to set a first password (invitation) and to reset a forgotten one. Without a template they get the email instead.": "Skickas med SMS till dem som föredrar SMS, för att sätta ett första lösenord (inbjudan) och för att återställa ett glömt. Utan mall får de mejlet i stället.",
-    "Sent by WhatsApp to people who prefer WhatsApp, to set a first password (invitation) and to reset a forgotten one. Without a template they get the email instead.": "Skickas med WhatsApp till dem som föredrar WhatsApp, för att sätta ett första lösenord (inbjudan) och för att återställa ett glömt. Utan mall får de mejlet i stället.",
-    "Templates marked “Other” are listed here. Use {{password_url}} for the link.": "Här visas mallar som är markerade ”Övrigt”. Använd {{password_url}} för länken.",
-    "The template’s link button gets the password link; body variables can use {{first_name}}, {{church}} and {{expire_minutes}}.": "Mallens länkknapp får lösenordslänken; variabler i texten kan använda {{first_name}}, {{church}} och {{expire_minutes}}."
+    "Templates marked “Other” are listed here. Use {{password_url}} for the link.": "Här visas mallar som är markerade ”Övrigt”. Använd {{password_url}} för länken."
 }

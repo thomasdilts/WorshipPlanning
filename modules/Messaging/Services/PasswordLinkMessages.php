@@ -13,7 +13,8 @@ use Modules\Messaging\Support\MessagingAvailability;
 
 /**
  * Sends a set-password or reset-password link from the templates chosen in the channel settings:
- * first by the person's preferred messaging, then by email.
+ * first by SMS when the person prefers SMS, then by email. WhatsApp never carries password links,
+ * because Meta does not accept link templates for them as Utility, so WhatsApp users get the email.
  *
  * When neither has a template chosen (or sending fails), the caller sends the built-in email instead.
  */
@@ -23,18 +24,17 @@ class PasswordLinkMessages
         protected MessageSender $sender,
         protected ChurchModuleManager $modules,
         protected TemplateMessages $templates,
-        protected MessagePlaceholders $placeholders,
         protected MessagingAvailability $availability,
     ) {}
 
     /**
-     * Whether the person's preferred SMS or WhatsApp is set up to carry this password link.
+     * Whether the person's preferred SMS is set up to carry this password link.
      */
     public function canSendByPreferredChannel(User $user, PasswordLinkKind $kind): bool
     {
         $preference = $user->message_preference ?? MessagePreference::Email;
 
-        if ($preference === MessagePreference::Email || $user->church === null) {
+        if ($preference !== MessagePreference::Sms || $user->church === null) {
             return false;
         }
 
@@ -43,7 +43,7 @@ class PasswordLinkMessages
         return $channel !== null
             && $this->availability->isChannelEnabled($user->church, $preference)
             && $channel->isConfigured($user->church)
-            && $this->hasTemplate($user, $kind, $preference);
+            && $this->messageTemplate($user, $kind, $preference) !== null;
     }
 
     /**
@@ -52,9 +52,9 @@ class PasswordLinkMessages
     public function send(User $user, PasswordLinkKind $kind, string $url, ?User $sentBy = null): bool
     {
         $preference = $user->message_preference ?? MessagePreference::Email;
-        $preferences = $preference === MessagePreference::Email
-            ? [MessagePreference::Email]
-            : [$preference, MessagePreference::Email];
+        $preferences = $preference === MessagePreference::Sms
+            ? [MessagePreference::Sms, MessagePreference::Email]
+            : [MessagePreference::Email];
 
         foreach ($preferences as $channel) {
             $message = $this->message($user, $kind, $channel, $url, $sentBy);
@@ -65,13 +65,6 @@ class PasswordLinkMessages
         }
 
         return false;
-    }
-
-    protected function hasTemplate(User $user, PasswordLinkKind $kind, MessagePreference $preference): bool
-    {
-        return $preference === MessagePreference::WhatsApp
-            ? filled($this->whatsAppTemplateName($user, $kind))
-            : $this->messageTemplate($user, $kind, $preference) !== null;
     }
 
     /**
@@ -85,23 +78,6 @@ class PasswordLinkMessages
             MessagePlaceholders::PASSWORD_URL => $url,
             MessagePlaceholders::EXPIRE_MINUTES => (string) (int) config('auth.passwords.'.config('auth.defaults.passwords').'.expire', 60),
         ];
-
-        if ($preference === MessagePreference::WhatsApp) {
-            $name = $this->whatsAppTemplateName($user, $kind);
-
-            if (blank($name)) {
-                return null;
-            }
-
-            return new OutboundMessageData(
-                subject: $kind->label(),
-                body: $kind->label(),
-                templateKey: $kind->value,
-                meta: $meta,
-                whatsappTemplate: $name,
-                placeholders: [...$this->placeholders->valuesFor($user, null, collect()), ...$values],
-            );
-        }
 
         $template = $this->messageTemplate($user, $kind, $preference);
 
@@ -124,11 +100,6 @@ class PasswordLinkMessages
             ->withoutGlobalScope('church')
             ->where('church_id', $user->church_id)
             ->find($templateId);
-    }
-
-    protected function whatsAppTemplateName(User $user, PasswordLinkKind $kind): string
-    {
-        return (string) ($this->settings($user, MessagingAvailability::MODULE_WHATSAPP)[$kind->whatsAppSettingKey()] ?? '');
     }
 
     /**
