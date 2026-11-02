@@ -19,6 +19,8 @@ class MessagingAvailability
 
     public const MODULE_NTFY = 'messaging_ntfy';
 
+    public const MODULE_TELEGRAM = 'messaging_telegram';
+
     public function __construct(
         protected ChurchModuleManager $modules,
     ) {}
@@ -30,6 +32,7 @@ class MessagingAvailability
             MessagePreference::Sms => self::MODULE_SMS,
             MessagePreference::WhatsApp => self::MODULE_WHATSAPP,
             MessagePreference::Ntfy => self::MODULE_NTFY,
+            MessagePreference::Telegram => self::MODULE_TELEGRAM,
         };
     }
 
@@ -40,6 +43,7 @@ class MessagingAvailability
             self::MODULE_SMS => MessagePreference::Sms,
             self::MODULE_WHATSAPP => MessagePreference::WhatsApp,
             self::MODULE_NTFY => MessagePreference::Ntfy,
+            self::MODULE_TELEGRAM => MessagePreference::Telegram,
             default => null,
         };
     }
@@ -49,7 +53,7 @@ class MessagingAvailability
      */
     public function messagingModuleKeys(): array
     {
-        return [self::MODULE_EMAIL, self::MODULE_SMS, self::MODULE_WHATSAPP, self::MODULE_NTFY];
+        return [self::MODULE_EMAIL, self::MODULE_SMS, self::MODULE_WHATSAPP, self::MODULE_NTFY, self::MODULE_TELEGRAM];
     }
 
     public function anyEnabled(?Church $church): bool

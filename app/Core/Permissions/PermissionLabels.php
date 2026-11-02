@@ -91,6 +91,7 @@ final class PermissionLabels
             'messaging_sms' => __('Messaging SMS'),
             'messaging_whatsapp' => __('Messaging WhatsApp'),
             'messaging_ntfy' => __('Messaging ntfy'),
+            'messaging_telegram' => __('Messaging Telegram'),
             'unavailability' => __('Unavailability'),
             'teams' => __('Teams'),
             'pictures' => __('Pictures'),

@@ -5,6 +5,7 @@ namespace App\Filament\Resources\Users\Schemas;
 use App\Enums\MessagePreference;
 use App\Filament\Forms\NtfyTopicField;
 use App\Filament\Forms\PreferenceTestMessageAction;
+use App\Filament\Forms\TelegramConnectField;
 use App\Models\Language;
 use App\Models\Role;
 use App\Models\User;
@@ -110,12 +111,13 @@ class UserForm
                         recipient: fn (): User => self::recipientFromForm($get, $record),
                         languageId: filled($get('language_id')) ? (int) $get('language_id') : null,
                     ))
-                    ->helperText(__('A short test message is sent when you change this. SMS, WhatsApp and ntfy must arrive for the choice to be saved.')),
+                    ->helperText(__('A short test message is sent when you change this. SMS, WhatsApp, ntfy and Telegram must arrive for the choice to be saved.')),
                 PreferenceTestMessageAction::make(
                     recipient: fn (Get $get, ?User $record): User => self::recipientFromForm($get, $record),
                     visible: fn (): bool => app(MessagingAvailability::class)->shouldAskPreference(auth()->user()?->church),
                 ),
                 ...NtfyTopicField::components(),
+                ...TelegramConnectField::components(person: fn (?User $record): ?User => $record, canConnect: false),
                 Section::make(__('Roles'))
                     ->description(__('Choose one or more roles. Permissions for each role are configured under Administration → Roles.'))
                     ->schema([
@@ -156,6 +158,7 @@ class UserForm
                 'email' => $get('email'),
                 'phone' => $get('phone'),
                 'ntfy_topic' => filled($get('ntfy_topic')) ? trim((string) $get('ntfy_topic')) : null,
+                'telegram_chat_id' => TelegramConnectField::connection($record)['chat_id'] ?? null,
             ]);
     }
 }

@@ -10,6 +10,7 @@ use Illuminate\Support\ServiceProvider;
 use Modules\Messaging\Channels\EmailChannel;
 use Modules\Messaging\Channels\NtfyChannel;
 use Modules\Messaging\Channels\SmsChannel;
+use Modules\Messaging\Channels\TelegramChannel;
 use Modules\Messaging\Channels\WhatsAppChannel;
 use Modules\Messaging\Contracts\MessageChannel;
 use Modules\Messaging\Services\MessageSender;
@@ -28,6 +29,7 @@ class MessagingServiceProvider extends ServiceProvider
             SmsChannel::class,
             WhatsAppChannel::class,
             NtfyChannel::class,
+            TelegramChannel::class,
         ], 'messaging.channels');
 
         $this->app->singleton(MessageSender::class, function ($app) {
@@ -80,6 +82,16 @@ class MessagingServiceProvider extends ServiceProvider
             description: 'Send invitations as free push notifications through the ntfy app. Each person subscribes to their own topic.',
             settings: [
                 'server_url' => 'string',
+            ],
+            required: false,
+        ));
+
+        $modules->register(new ModuleDefinition(
+            key: MessagingAvailability::MODULE_TELEGRAM,
+            name: 'Messaging via Telegram',
+            description: 'Send invitations as free Telegram messages from the church’s own bot. Each person connects once from their profile.',
+            settings: [
+                'bot_token' => 'string',
             ],
             required: false,
         ));

@@ -171,6 +171,11 @@ class InvitationDeliveryPreview
             $detail = __('No ntfy topic');
         }
 
+        if ($canDeliver && $channel === MessagePreference::Telegram && blank($user->telegram_chat_id)) {
+            $canDeliver = false;
+            $detail = __('Telegram not connected');
+        }
+
         return [
             'channel' => $channel->value,
             'channel_label' => $channel->label(),

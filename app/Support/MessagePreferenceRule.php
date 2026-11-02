@@ -10,7 +10,7 @@ use Modules\Messaging\Services\PreferenceConfirmation;
 use Modules\Messaging\Support\PhoneNumber;
 
 /**
- * Form validation for a changed "preferred messaging": SMS / WhatsApp / ntfy must deliver a confirmation
+ * Form validation for a changed "preferred messaging": SMS / WhatsApp / ntfy / Telegram must deliver a confirmation
  * message or the choice is refused; email is tried too, but a failure only warns the editor.
  */
 final class MessagePreferenceRule
@@ -76,7 +76,7 @@ final class MessagePreferenceRule
     public static function confirmationKey(User $person, MessagePreference $preference): string
     {
         return self::CONFIRMED_SESSION_KEY.'.'.sha1(implode('|', [
-            $person->getKey(), $preference->value, PhoneNumber::toMsisdn($person->phone), $person->email, $person->ntfy_topic,
+            $person->getKey(), $preference->value, PhoneNumber::toMsisdn($person->phone), $person->email, $person->ntfy_topic, $person->telegram_chat_id,
         ]));
     }
 

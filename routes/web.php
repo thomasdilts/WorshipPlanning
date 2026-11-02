@@ -5,6 +5,7 @@ use App\Http\Controllers\ChurchAccessRequestController;
 use App\Http\Controllers\EventPdfController;
 use App\Http\Controllers\PersonalIcsController;
 use App\Http\Controllers\StaffingSpreadsheetController;
+use App\Http\Controllers\TelegramWebhookController;
 use App\Http\Middleware\SetCurrentChurch;
 use Illuminate\Support\Facades\Route;
 
@@ -49,3 +50,8 @@ Route::middleware('throttle:30,1')
 Route::middleware('throttle:10,1')
     ->post('/r/{token}', [AssignmentResponseController::class, 'storeByToken'])
     ->name('assignments.quick.store');
+
+Route::middleware('throttle:600,1')
+    ->post('/telegram/webhook/{church}', TelegramWebhookController::class)
+    ->whereNumber('church')
+    ->name('telegram.webhook');

@@ -14,6 +14,7 @@ use App\Filament\Pages\MyUnavailability;
 use App\Filament\Pages\NtfyMessagingSettings;
 use App\Filament\Pages\SmsMessagingSettings;
 use App\Filament\Pages\SongStatistics;
+use App\Filament\Pages\TelegramMessagingSettings;
 use App\Filament\Pages\WhatsAppMessagingSettings;
 use App\Filament\Resources\Churches\ChurchResource;
 use App\Filament\Resources\Events\EventResource;
@@ -76,6 +77,7 @@ class PanelNavigation
                 $this->forClass(SmsMessagingSettings::class),
                 $this->forClass(WhatsAppMessagingSettings::class),
                 $this->forClass(NtfyMessagingSettings::class),
+                $this->forClass(TelegramMessagingSettings::class),
                 $this->forClass(BibleSettings::class),
                 $this->forClass(LanguageResource::class),
             ]),
