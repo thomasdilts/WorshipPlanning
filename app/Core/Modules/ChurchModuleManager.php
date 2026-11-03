@@ -30,6 +30,10 @@ class ChurchModuleManager
             throw new InvalidArgumentException("Module [{$key}] is always enabled.");
         }
 
+        if ($this->registry->isLocked($key)) {
+            throw new InvalidArgumentException("Module [{$key}] is turned off in the demo.");
+        }
+
         $row = ChurchModule::query()->firstOrNew([
             'church_id' => $church->id,
             'module_key' => $key,

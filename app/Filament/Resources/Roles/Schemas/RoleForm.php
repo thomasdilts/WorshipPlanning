@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\Roles\Schemas;
 
 use App\Core\Permissions\PermissionLabels;
+use App\Models\Role;
 use Filament\Forms\Components\CheckboxList;
 use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Components\Section;
@@ -26,7 +27,8 @@ class RoleForm
                         ->hiddenLabel()
                         ->options($options)
                         ->columns(2)
-                        ->bulkToggleable(),
+                        ->bulkToggleable()
+                        ->disabled(fn (?Role $record): bool => (bool) $record?->isDemoLocked()),
                 ]);
         }
 
@@ -36,9 +38,14 @@ class RoleForm
                     ->label(__('Role name'))
                     ->required()
                     ->maxLength(64)
-                    ->helperText(__('Example: Sound tech, Worship leader, Greeter')),
+                    ->disabled(fn (?Role $record): bool => (bool) $record?->isDemoLocked())
+                    ->helperText(fn (?Role $record): string => $record?->isDemoLocked()
+                        ? __('Locked in demo')
+                        : __('Example: Sound tech, Worship leader, Greeter')),
                 Section::make(__('What this role can do'))
-                    ->description(__('Permissions are defined by the app. You choose which ones this role gets.'))
+                    ->description(fn (?Role $record): string => $record?->isDemoLocked()
+                        ? __('Locked in demo')
+                        : __('Permissions are defined by the app. You choose which ones this role gets.'))
                     ->schema($permissionSections),
             ]);
     }

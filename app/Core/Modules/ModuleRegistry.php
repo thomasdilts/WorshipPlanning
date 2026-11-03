@@ -37,11 +37,19 @@ class ModuleRegistry
         return isset($this->modules[$key]);
     }
 
+    /**
+     * Locked modules count as off for every church, whatever is stored (see config/demo.php).
+     */
+    public function isLocked(string $key): bool
+    {
+        return config('demo.enabled') && in_array($key, config('demo.locked_modules', []), true);
+    }
+
     public function enabledFor(Church $church, string $key): bool
     {
         $definition = $this->get($key);
 
-        if ($definition === null) {
+        if ($definition === null || $this->isLocked($key)) {
             return false;
         }
 

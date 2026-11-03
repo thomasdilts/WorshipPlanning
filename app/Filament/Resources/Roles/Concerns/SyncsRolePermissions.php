@@ -40,6 +40,10 @@ trait SyncsRolePermissions
 
     protected function syncPendingPermissions(): void
     {
+        if ($this->record->isDemoLocked()) {
+            return;
+        }
+
         app(PermissionRegistrar::class)->setPermissionsTeamId(auth()->user()?->church_id);
 
         // Registry can be ahead of a stale permissions table (new modules). Create

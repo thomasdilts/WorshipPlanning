@@ -52,7 +52,9 @@ class UserForm
                                 $record?->church_id ?? auth()->user()?->church_id
                             ))
                             ->ignore($record?->getKey());
-                    }),
+                    })
+                    ->disabled(fn (?User $record): bool => (bool) $record?->isDemoAccount())
+                    ->helperText(fn (?User $record): ?string => $record?->isDemoAccount() ? __('Locked in demo') : null),
                 Toggle::make('send_invite')
                     ->label(__('Email them a link to choose their own password'))
                     ->default(true)
@@ -63,11 +65,16 @@ class UserForm
                 TextInput::make('password')
                     ->password()
                     ->revealable()
+                    ->disabled(fn (?User $record): bool => (bool) $record?->isDemoAccount())
                     ->rule(Password::defaults())
                     ->dehydrated(fn (?string $state): bool => filled($state))
                     ->required(fn (string $operation, Get $get): bool => $operation === 'create'
                         && ! (self::churchCanEmail() && (bool) $get('send_invite')))
-                    ->helperText(function (string $operation): string {
+                    ->helperText(function (string $operation, ?User $record): string {
+                        if ($record?->isDemoAccount()) {
+                            return __('Locked in demo');
+                        }
+
                         if ($operation === 'edit') {
                             return __('Leave blank to keep the current password.');
                         }
@@ -132,7 +139,10 @@ class UserForm
                             ->searchable()
                             ->preload()
                             ->native(false)
-                            ->helperText(__('A person can have several roles; permissions are combined.')),
+                            ->disabled(fn (?User $record): bool => (bool) $record?->isDemoLogin())
+                            ->helperText(fn (?User $record): string => $record?->isDemoLogin()
+                                ? __('Locked in demo')
+                                : __('A person can have several roles; permissions are combined.')),
                     ]),
                 AbilitiesForm::adminSection(),
             ]);

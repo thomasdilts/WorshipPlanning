@@ -47,7 +47,8 @@ class RolePolicy
 
     public function delete(User $user, Role $role): bool
     {
-        return $this->sameChurch($user, $role)
+        return ! $role->isDemoLocked()
+            && $this->sameChurch($user, $role)
             && $this->withChurchPermissions(
                 $user,
                 fn () => $user->can('roles.manage')

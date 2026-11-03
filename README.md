@@ -2,6 +2,8 @@
 
 Multi-church worship service planner. Redesign of [WorshipHHN](https://github.com/thomasdilts/WorshipHHN) on Laravel.
 
+If you want to try WorshipPlanner but need another language or anything else, Let us know. Write an issue!
+
 ## Stack
 
 - Laravel 13 + Filament 5 (app shell at `/admin`)

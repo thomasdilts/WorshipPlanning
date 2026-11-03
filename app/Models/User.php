@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Enums\MessagePreference;
+use App\Services\Demo\DemoSnapshotBuilder;
 use App\Services\UserAvatarProcessor;
 use App\Support\MessagePreferenceRule;
 use Database\Factories\UserFactory;
@@ -59,6 +60,15 @@ class User extends Authenticatable implements CanResetPasswordContract, Filament
     protected static function booted(): void
     {
         static::saving(function (User $user): void {
+            if ($user->isDemoAccount()) {
+                // Testers share these logins, so nobody may lock the others out.
+                foreach (['email', 'password'] as $attribute) {
+                    if ($user->isDirty($attribute)) {
+                        $user->{$attribute} = $user->getOriginal($attribute);
+                    }
+                }
+            }
+
             if (! $user->isDirty('avatar_path')) {
                 return;
             }
@@ -86,6 +96,37 @@ class User extends Authenticatable implements CanResetPasswordContract, Filament
                 Storage::disk('public')->delete($user->avatar_path);
             }
         });
+    }
+
+    /**
+     * Refused before Spatie's own delete listener runs, which would strip the person's roles first.
+     */
+    public function delete(): ?bool
+    {
+        if ($this->isDemoLogin()) {
+            return false;
+        }
+
+        return parent::delete();
+    }
+
+    /**
+     * A shared login on the public demo site (see config/demo.php): its email and password can't change.
+     */
+    public function isDemoAccount(): bool
+    {
+        return config('demo.enabled')
+            && $this->exists
+            && Str::endsWith(Str::lower((string) $this->getOriginal('email')), '@'.config('demo.account_domain'));
+    }
+
+    /**
+     * One of the four shared demo logins shown on the login page; it can't be deleted.
+     */
+    public function isDemoLogin(): bool
+    {
+        return $this->isDemoAccount()
+            && in_array(Str::lower((string) $this->getOriginal('email')), array_keys(DemoSnapshotBuilder::LOGINS), true);
     }
 
     public function church(): BelongsTo

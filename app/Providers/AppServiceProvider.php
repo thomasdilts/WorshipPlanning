@@ -22,5 +22,10 @@ class AppServiceProvider extends ServiceProvider
         Livewire::addPersistentMiddleware([
             SetCurrentChurch::class,
         ]);
+
+        // The public demo must never send real email, whatever MAIL_* says.
+        if (config('demo.enabled')) {
+            config(['mail.default' => 'log']);
+        }
     }
 }

@@ -89,7 +89,9 @@ class EditUser extends EditRecord
     protected function afterSave(): void
     {
         app(PermissionRegistrar::class)->setPermissionsTeamId($this->record->church_id);
-        $this->record->syncRoles($this->pendingRoles);
+        if (! $this->record->isDemoLogin()) {
+            $this->record->syncRoles($this->pendingRoles);
+        }
 
         if ($this->pendingAbilityTemplateIds !== null) {
             app(UserAbilities::class)->sync($this->record, $this->pendingAbilityTemplateIds);

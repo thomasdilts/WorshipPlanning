@@ -983,5 +983,9 @@
     "This bot sends messages from :church. Answer invitations with the buttons or links in each message.": "يرسل هذا البوت رسائل من :church. أجب على الدعوات بالأزرار أو الروابط في كل رسالة.",
     "To get messages from :church here, choose Telegram as preferred messaging in your profile and tap “Connect Telegram”.": "لتلقي رسائل :church هنا، اختر Telegram كطريقة المراسلة المفضلة في ملفك الشخصي واضغط على «ربط Telegram».",
     "This link has expired. Tap “Connect Telegram” in your profile again.": "انتهت صلاحية هذا الرابط. اضغط على «ربط Telegram» في ملفك الشخصي مرة أخرى.",
-    "Connected! You will get messages from :church here. Go back to your profile and save it to finish.": "تم الربط! ستتلقى رسائل :church هنا. ارجع إلى ملفك الشخصي واحفظه لإكمال العملية."
+    "Connected! You will get messages from :church here. Go back to your profile and save it to finish.": "تم الربط! ستتلقى رسائل :church هنا. ارجع إلى ملفك الشخصي واحفظه لإكمال العملية.",
+    "This is a demo. Everything is reset every night.": "هذه نسخة تجريبية. تتم إعادة تعيين كل شيء كل ليلة.",
+    "Sign in as admin@example.com, planner@example.com, leader@example.com or member@example.com with the password :password.": "سجّل الدخول باسم admin@example.com أو planner@example.com أو leader@example.com أو member@example.com بكلمة المرور :password.",
+    "We could not check that you are not a robot. Wait a moment and try again.": "لم نتمكن من التحقق من أنك لست روبوتًا. انتظر لحظة ثم حاول مرة أخرى.",
+    "Locked in demo": "مقفل في النسخة التجريبية"
 }

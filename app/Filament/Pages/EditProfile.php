@@ -52,9 +52,11 @@ class EditProfile extends BaseEditProfile
                     ->schema([
                         AbilitiesForm::profileSelect(),
                     ]),
-                $this->getPasswordFormComponent(),
-                $this->getPasswordConfirmationFormComponent(),
-                $this->getCurrentPasswordFormComponent(),
+                $this->getPasswordFormComponent()
+                    ->disabled($this->getUser()->isDemoAccount())
+                    ->helperText($this->getUser()->isDemoAccount() ? __('Locked in demo') : null),
+                $this->getPasswordConfirmationFormComponent()->hidden($this->getUser()->isDemoAccount()),
+                $this->getCurrentPasswordFormComponent()->hidden($this->getUser()->isDemoAccount()),
             ]);
     }
 
@@ -178,6 +180,8 @@ class EditProfile extends BaseEditProfile
             ->rule(Rule::unique('users', 'email')
                 ->where(fn ($query) => $query->where('church_id', $user->church_id))
                 ->ignore($user->getKey()))
+            ->disabled($user->isDemoAccount())
+            ->helperText($user->isDemoAccount() ? __('Locked in demo') : null)
             ->live(debounce: 500);
     }
 

@@ -983,5 +983,9 @@
     "This bot sends messages from :church. Answer invitations with the buttons or links in each message.": "Den här boten skickar meddelanden från :church. Svara på inbjudningar med knapparna eller länkarna i varje meddelande.",
     "To get messages from :church here, choose Telegram as preferred messaging in your profile and tap “Connect Telegram”.": "För att få meddelanden från :church här, välj Telegram som önskat meddelandesätt i din profil och tryck på ”Anslut Telegram”.",
     "This link has expired. Tap “Connect Telegram” in your profile again.": "Länken har gått ut. Tryck på ”Anslut Telegram” i din profil igen.",
-    "Connected! You will get messages from :church here. Go back to your profile and save it to finish.": "Ansluten! Du får meddelanden från :church här. Gå tillbaka till din profil och spara för att bli klar."
+    "Connected! You will get messages from :church here. Go back to your profile and save it to finish.": "Ansluten! Du får meddelanden från :church här. Gå tillbaka till din profil och spara för att bli klar.",
+    "This is a demo. Everything is reset every night.": "Det här är en demo. Allt återställs varje natt.",
+    "Sign in as admin@example.com, planner@example.com, leader@example.com or member@example.com with the password :password.": "Logga in som admin@example.com, planner@example.com, leader@example.com eller member@example.com med lösenordet :password.",
+    "We could not check that you are not a robot. Wait a moment and try again.": "Vi kunde inte kontrollera att du inte är en robot. Vänta en stund och försök igen.",
+    "Locked in demo": "Låst i demon"
 }

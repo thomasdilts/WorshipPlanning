@@ -90,14 +90,21 @@ class ManageModules extends Page
     public function form(Schema $schema): Schema
     {
         $sections = [];
+        $registry = app(ModuleRegistry::class);
 
-        foreach (app(ModuleRegistry::class)->all() as $definition) {
+        foreach ($registry->all() as $definition) {
+            $isLocked = $registry->isLocked($definition->key);
+
             $sections[] = Section::make(__($definition->name))
                 ->description(filled($definition->description) ? __($definition->description) : null)
                 ->schema([
                     Toggle::make("module_{$definition->key}")
-                        ->label($definition->required ? __('Always on') : __('On for this church'))
-                        ->disabled($definition->required)
+                        ->label(match (true) {
+                            $definition->required => __('Always on'),
+                            $isLocked => __('Locked in demo'),
+                            default => __('On for this church'),
+                        })
+                        ->disabled($definition->required || $isLocked)
                         ->dehydrated(true),
                 ]);
         }
@@ -130,10 +137,11 @@ class ManageModules extends Page
         abort_unless($church, 403);
 
         $manager = app(ChurchModuleManager::class);
+        $registry = app(ModuleRegistry::class);
         $data = $this->form->getState();
 
-        foreach (app(ModuleRegistry::class)->all() as $definition) {
-            if ($definition->required) {
+        foreach ($registry->all() as $definition) {
+            if ($definition->required || $registry->isLocked($definition->key)) {
                 continue;
             }
 

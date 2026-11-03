@@ -983,5 +983,9 @@
     "This bot sends messages from :church. Answer invitations with the buttons or links in each message.": "This bot sends messages from :church. Answer invitations with the buttons or links in each message.",
     "To get messages from :church here, choose Telegram as preferred messaging in your profile and tap “Connect Telegram”.": "To get messages from :church here, choose Telegram as preferred messaging in your profile and tap “Connect Telegram”.",
     "This link has expired. Tap “Connect Telegram” in your profile again.": "This link has expired. Tap “Connect Telegram” in your profile again.",
-    "Connected! You will get messages from :church here. Go back to your profile and save it to finish.": "Connected! You will get messages from :church here. Go back to your profile and save it to finish."
+    "Connected! You will get messages from :church here. Go back to your profile and save it to finish.": "Connected! You will get messages from :church here. Go back to your profile and save it to finish.",
+    "This is a demo. Everything is reset every night.": "This is a demo. Everything is reset every night.",
+    "Sign in as admin@example.com, planner@example.com, leader@example.com or member@example.com with the password :password.": "Sign in as admin@example.com, planner@example.com, leader@example.com or member@example.com with the password :password.",
+    "We could not check that you are not a robot. Wait a moment and try again.": "We could not check that you are not a robot. Wait a moment and try again.",
+    "Locked in demo": "Locked in demo"
 }

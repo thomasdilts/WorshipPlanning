@@ -45,7 +45,7 @@ class UserPolicy
 
     public function delete(User $actor, User $subject): bool
     {
-        if ($actor->is($subject)) {
+        if ($actor->is($subject) || $subject->isDemoLogin()) {
             return false;
         }
 

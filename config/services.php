@@ -41,4 +41,14 @@ return [
         'default_bible' => env('ZAMAR_BIBLE_DEFAULT', 'kjv'),
     ],
 
+    /*
+     * Cloudflare Turnstile on the login page. Off until both keys are set. Pick the
+     * "Non-interactive" widget mode for the site key in the Cloudflare dashboard.
+     */
+    'turnstile' => [
+        'site_key' => env('TURNSTILE_SITE_KEY', ''),
+        'secret_key' => env('TURNSTILE_SECRET_KEY', ''),
+        'verify_url' => 'https://challenges.cloudflare.com/turnstile/v0/siteverify',
+    ],
+
 ];
