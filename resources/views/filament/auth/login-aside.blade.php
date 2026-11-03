@@ -4,7 +4,7 @@
         {{ __('Plan the service. Staff the order.') }}
     </h2>
     <p class="wp-login-aside-body">
-        {{ __('WorshipPlanner keeps the run-of-show clear: assign people and teams, then let volunteers see what is theirs.') }}
+        {{ __('WorshipPlanning keeps the run-of-show clear: assign people and teams, then let volunteers see what is theirs.') }}
     </p>
     <ul class="wp-login-aside-list">
         <li>{{ __('Service orders that match how your church actually runs') }}</li>

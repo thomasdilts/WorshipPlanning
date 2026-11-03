@@ -36,7 +36,7 @@ class PersonalIcsExporter
     {
         $tasks = $this->upcomingTasks($user);
         $states = $this->states->forMany($tasks);
-        $product = 'WorshipPlanner';
+        $product = 'WorshipPlanning';
         $lines = [
             'BEGIN:VCALENDAR',
             'VERSION:2.0',

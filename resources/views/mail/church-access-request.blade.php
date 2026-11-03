@@ -1,7 +1,7 @@
 <x-mail::message>
 # {{ __('New church access request') }}
 
-{{ __('A church has asked for permission to use WorshipPlanner.') }}
+{{ __('A church has asked for permission to use WorshipPlanning.') }}
 
 - **{{ __('Church name') }}:** {{ $churchName }}
 - **{{ __('Address') }}:** {{ $address }}

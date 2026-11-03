@@ -40,7 +40,7 @@ class AdminPanelProvider extends PanelProvider
             ->homeUrl(fn (): ?string => app(LandingDestination::class)->url())
             ->brandName(fn (): string => app(CurrentChurch::class)->get()?->name
                 ?? auth()->user()?->church?->name
-                ?? 'WorshipPlanner')
+                ?? 'WorshipPlanning')
             ->brandLogo(function (): ?string {
                 $church = app(CurrentChurch::class)->get() ?? auth()->user()?->church;
 

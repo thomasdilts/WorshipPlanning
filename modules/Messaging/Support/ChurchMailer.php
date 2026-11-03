@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\Mail;
 use LogicException;
 
 /**
- * The only way church email leaves WorshipPlanner: through the SMTP settings in the church's
+ * The only way church email leaves WorshipPlanning: through the SMTP settings in the church's
  * email module. A church without them (or with the module off) cannot send email at all —
  * there is deliberately no fallback to the system mailer in .env.
  *

@@ -1,12 +1,12 @@
 ---
-name: worship-planner-ux
+name: worship-planning-ux
 description: >-
-  Domain UX for WorshipPlanner: multi-church service planning, teams, volunteer
+  Domain UX for WorshipPlanning: multi-church service planning, teams, volunteer
   scheduling, songs, and module-aware UI. Use when designing or implementing
   event/service-order, team, task accept/refuse, church tenancy, or module screens.
 ---
 
-# WorshipPlanner UX
+# WorshipPlanning UX
 
 Extends `ops-saas-ux`. Product context: redesign of WorshipHHN — churches plan services (events), assign people/teams to activities, manage songs, notify volunteers.
 

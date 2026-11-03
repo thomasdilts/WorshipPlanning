@@ -1,6 +1,6 @@
 {
     "$schema": "https://getcomposer.org/schema.json",
-    "name": "thomasdilts/worship-planner",
+    "name": "thomasdilts/worship-planning",
     "type": "project",
     "description": "Multi-church worship service planner (Laravel modular monolith).",
     "keywords": ["laravel", "worship", "church", "planner"],

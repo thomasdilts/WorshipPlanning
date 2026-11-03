@@ -57,7 +57,7 @@ case "${1:-}" in
         rm -f "$DB_DATABASE"
         touch "$DB_DATABASE"
         php artisan migrate:fresh --seed --seeder=SandboxSeeder --force --no-interaction
-        echo "Sandbox ready. Logins (password: password): admin@worshipplanner.test, calum@example.test, planner@example.test, anna@example.test"
+        echo "Sandbox ready. Logins (password: password): admin@worshipplanning.test, calum@example.test, planner@example.test, anna@example.test"
         ;;
     serve)
         exec php artisan serve --host=127.0.0.1 --port="$PORT"

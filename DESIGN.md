@@ -1,5 +1,5 @@
 ---
-name: WorshipPlanner
+name: WorshipPlanning
 description: Calm church-ops service planner — editorial workspace, deep teal on data
 colors:
   ground: "#ffffff"

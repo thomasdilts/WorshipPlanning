@@ -1,8 +1,8 @@
-# WorshipPlanner
+# WorshipPlanning
 
 Multi-church worship service planner. Redesign of [WorshipHHN](https://github.com/thomasdilts/WorshipHHN) on Laravel.
 
-If you want to try WorshipPlanner but need another language or anything else, Let us know. Write an issue!
+If you want to try WorshipPlanning but need another language or anything else, Let us know. Write an issue!
 
 ## Stack
 
@@ -36,7 +36,7 @@ Open `/admin`.
 
 | User | Password | Access |
 |------|----------|--------|
-| `admin@worshipplanner.test` | `password` | Platform admin (no church tenant) |
+| `admin@worshipplanning.test` | `password` | Platform admin (no church tenant) |
 | `calum@example.test` | `password` | Church Admin — events + task templates |
 | `planner@example.test` | `password` | Event Planner — events only (uses templates, cannot edit them) |
 
@@ -78,7 +78,7 @@ Register providers in `config/modules.php`. A module service provider should:
 Project skills live in `.cursor/skills/`:
 
 - `ops-saas-ux` — dense operational software rules
-- `worship-planner-ux` — domain patterns for this product
+- `worship-planning-ux` — domain patterns for this product
 
 ## License
 

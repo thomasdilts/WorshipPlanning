@@ -37,9 +37,9 @@ class RootRedirectAndAccessRequestTest extends TestCase
         Mail::fake();
 
         config([
-            'worshipplanner.church_access_request_to' => 'ops@example.test',
+            'worshipplanning.church_access_request_to' => 'ops@example.test',
             'mail.from.address' => 'noreply@example.test',
-            'mail.from.name' => 'WorshipPlanner',
+            'mail.from.name' => 'WorshipPlanning',
         ]);
 
         $this->get(route('partner.create'))->assertOk();
@@ -66,7 +66,7 @@ class RootRedirectAndAccessRequestTest extends TestCase
     {
         Mail::fake();
 
-        config(['worshipplanner.church_access_request_to' => 'ops@example.test']);
+        config(['worshipplanning.church_access_request_to' => 'ops@example.test']);
 
         $this->from(route('partner.create'))
             ->post(route('partner.store'), [

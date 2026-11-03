@@ -22,7 +22,7 @@ class DatabaseSeeder extends Seeder
         User::factory()->platformAdmin()->create([
             'name' => 'Platform Admin',
             'display_name' => 'Platform',
-            'email' => 'admin@worshipplanner.test',
+            'email' => 'admin@worshipplanning.test',
             'password' => Hash::make('password'),
         ]);
 

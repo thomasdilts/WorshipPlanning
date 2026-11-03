@@ -12,7 +12,7 @@
     <header class="border-b border-[var(--color-wp-border)] bg-[var(--color-wp-ground)]">
         <div class="mx-auto flex max-w-3xl items-center justify-between px-4 py-4 sm:px-6">
             <a href="{{ url('/admin/login') }}" class="text-sm font-semibold tracking-tight text-[var(--color-wp-accent)] hover:text-[var(--color-wp-accent-deep)]">
-                {{ config('app.name', 'WorshipPlanner') }}
+                {{ config('app.name', 'WorshipPlanning') }}
             </a>
             <a href="{{ url('/admin/login') }}" class="text-sm font-medium text-[var(--color-wp-muted)] underline-offset-4 hover:text-[var(--color-wp-accent)] hover:underline">
                 {{ __('Sign in') }}

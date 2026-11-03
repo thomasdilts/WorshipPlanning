@@ -16,7 +16,7 @@ Platform admins create and manage churches; they sit outside a single church ten
 
 ## Product Purpose
 
-WorshipPlanner is a multi-church worship service planner: congregations plan services as an ordered run-of-show, staff them with people and teams, optionally manage a song catalog, and communicate with volunteers. Success means next Sunday’s service is staffed and clear without cross-church data leaks.
+WorshipPlanning is a multi-church worship service planner: congregations plan services as an ordered run-of-show, staff them with people and teams, optionally manage a song catalog, and communicate with volunteers. Success means next Sunday’s service is staffed and clear without cross-church data leaks.
 
 ## Positioning
 
@@ -38,7 +38,7 @@ Hard `church_id` tenancy on a shared Laravel/Filament app, module switches per c
 
 ## Brand Commitments
 
-- Product name: **WorshipPlanner**.
+- Product name: **WorshipPlanning**.
 - Per-church logo upload brands the panel; product face is the service-order run-of-show.
 - Shared typeface target: **Instrument Sans** (public already; panel should match).
 - Tone: calm church-ops — not flashy marketing SaaS.
@@ -46,7 +46,7 @@ Hard `church_id` tenancy on a shared Laravel/Filament app, module switches per c
 ## Evidence on Hand
 
 - Live Filament resources/pages under `app/Filament/`.
-- Domain UX skills: `.cursor/skills/ops-saas-ux`, `.cursor/skills/worship-planner-ux`.
+- Domain UX skills: `.cursor/skills/ops-saas-ux`, `.cursor/skills/worship-planning-ux`.
 - README product map and seeded roles.
 - No marketing photography library committed for product pages.
 

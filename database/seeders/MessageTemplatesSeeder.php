@@ -155,7 +155,7 @@ class MessageTemplatesSeeder extends Seeder
                 'subject' => 'Set your password for {{church}}',
                 'body' => <<<'HTML'
                     <p>Welcome to {{church}}, {{first_name}}!</p>
-                    <p>{{message_sender}} has invited you to WorshipPlanner. Choose your own password to get started.</p>
+                    <p>{{message_sender}} has invited you to WorshipPlanning. Choose your own password to get started.</p>
                     <table border="0" cellspacing="0" cellpadding="0">
                       <tr>
                         <td align="center" bgcolor="#0F766E" style="border-radius: 6px; padding: 12px 24px;">
@@ -167,7 +167,7 @@ class MessageTemplatesSeeder extends Seeder
                     <p>If you did not expect this invitation, you can ignore this message.</p>
                     HTML,
                 'text_body' => <<<'TEXT'
-                    Welcome to {{church}}, {{first_name}}! {{message_sender}} has invited you to WorshipPlanner. Choose your password here: {{password_url}}
+                    Welcome to {{church}}, {{first_name}}! {{message_sender}} has invited you to WorshipPlanning. Choose your password here: {{password_url}}
                     The link expires in {{expire_minutes}} minutes.
                     TEXT,
                 'whatsapp_template' => 'set_password',

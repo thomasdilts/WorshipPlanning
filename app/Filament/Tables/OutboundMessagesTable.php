@@ -73,7 +73,7 @@ class OutboundMessagesTable
                     ->html()
                     ->state(fn (OutboundMessage $record): string => ($sender = $user($record->senderId()))
                         ? UserAvatar::html($sender)->toHtml()
-                        : e(__('WorshipPlanner'))) : null,
+                        : e(__('WorshipPlanning'))) : null,
                 $showRecipient ? TextColumn::make('user.display_name')
                     ->disabledClick()
                     ->label(__('To'))

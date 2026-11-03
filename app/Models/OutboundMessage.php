@@ -60,7 +60,7 @@ class OutboundMessage extends Model
     }
 
     /**
-     * Event messages, team messages, or messages WorshipPlanner sends by itself (such as confirmations).
+     * Event messages, team messages, or messages WorshipPlanning sends by itself (such as confirmations).
      */
     public function kind(): string
     {

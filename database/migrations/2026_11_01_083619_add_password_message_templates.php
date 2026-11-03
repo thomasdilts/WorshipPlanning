@@ -63,7 +63,7 @@ return new class extends Migration
                 'subject' => 'Sätt ditt lösenord för {{church}}',
                 'body' => <<<'HTML'
                     <p>Välkommen till {{church}}, {{first_name}}!</p>
-                    <p>{{message_sender}} har bjudit in dig till WorshipPlanner. Välj ditt eget lösenord för att komma igång.</p>
+                    <p>{{message_sender}} har bjudit in dig till WorshipPlanning. Välj ditt eget lösenord för att komma igång.</p>
                     <table border="0" cellspacing="0" cellpadding="0">
                       <tr>
                         <td align="center" bgcolor="#0F766E" style="border-radius: 6px; padding: 12px 24px;">
@@ -75,7 +75,7 @@ return new class extends Migration
                     <p>Om du inte väntade dig den här inbjudan kan du ignorera meddelandet.</p>
                     HTML,
                 'text_body' => <<<'TEXT'
-                    Välkommen till {{church}}, {{first_name}}! {{message_sender}} har bjudit in dig till WorshipPlanner. Välj ditt lösenord här: {{password_url}}
+                    Välkommen till {{church}}, {{first_name}}! {{message_sender}} har bjudit in dig till WorshipPlanning. Välj ditt lösenord här: {{password_url}}
                     Länken går ut om {{expire_minutes}} minuter.
                     TEXT,
                 'whatsapp_template' => 'satt_losenord',

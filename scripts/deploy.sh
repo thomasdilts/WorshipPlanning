@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-# Production deploy for WorshipPlanner (run on the server).
+# Production deploy for WorshipPlanning (run on the server).
 # Usage: ./scripts/deploy.sh
 # Override: DEPLOY_PATH=/var/www/html/WorshipPlanner BRANCH=main ./scripts/deploy.sh
 

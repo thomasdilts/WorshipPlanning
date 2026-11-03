@@ -100,7 +100,7 @@ class MessagingSettings extends Page
         return $schema
             ->components([
                 Section::make(__('Email (SMTP)'))
-                    ->description(__('How WorshipPlanner sends emails for this church.'))
+                    ->description(__('How WorshipPlanning sends emails for this church.'))
                     ->schema([
                         TextInput::make('host')->label(__('SMTP host'))->required(),
                         TextInput::make('port')->numeric()->default(587)->required(),

@@ -35,7 +35,7 @@ class UserInvitationNotification extends Notification
         $mail = (new MailMessage)
             ->subject(__('Set your password for :church', ['church' => $church]))
             ->greeting(__('Welcome to :church', ['church' => $church]))
-            ->line(__('You have been invited to WorshipPlanner. Choose your own password to get started.'));
+            ->line(__('You have been invited to WorshipPlanning. Choose your own password to get started.'));
 
         if (filled($this->invitedByName)) {
             $mail->line(__('Invited by :name.', ['name' => $this->invitedByName]));

@@ -22,7 +22,7 @@ class ChurchAccessRequestController extends Controller
 
     public function store(StoreChurchAccessRequest $request): RedirectResponse
     {
-        $to = config('worshipplanner.church_access_request_to')
+        $to = config('worshipplanning.church_access_request_to')
             ?: config('mail.from.address');
 
         abort_unless(filled($to), 503, __('Access request email is not configured.'));

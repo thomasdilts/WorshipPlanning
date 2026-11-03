@@ -6,7 +6,7 @@
 @source '../../../../modules/**/*';
 
 /*
- * WorshipPlanner panel theme.
+ * WorshipPlanning panel theme.
  *
  * One set of semantic tokens drives light and dark. Components below use the tokens only,
  * never raw colours, so a later colour change is a one-place edit.
