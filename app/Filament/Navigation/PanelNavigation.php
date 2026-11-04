@@ -5,6 +5,7 @@ namespace App\Filament\Navigation;
 use App\Filament\Pages\BibleSettings;
 use App\Filament\Pages\ChurchSettings;
 use App\Filament\Pages\ChurchStarter;
+use App\Filament\Pages\ExportChurchData;
 use App\Filament\Pages\ManageModules;
 use App\Filament\Pages\MessageHistory;
 use App\Filament\Pages\MessagingSettings;
@@ -80,6 +81,7 @@ class PanelNavigation
                 $this->forClass(TelegramMessagingSettings::class),
                 $this->forClass(BibleSettings::class),
                 $this->forClass(LanguageResource::class),
+                $this->forClass(ExportChurchData::class, __('Export church data')),
             ]),
         ];
 

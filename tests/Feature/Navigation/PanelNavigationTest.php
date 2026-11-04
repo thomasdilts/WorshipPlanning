@@ -104,6 +104,7 @@ class PanelNavigationTest extends TestCase
         $this->assertArrayHasKey('Settings', $navigation['groups']);
         $this->assertContains('Roles', $navigation['groups']['Settings']);
         $this->assertContains('Activity types', $navigation['groups']['Settings']);
+        $this->assertContains('Export church data', $navigation['groups']['Settings']);
     }
 
     public function test_tasks_by_event_follows_its_own_permission_not_role_names(): void
