@@ -29,7 +29,8 @@ class ChurchAccessRequestController extends Controller
 
         abort_unless(filled($to), 503, __('Access request email is not configured.'));
 
-        Mail::to($to)->send(new ChurchAccessRequestMail($request->validated()));
+        // Goes to the operators only, so the demo sends it for real too.
+        Mail::mailer(config('demo.operator_mailer') ?? config('mail.default'))->to($to)->send(new ChurchAccessRequestMail($request->validated()));
 
         return redirect()
             ->route('partner.create')

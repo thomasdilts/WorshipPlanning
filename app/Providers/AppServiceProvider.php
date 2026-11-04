@@ -23,9 +23,10 @@ class AppServiceProvider extends ServiceProvider
             SetCurrentChurch::class,
         ]);
 
-        // The public demo must never send real email, whatever MAIL_* says.
+        // The public demo must never send real email to testers, whatever MAIL_* says. The real
+        // mailer is kept for mail that only goes to the operators, such as church access requests.
         if (config('demo.enabled')) {
-            config(['mail.default' => 'log']);
+            config(['demo.operator_mailer' => config('mail.default'), 'mail.default' => 'log']);
         }
     }
 }

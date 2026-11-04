@@ -120,6 +120,23 @@ class RootRedirectAndAccessRequestTest extends TestCase
         Mail::assertSent(ChurchAccessRequestMail::class);
     }
 
+    public function test_demo_sends_access_requests_with_the_real_mailer_not_the_log(): void
+    {
+        Mail::fake();
+        config([
+            'demo.enabled' => true,
+            'demo.operator_mailer' => 'smtp',
+            'mail.default' => 'log',
+            'worshipplanning.church_access_request_to' => 'ops@example.test',
+        ]);
+
+        $this->post(route('partner.store'), $this->validRequest())
+            ->assertRedirect(route('partner.create'));
+
+        Mail::assertSent(ChurchAccessRequestMail::class, fn (ChurchAccessRequestMail $mail): bool => $mail->mailer === 'smtp'
+            && $mail->hasTo('ops@example.test'));
+    }
+
     private function enableTurnstile(): void
     {
         config([
