@@ -1036,5 +1036,8 @@
     "This is not a WorshipPlanning church export (the file is not a zip archive).": "هذا ليس ملف تصدير كنيسة من WorshipPlanning (الملف ليس أرشيف zip).",
     "This is not a WorshipPlanning church export (manifest.json is missing or wrong).": "هذا ليس ملف تصدير كنيسة من WorshipPlanning (ملف manifest.json مفقود أو غير صحيح).",
     "This export was made by a newer version of WorshipPlanning. Update this server first.": "تم إنشاء هذا التصدير بإصدار أحدث من WorshipPlanning. حدّث هذا الخادم أولاً.",
-    "Export all church data": "تصدير جميع بيانات الكنيسة"
+    "Export all church data": "تصدير جميع بيانات الكنيسة",
+    "Required languages": "اللغات المطلوبة",
+    "For example English, Swedish and Arabic": "مثلًا الإنجليزية والسويدية والعربية",
+    "The app’s translations are made with AI, so some wording may need adjusting. Tell us what reads wrong and we will fix it.": "ترجمات التطبيق مُنشأة بالذكاء الاصطناعي، لذا قد تحتاج بعض العبارات إلى تعديل. أخبرنا بما يبدو غير صحيح وسنصلحه."
 }

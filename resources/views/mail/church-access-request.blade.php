@@ -9,6 +9,7 @@
 - **{{ __('Telephone') }}:** {{ $phone }}
 - **{{ __('Email') }}:** {{ $email }}
 - **{{ __('Expected users') }}:** {{ $expectedUsers }}
+- **{{ __('Required languages') }}:** {{ $requiredLanguages }}
 - **{{ __('Special requests') }}:** {{ $specialRequests }}
 
 {{ __('Reply to this message to contact the applicant.') }}

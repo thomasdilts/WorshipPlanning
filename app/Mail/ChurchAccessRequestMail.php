@@ -22,6 +22,7 @@ class ChurchAccessRequestMail extends Mailable
      *     phone: string,
      *     email: string,
      *     expected_users: string,
+     *     required_languages: string,
      *     special_requests: ?string
      * }  $payload
      */
@@ -48,6 +49,7 @@ class ChurchAccessRequestMail extends Mailable
                 'phone' => $this->payload['phone'],
                 'email' => $this->payload['email'],
                 'expectedUsers' => $expected?->label() ?? $this->payload['expected_users'],
+                'requiredLanguages' => $this->payload['required_languages'],
                 'specialRequests' => $this->payload['special_requests'] ?: '—',
             ],
         );

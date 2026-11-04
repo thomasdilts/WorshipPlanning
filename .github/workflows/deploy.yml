@@ -11,53 +11,45 @@ concurrency:
 
 jobs:
   deploy:
-    name: Deploy to jesusislord.se
+    name: Deploy to login and demo.worship-planning.com
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    timeout-minutes: 30
 
     steps:
       - name: Deploy over SSH
         env:
-          DEPLOY_PATH: /var/www/WorshipPlanner
-          SSH_PRIVATE_KEY: ${{ secrets.DEPLOY_SSH_KEY }}
+          DEPLOY_HOST: 85.190.100.123
+          DEPLOY_PORT: 52222
+          DEPLOY_USER: administrator
+          SSH_PRIVATE_KEY: ${{ secrets.WORSHIP_PLANNING_DEPLOY_KEY }}
         run: |
           set -euo pipefail
 
           mkdir -p ~/.ssh
           chmod 700 ~/.ssh
-          ssh-keyscan -H jesusislord.se >> ~/.ssh/known_hosts
+          ssh-keyscan -p "$DEPLOY_PORT" -H "$DEPLOY_HOST" >> ~/.ssh/known_hosts
 
           # Write key exactly as stored in the secret (preserve newlines)
           umask 077
           printf '%s\n' "$SSH_PRIVATE_KEY" > ~/.ssh/deploy_key
-          # Normalize: ensure trailing newline, strip accidental CRLF
           sed -i 's/\r$//' ~/.ssh/deploy_key
           chmod 600 ~/.ssh/deploy_key
 
-          echo "Deploy key fingerprint:"
-          ssh-keygen -lf ~/.ssh/deploy_key
-
-          echo "Testing SSH (publickey only)..."
-          ssh -o BatchMode=yes \
-              -o IdentitiesOnly=yes \
-              -o PreferredAuthentications=publickey \
-              -o PubkeyAuthentication=yes \
-              -o PasswordAuthentication=no \
-              -o KbdInteractiveAuthentication=no \
-              -i ~/.ssh/deploy_key \
-              pingst@jesusislord.se 'echo ssh-ok; hostname; pwd'
-
+          # The live site first, then the demo, both from the same commit.
           ssh -o BatchMode=yes \
               -o IdentitiesOnly=yes \
               -o PreferredAuthentications=publickey \
               -i ~/.ssh/deploy_key \
-              pingst@jesusislord.se bash -s <<EOF
+              -p "$DEPLOY_PORT" \
+              "$DEPLOY_USER@$DEPLOY_HOST" bash -s <<'EOF'
           set -euo pipefail
-          DEPLOY_PATH='${DEPLOY_PATH}'
-          cd "\$DEPLOY_PATH"
-          git fetch --prune origin main
-          git checkout main
-          git reset --hard origin/main
-          chmod +x scripts/deploy.sh
-          SKIP_GIT=1 DEPLOY_PATH="\$DEPLOY_PATH" BRANCH=main ./scripts/deploy.sh
+          for DEPLOY_PATH in /var/www/WorshipPlanning/live /var/www/WorshipPlanning/demo; do
+              cd "$DEPLOY_PATH"
+              git fetch --prune origin main
+              git checkout main
+              git reset --hard origin/main
+              chmod +x scripts/deploy.sh
+              SKIP_GIT=1 DEPLOY_PATH="$DEPLOY_PATH" BRANCH=main WEB_USER=www-data ./scripts/deploy.sh
+          done
+          sudo -n systemctl restart worshipplanning-live-queue.service || echo "WARN: could not restart the live queue worker"
           EOF

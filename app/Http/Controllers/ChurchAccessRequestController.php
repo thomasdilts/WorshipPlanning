@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Enums\ExpectedUserRange;
 use App\Http\Requests\StoreChurchAccessRequest;
 use App\Mail\ChurchAccessRequestMail;
+use App\Services\TurnstileVerifier;
 use App\Support\CountryOptions;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Mail;
@@ -12,9 +13,10 @@ use Illuminate\View\View;
 
 class ChurchAccessRequestController extends Controller
 {
-    public function create(): View
+    public function create(TurnstileVerifier $turnstile): View
     {
         return view('auth.church-access-request', [
+            'turnstileSiteKey' => $turnstile->isEnabled() ? $turnstile->siteKey() : null,
             'countries' => CountryOptions::all(),
             'expectedUserRanges' => ExpectedUserRange::options(),
         ]);

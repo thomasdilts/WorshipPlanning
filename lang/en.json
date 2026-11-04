@@ -1036,5 +1036,8 @@
     "This is not a WorshipPlanning church export (the file is not a zip archive).": "This is not a WorshipPlanning church export (the file is not a zip archive).",
     "This is not a WorshipPlanning church export (manifest.json is missing or wrong).": "This is not a WorshipPlanning church export (manifest.json is missing or wrong).",
     "This export was made by a newer version of WorshipPlanning. Update this server first.": "This export was made by a newer version of WorshipPlanning. Update this server first.",
-    "Export all church data": "Export all church data"
+    "Export all church data": "Export all church data",
+    "Required languages": "Required languages",
+    "For example English, Swedish and Arabic": "For example English, Swedish and Arabic",
+    "The app’s translations are made with AI, so some wording may need adjusting. Tell us what reads wrong and we will fix it.": "The app’s translations are made with AI, so some wording may need adjusting. Tell us what reads wrong and we will fix it."
 }

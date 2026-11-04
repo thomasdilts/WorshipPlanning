@@ -3,9 +3,11 @@
 namespace App\Http\Requests;
 
 use App\Enums\ExpectedUserRange;
+use App\Services\TurnstileVerifier;
 use App\Support\CountryOptions;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
+use Illuminate\Validation\Validator;
 
 class StoreChurchAccessRequest extends FormRequest
 {
@@ -26,7 +28,26 @@ class StoreChurchAccessRequest extends FormRequest
             'phone' => ['required', 'string', 'max:40'],
             'email' => ['required', 'email', 'max:255'],
             'expected_users' => ['required', Rule::enum(ExpectedUserRange::class)],
+            'required_languages' => ['required', 'string', 'max:255'],
             'special_requests' => ['nullable', 'string', 'max:2000'],
+        ];
+    }
+
+    /**
+     * When Turnstile is configured, the form only goes through with a token Cloudflare accepts.
+     *
+     * @return list<callable(Validator): void>
+     */
+    public function after(): array
+    {
+        return [
+            function (Validator $validator): void {
+                $turnstile = app(TurnstileVerifier::class);
+
+                if ($turnstile->isEnabled() && ! $turnstile->passes($this->input('cf-turnstile-response'), $this->ip())) {
+                    $validator->errors()->add('turnstile', __('We could not check that you are not a robot. Wait a moment and try again.'));
+                }
+            },
         ];
     }
 
@@ -42,6 +63,7 @@ class StoreChurchAccessRequest extends FormRequest
             'phone' => __('Telephone'),
             'email' => __('Email'),
             'expected_users' => __('Expected users'),
+            'required_languages' => __('Required languages'),
             'special_requests' => __('Special requests'),
         ];
     }

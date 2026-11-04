@@ -78,12 +78,30 @@
         </fieldset>
 
         <div>
+            <label for="required_languages" class="block text-sm font-medium text-[var(--color-wp-text)]">{{ __('Required languages') }}</label>
+            <input id="required_languages" name="required_languages" type="text" value="{{ old('required_languages') }}" required maxlength="255"
+                aria-describedby="required_languages_note"
+                placeholder="{{ __('For example English, Swedish and Arabic') }}"
+                class="mt-1.5 w-full rounded-[10px] border border-[var(--color-wp-border)] bg-white px-3 py-2 text-sm focus:border-[var(--color-wp-accent)] focus:outline-none focus:ring-2 focus:ring-[var(--color-wp-accent)]/25 @error('required_languages') border-red-400 @enderror">
+            <p id="required_languages_note" class="mt-1.5 text-sm text-[var(--color-wp-muted)]">{{ __('The app’s translations are made with AI, so some wording may need adjusting. Tell us what reads wrong and we will fix it.') }}</p>
+            @error('required_languages') <p class="mt-1 text-sm text-red-600">{{ $message }}</p> @enderror
+        </div>
+
+        <div>
             <label for="special_requests" class="block text-sm font-medium text-[var(--color-wp-text)]">{{ __('Special requests') }}</label>
             <textarea id="special_requests" name="special_requests" rows="4" maxlength="2000"
                 class="mt-1.5 w-full rounded-[10px] border border-[var(--color-wp-border)] bg-white px-3 py-2 text-sm focus:border-[var(--color-wp-accent)] focus:outline-none focus:ring-2 focus:ring-[var(--color-wp-accent)]/25 @error('special_requests') border-red-400 @enderror"
                 placeholder="{{ __('Anything we should know — denominations, languages, timeline…') }}">{{ old('special_requests') }}</textarea>
             @error('special_requests') <p class="mt-1 text-sm text-red-600">{{ $message }}</p> @enderror
         </div>
+
+        @if ($turnstileSiteKey)
+            <div>
+                <div class="cf-turnstile" data-sitekey="{{ $turnstileSiteKey }}"></div>
+                @error('turnstile') <p class="mt-1 text-sm text-red-600">{{ $message }}</p> @enderror
+            </div>
+            <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
+        @endif
 
         <div class="flex flex-col-reverse gap-3 pt-2 sm:flex-row sm:items-center sm:justify-between">
             <a href="{{ url('/admin/login') }}" class="justify-center text-center text-sm font-medium text-[var(--color-wp-muted)] hover:text-[var(--color-wp-accent)] sm:justify-start sm:text-start">
