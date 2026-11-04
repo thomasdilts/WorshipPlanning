@@ -17,6 +17,13 @@ return [
 
     'enabled' => (bool) env('DEMO_MODE', false),
 
+    /**
+     * The mailer from MAIL_MAILER, for mail that only goes to the operators (church access requests).
+     * Read here rather than at boot, because demo mode switches mail.default to the log and a cached
+     * config would keep that.
+     */
+    'operator_mailer' => env('MAIL_MAILER', 'log'),
+
     /** Modules a demo church can never turn on. */
     'locked_modules' => ['messaging', 'messaging_sms', 'messaging_whatsapp', 'messaging_telegram'],
 
