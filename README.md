@@ -1,5 +1,9 @@
 # WorshipPlanning
 
+> ### 👉 Visit **[worship-planning.com](https://worship-planning.com)** 👈
+>
+> See the features and screenshots, try the [live demo](https://demo.worship-planning.com/admin/login), and read about [pricing](https://worship-planning.com/pricing.html): free to host yourself, or we host it for you. Start there before you install anything.
+
 Multi-church worship service planner. Redesign of [WorshipHHN](https://github.com/thomasdilts/WorshipHHN) on Laravel.
 
 If you want to try WorshipPlanning but need another language or anything else, Let us know. Write an issue!
