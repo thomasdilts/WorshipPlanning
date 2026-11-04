@@ -18,6 +18,7 @@ use Database\Seeders\RolesAndPermissionsSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Storage;
 use Tests\TestCase;
 
 class DemoSnapshotTest extends TestCase
@@ -150,6 +151,26 @@ class DemoSnapshotTest extends TestCase
         $this->assertNotEmpty($admin->ntfy_topic);
         $this->assertTrue($admin->hasRole('Church Admin'));
         $this->assertDatabaseHas('message_templates', ['church_id' => $this->church->id, 'key' => 'set_password']);
+    }
+
+    public function test_loaded_accounts_get_the_avatar_shipped_for_their_user_id(): void
+    {
+        Storage::fake('public');
+        $avatars = sys_get_temp_dir().'/demo-avatars-'.uniqid();
+        mkdir($avatars);
+        file_put_contents("{$avatars}/{$this->admin->id}.jpg", 'jpeg-bytes');
+        config(['demo.avatars_path' => $avatars]);
+        $withoutAvatar = User::factory()->create(['church_id' => $this->church->id]);
+
+        app(DemoSnapshotLoader::class)->load($this->build()['snapshot'], CarbonImmutable::today());
+
+        $admin = User::query()->findOrFail($this->admin->id);
+        $this->assertSame('jpeg-bytes', Storage::disk('public')->get($admin->avatar_path));
+        $this->assertNotNull($admin->avatarUrl());
+        $this->assertNull(User::query()->findOrFail($withoutAvatar->id)->avatar_path);
+
+        unlink("{$avatars}/{$this->admin->id}.jpg");
+        rmdir($avatars);
     }
 
     public function test_shift_rounds_to_whole_weeks(): void

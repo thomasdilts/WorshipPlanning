@@ -10,6 +10,7 @@ use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Facades\Storage;
 use RuntimeException;
 use Spatie\Permission\PermissionRegistrar;
 
@@ -67,6 +68,7 @@ class DemoSnapshotLoader
         }
 
         $this->prepareAccounts((int) $snapshot['church_id']);
+        $this->installAvatars((int) $snapshot['church_id']);
 
         $church = Church::query()->findOrFail($snapshot['church_id']);
         MessageTemplatesSeeder::seedForChurch($church);
@@ -114,6 +116,29 @@ class DemoSnapshotLoader
                 'password' => $password,
                 'ntfy_topic' => NtfyTopicField::generate(),
             ]);
+        }
+    }
+
+    /**
+     * Give each person the profile picture shipped for their user id (database/demo/avatars/{id}.jpg).
+     * The pictures are AI-generated faces, so no real person's photo is part of the demo.
+     */
+    protected function installAvatars(int $churchId): void
+    {
+        $directory = (string) config('demo.avatars_path');
+        $disk = Storage::disk('public');
+
+        foreach (DB::table('users')->where('church_id', $churchId)->pluck('id') as $userId) {
+            $source = "{$directory}/{$userId}.jpg";
+
+            if (! is_file($source)) {
+                continue;
+            }
+
+            $path = "churches/{$churchId}/avatars/demo-{$userId}.jpg";
+            $disk->put($path, (string) file_get_contents($source));
+
+            DB::table('users')->where('id', $userId)->update(['avatar_path' => $path]);
         }
     }
 }

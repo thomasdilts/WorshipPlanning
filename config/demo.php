@@ -35,4 +35,7 @@ return [
 
     'hymns_path' => database_path('demo/hymns.json'),
 
+    /** AI-generated profile pictures, one {user id}.jpg per demo person. */
+    'avatars_path' => database_path('demo/avatars'),
+
 ];

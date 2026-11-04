@@ -32,8 +32,8 @@ class ResetDemo extends Command
         $snapshot = json_decode((string) file_get_contents($path), true, flags: JSON_THROW_ON_ERROR);
 
         $this->call('migrate:fresh', ['--force' => true]);
-        $loader->load($snapshot, CarbonImmutable::today());
         $this->clearUploads();
+        $loader->load($snapshot, CarbonImmutable::today());
 
         $this->components->info('Demo reset.');
 
