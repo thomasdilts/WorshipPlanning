@@ -2,6 +2,7 @@
 
 namespace App\Services\Demo;
 
+use App\Core\Permissions\PermissionRegistry;
 use App\Filament\Forms\NtfyTopicField;
 use App\Models\Church;
 use Carbon\CarbonImmutable;
@@ -12,6 +13,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\Storage;
 use RuntimeException;
+use Spatie\Permission\Models\Permission;
 use Spatie\Permission\PermissionRegistrar;
 
 /**
@@ -72,6 +74,13 @@ class DemoSnapshotLoader
 
         $church = Church::query()->findOrFail($snapshot['church_id']);
         MessageTemplatesSeeder::seedForChurch($church);
+
+        app(PermissionRegistrar::class)->forgetCachedPermissions();
+
+        /* Permissions added to the app after the snapshot was taken must still exist. */
+        foreach (app(PermissionRegistry::class)->all() as $permission) {
+            Permission::findOrCreate($permission, 'web');
+        }
 
         app(PermissionRegistrar::class)->forgetCachedPermissions();
     }

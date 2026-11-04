@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AssignmentResponseController;
 use App\Http\Controllers\ChurchAccessRequestController;
+use App\Http\Controllers\ChurchExportDownloadController;
 use App\Http\Controllers\EventPdfController;
 use App\Http\Controllers\PersonalIcsController;
 use App\Http\Controllers\StaffingSpreadsheetController;
@@ -29,6 +30,10 @@ Route::middleware(['auth', SetCurrentChurch::class])
 Route::middleware(['auth', SetCurrentChurch::class])
     ->get('/staffing.csv', StaffingSpreadsheetController::class)
     ->name('schedule.staffing-csv');
+
+Route::middleware(['auth', 'signed', SetCurrentChurch::class])
+    ->get('/church-export/{export}', ChurchExportDownloadController::class)
+    ->name('church-export.download');
 
 Route::middleware(['signed', 'throttle:30,1'])
     ->get('/assignments/{task}/respond/{user}', [AssignmentResponseController::class, 'show'])

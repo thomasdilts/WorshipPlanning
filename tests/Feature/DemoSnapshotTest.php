@@ -153,6 +153,23 @@ class DemoSnapshotTest extends TestCase
         $this->assertDatabaseHas('message_templates', ['church_id' => $this->church->id, 'key' => 'set_password']);
     }
 
+    public function test_loading_an_older_snapshot_keeps_permissions_added_since(): void
+    {
+        $snapshot = $this->build()['snapshot'];
+        $exportId = DB::table('permissions')->where('name', 'church.export')->value('id');
+
+        foreach (['permissions' => 'id', 'role_has_permissions' => 'permission_id'] as $table => $column) {
+            $snapshot['tables'][$table] = array_values(array_filter(
+                $snapshot['tables'][$table],
+                fn (array $row): bool => $row[$column] !== $exportId,
+            ));
+        }
+
+        app(DemoSnapshotLoader::class)->load($snapshot, CarbonImmutable::today());
+
+        $this->assertDatabaseHas('permissions', ['name' => 'church.export', 'guard_name' => 'web']);
+    }
+
     public function test_loaded_accounts_get_the_avatar_shipped_for_their_user_id(): void
     {
         Storage::fake('public');

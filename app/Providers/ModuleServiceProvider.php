@@ -27,6 +27,7 @@ class ModuleServiceProvider extends ServiceProvider
         $permissions->register('core', [
             'church.view',
             'church.update',
+            'church.export',
             'users.view',
             'users.create',
             'users.update',

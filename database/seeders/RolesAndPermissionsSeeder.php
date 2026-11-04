@@ -49,6 +49,7 @@ class RolesAndPermissionsSeeder extends Seeder
         $admin->syncPermissions($this->existingPermissions([
             'church.view',
             'church.update',
+            'church.export',
             'users.view',
             'users.create',
             'users.update',

@@ -43,6 +43,7 @@ final class PermissionLabels
         return match ($permission) {
             'church.view' => __('View church settings'),
             'church.update' => __('Edit church settings'),
+            'church.export' => __('Export all church data'),
             'users.view' => __('View people'),
             'users.create' => __('Create people'),
             'users.update' => __('Edit people'),
