@@ -4,8 +4,6 @@ namespace App\Filament\Resources\Events\Pages;
 
 use App\Core\Tenancy\CurrentChurch;
 use App\Enums\AssignmentState;
-use App\Enums\SpreadsheetDensity;
-use App\Enums\SpreadsheetLayout;
 use App\Enums\SpreadsheetRangeKey;
 use App\Enums\SpreadsheetViewKey;
 use App\Filament\Resources\Events\Actions\EditEventTaskAction;
@@ -59,12 +57,6 @@ class TaskSpreadsheet extends Page implements HasTable
 
     #[Url]
     public string $range = 'next_six_weeks';
-
-    #[Url]
-    public string $density = 'comfortable';
-
-    #[Url]
-    public string $presentation = 'auto';
 
     /** @var array<string, mixed>|null */
     #[Url(as: 'filters')]
@@ -138,12 +130,6 @@ class TaskSpreadsheet extends Page implements HasTable
             }
             if (! request()->has('range')) {
                 $this->range = $prefs['range'];
-            }
-            if (! request()->has('density')) {
-                $this->density = $prefs['density'];
-            }
-            if (! request()->has('presentation')) {
-                $this->presentation = $prefs['layout'];
             }
 
             $this->customFrom = $prefs['from'];
@@ -283,20 +269,6 @@ class TaskSpreadsheet extends Page implements HasTable
         $this->rememberPrefs(['view' => $this->staffingView]);
         $this->refreshSpreadsheet();
         $this->resetPage($this->getTablePaginationPageName());
-    }
-
-    public function setDensity(string $density): void
-    {
-        $key = SpreadsheetDensity::tryFrom($density) ?? SpreadsheetDensity::Comfortable;
-        $this->density = $key->value;
-        $this->rememberPrefs(['density' => $this->density]);
-    }
-
-    public function setPresentation(string $layout): void
-    {
-        $key = SpreadsheetLayout::tryFrom($layout) ?? SpreadsheetLayout::Auto;
-        $this->presentation = $key->value;
-        $this->rememberPrefs(['layout' => $this->presentation]);
     }
 
     public function setRange(string $range): void

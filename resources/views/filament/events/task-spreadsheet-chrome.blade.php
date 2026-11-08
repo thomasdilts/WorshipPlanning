@@ -6,8 +6,8 @@
 
     $view = SpreadsheetViewKey::tryFrom($this->staffingView) ?? SpreadsheetViewKey::AllStaffing;
     $range = SpreadsheetRangeKey::tryFrom($this->range) ?? SpreadsheetRangeKey::NextSixWeeks;
-    $density = SpreadsheetDensity::tryFrom($this->density) ?? SpreadsheetDensity::Comfortable;
-    $layout = SpreadsheetLayout::tryFrom($this->presentation) ?? SpreadsheetLayout::Auto;
+    $density = SpreadsheetDensity::Comfortable;
+    $layout = SpreadsheetLayout::Auto;
     $listRows = $this->listRows();
     $eventNames = $this->eventNameOptions();
     $selectedNames = $this->tableFilters['events']['names'] ?? null;
@@ -46,28 +46,6 @@
             </label>
 
             <x-planner-columns />
-            <x-filament::dropdown :menu="false" placement="bottom-end" width="sm" :teleport="true">
-                <x-slot name="trigger">
-                    <button type="button" class="wp-ss-control wp-ss-display-trigger" aria-label="{{ __('Display options') }}">
-                        <x-filament::icon icon="heroicon-m-adjustments-horizontal" aria-hidden="true" />
-                        <span>{{ __('Display') }}</span>
-                    </button>
-                </x-slot>
-                <div class="wp-ss-display-menu">
-                    <span class="wp-ss-control-label">{{ __('Density') }}</span>
-                    <div class="wp-ss-toolbar-group" role="group" aria-label="{{ __('Density') }}">
-                        @foreach (SpreadsheetDensity::cases() as $key)
-                            <button type="button" wire:click="setDensity('{{ $key->value }}')" aria-pressed="{{ $density === $key ? 'true' : 'false' }}" @class(['wp-ss-chip', 'wp-ss-chip-active' => $density === $key])>{{ $key->label() }}</button>
-                        @endforeach
-                    </div>
-                    <span class="wp-ss-control-label">{{ __('Layout') }}</span>
-                    <div class="wp-ss-toolbar-group" role="group" aria-label="{{ __('Layout') }}">
-                        @foreach (SpreadsheetLayout::cases() as $key)
-                            <button type="button" wire:click="setPresentation('{{ $key->value }}')" aria-pressed="{{ $layout === $key ? 'true' : 'false' }}" @class(['wp-ss-chip', 'wp-ss-chip-active' => $layout === $key])>{{ $key->label() }}</button>
-                        @endforeach
-                    </div>
-                </div>
-            </x-filament::dropdown>
 
             <div class="wp-ss-actions">
                 @if (\App\Filament\Resources\Events\EventResource::canCreate())

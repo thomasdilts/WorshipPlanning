@@ -1131,8 +1131,7 @@ a.wp-schedule-event:hover {
 }
 
 
-.wp-ss-event-menu,
-.wp-ss-display-menu {
+.wp-ss-event-menu {
     padding: 0.375rem;
     color: var(--wp-text);
 }
@@ -1181,13 +1180,6 @@ a.wp-schedule-event:hover {
 
 .wp-ss-menu-actions button {
     cursor: pointer;
-}
-
-.wp-ss-display-menu {
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
-    padding: 0.75rem;
 }
 
 .wp-ss-toolbar-group {
