@@ -38,13 +38,14 @@ class Event extends Model
     {
         return $this->hasMany(EventTask::class)
             ->orderByRaw('(SELECT COALESCE(use_globally, 0) FROM task_templates WHERE task_templates.id = event_tasks.task_template_id) DESC')
+            ->orderByDesc('event_tasks.before_start')
             ->orderByRaw('CASE WHEN (SELECT COALESCE(use_globally, 0) FROM task_templates WHERE task_templates.id = event_tasks.task_template_id) = 1 THEN (SELECT default_global_order FROM task_templates WHERE task_templates.id = event_tasks.task_template_id) ELSE event_tasks.sort_order END')
             ->orderBy('event_tasks.id');
     }
 
     /**
      * When the program ends: the start time plus the duration of every timed
-     * (non-global) task. With no timed tasks this is the start time itself.
+     * (non-global) task after the start. Without any this is the start time itself.
      */
     public function endsAt(): ?Carbon
     {
@@ -57,7 +58,7 @@ class Event extends Model
             : $this->tasks()->with('template')->get();
 
         $minutes = $tasks
-            ->reject(fn (EventTask $task): bool => $task->isGlobal())
+            ->reject(fn (EventTask $task): bool => $task->isGlobal() || $task->before_start)
             ->sum(fn (EventTask $task): int => max(1, (int) ($task->duration ?? 1)));
 
         return $this->starts_at->copy()->setSeconds(0)->addMinutes($minutes);

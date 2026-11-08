@@ -70,20 +70,13 @@ class EventStaffingSummary
         ];
     }
 
+    /**
+     * When the program ends: the end of the last task after the start, or null without any.
+     */
     public function calculatedEndsAt(Event $event): ?Carbon
     {
-        $timed = $this->timeline->timedTasks($event);
+        $last = $this->timeline->windows($event)->last(fn (array $window): bool => ! $window['task']->before_start);
 
-        if ($timed->isEmpty() || $event->starts_at === null) {
-            return null;
-        }
-
-        $cursor = $event->starts_at->copy()->setSeconds(0);
-
-        foreach ($timed as $task) {
-            $cursor = $cursor->addMinutes(max(1, (int) ($task->duration ?? 1)));
-        }
-
-        return $cursor;
+        return $last['to'] ?? null;
     }
 }

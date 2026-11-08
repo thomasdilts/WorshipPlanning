@@ -59,28 +59,7 @@ class AssignmentRequiredWindow
      */
     public function timedWindows(Event $event): Collection
     {
-        if ($event->starts_at === null) {
-            return collect();
-        }
-
-        $cursor = $event->starts_at->copy()->timezone(config('app.timezone'))->setSeconds(0);
-        $windows = collect();
-
-        foreach ($this->timeline->timedTasks($event) as $task) {
-            $duration = max(1, (int) ($task->duration ?? 1));
-            $from = $cursor->copy();
-            $to = $cursor->copy()->addMinutes($duration);
-
-            $windows->push([
-                'from' => $from,
-                'to' => $to,
-                'task' => $task,
-            ]);
-
-            $cursor = $to;
-        }
-
-        return $windows;
+        return $this->timeline->windows($event);
     }
 
     /**

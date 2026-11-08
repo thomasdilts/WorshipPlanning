@@ -8,6 +8,7 @@ use App\Filament\Resources\Events\Pages\EditEvent;
 use App\Filament\Resources\Events\Pages\ViewEvent;
 use App\Filament\Resources\Events\RelationManagers\OrderTasksRelationManager;
 use App\Filament\Resources\Events\RelationManagers\PeopleTasksRelationManager;
+use App\Filament\Resources\Events\RelationManagers\TasksRelationManager;
 use App\Filament\Resources\Events\Schemas\EventTaskForm;
 use App\Models\Church;
 use App\Models\Event;
@@ -237,6 +238,50 @@ class ServiceWorkspaceTest extends TestCase
         $this->assertSame('10:00:00', $second->fresh()->starts_at);
         $this->assertSame('10:10:00', $first->fresh()->starts_at);
         $this->assertSame(0, $global->fresh()->sort_order);
+    }
+
+    public function test_dragging_across_the_start_marker_times_activities_backwards_from_the_start(): void
+    {
+        [$admin, $event, $first] = $this->seedWorkspaceWithTasks();
+        $second = EventTask::factory()->create(['event_id' => $event->id, 'task_template_id' => $first->task_template_id, 'sort_order' => 2, 'duration' => 10]);
+        $third = EventTask::factory()->create(['event_id' => $event->id, 'task_template_id' => $first->task_template_id, 'sort_order' => 3, 'duration' => 15]);
+        $this->actingAs($admin);
+
+        Livewire::test(OrderTasksRelationManager::class, ['ownerRecord' => $event, 'pageClass' => EditEvent::class])
+            ->call('reorderTable', [(string) $third->id, (string) $second->id, TasksRelationManager::START_MARKER_KEY, (string) $first->id], TasksRelationManager::START_MARKER_KEY)
+            ->assertSuccessful();
+
+        $this->assertTrue($third->fresh()->before_start);
+        $this->assertTrue($second->fresh()->before_start);
+        $this->assertFalse($first->fresh()->before_start);
+        $this->assertSame(['09:35:00', '09:50:00'], [$third->fresh()->starts_at, $third->fresh()->ends_at]);
+        $this->assertSame(['09:50:00', '10:00:00'], [$second->fresh()->starts_at, $second->fresh()->ends_at]);
+        $this->assertSame(['10:00:00', '10:05:00'], [$first->fresh()->starts_at, $first->fresh()->ends_at]);
+        $this->assertSame('10:05', $event->fresh()->endsAt()->format('H:i'));
+    }
+
+    public function test_arrow_moves_step_across_the_start_time(): void
+    {
+        [$admin, $event, $first] = $this->seedWorkspaceWithTasks();
+        $second = EventTask::factory()->create(['event_id' => $event->id, 'task_template_id' => $first->task_template_id, 'sort_order' => 2, 'duration' => 10]);
+        $this->actingAs($admin);
+
+        $table = Livewire::test(OrderTasksRelationManager::class, ['ownerRecord' => $event, 'pageClass' => EditEvent::class])
+            ->callTableAction('moveUp', $first);
+
+        $this->assertTrue($first->fresh()->before_start);
+        $this->assertSame('09:55:00', $first->fresh()->starts_at);
+        $this->assertSame('10:00:00', $second->fresh()->starts_at);
+
+        $table->callTableAction('moveUp', $second);
+
+        $this->assertTrue($second->fresh()->before_start);
+        $this->assertSame(['09:45:00', '09:50:00'], [$first->fresh()->starts_at, $second->fresh()->starts_at]);
+
+        $table->callTableAction('moveDown', $second);
+
+        $this->assertFalse($second->fresh()->before_start);
+        $this->assertSame(['09:55:00', '10:00:00'], [$first->fresh()->starts_at, $second->fresh()->starts_at]);
     }
 
     public function test_dragging_rejects_a_task_from_another_service(): void

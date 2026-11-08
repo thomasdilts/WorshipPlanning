@@ -5,7 +5,9 @@
         return count(array_intersect($names, ['frånvaro', 'franvaro', 'absence'])) > 0
             || (in_array('extra innehåll', $names, true) && blank($task->description));
     });
-    $timedTasks = $printableTasks->filter(fn ($task) => ! $task->isGlobal() && (filled($task->starts_at) || filled($task->ends_at) || $task->duration > 0))->sortBy('sort_order');
+    $timedTasks = $printableTasks->filter(fn ($task) => ! $task->isGlobal() && (filled($task->starts_at) || filled($task->ends_at) || $task->duration > 0))->sortBy([['before_start', 'desc'], ['sort_order', 'asc'], ['id', 'asc']])->values();
+    $startTime = $event->starts_at->timezone(config('app.timezone'))->format('H:i');
+    $startMarkerAt = $timedTasks->filter(fn ($task) => $task->before_start)->count();
     $responsibilities = $printableTasks->reject(fn ($task) => $timedTasks->contains('id', $task->id));
     $dense = $timedTasks->count() > 18;
 @endphp
@@ -40,6 +42,10 @@
         .responsibility { padding: 5px 0; border-bottom: 1px solid #dce3e8; page-break-inside: avoid; }
         .responsibility strong { display: block; margin-bottom: 2px; }
         .empty { color: #52636b; }
+        .before-start td { background: #f1f4f6; }
+        .start-marker td { padding: 6px 8px; background: #172b2c; color: #ffffff; text-align: center; border-bottom: none; }
+        .start-marker .start-time { font-size: 13px; font-weight: bold; letter-spacing: 1px; }
+        .start-marker .start-side { font-size: 9px; padding: 0 14px; }
     </style>
 </head>
 <body>
@@ -68,12 +74,15 @@
                     <th>{{ __('Details') }}</th>
                 </tr></thead>
                 <tbody>
-                    @foreach ($timedTasks as $task)
+                    @foreach ($timedTasks as $index => $task)
+                        @if ($index === $startMarkerAt)
+                            @include('pdf.partials.start-marker')
+                        @endif
                         @php
                             $state = ($states ?? [])[$task->id] ?? null;
                             $showStatus = $state && ! in_array($state, [\App\Enums\AssignmentState::Draft, \App\Enums\AssignmentState::AssumedTeam, \App\Enums\AssignmentState::Vacant], true);
                         @endphp
-                        <tr>
+                        <tr @class(['before-start' => $task->before_start])>
                             <td class="col-time">{{ filled($task->starts_at) ? substr($task->starts_at, 0, 5) : '—' }}</td>
                             <td class="col-time">{{ filled($task->ends_at) ? substr($task->ends_at, 0, 5) : '—' }}</td>
                             <td class="col-mins">{{ $task->duration ?: '—' }}</td>
@@ -89,6 +98,9 @@
                             </td>
                         </tr>
                     @endforeach
+                    @if ($startMarkerAt === $timedTasks->count())
+                        @include('pdf.partials.start-marker')
+                    @endif
                 </tbody>
             </table>
         @endif

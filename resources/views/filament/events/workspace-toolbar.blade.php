@@ -1,4 +1,12 @@
-<div class="wp-workspace-toolbar" @if ($isOrder && $this->getTable()->isReorderable()) x-data="serviceOrderDrag" @endif>
+<div class="wp-workspace-toolbar" @if ($isOrder) x-data="serviceOrderDrag(@js([
+    'draggable' => $this->getTable()->isReorderable(),
+    'markerKey' => \App\Filament\Resources\Events\RelationManagers\TasksRelationManager::START_MARKER_KEY,
+    'startLabel' => __('Start :time', ['time' => $startTime ?? '']),
+    'beforeLabel' => __('Before the start · timed backwards'),
+    'afterLabel' => __('After the start'),
+    'dragLabel' => __('Drag activities across this line to move them before or after the start'),
+    'handleLabel' => __('Drag the start time'),
+]))" @endif>
     <div class="wp-workspace-tabs" role="group" aria-label="{{ __('Service workspace') }}">
         @foreach (['0' => __('Order'), '1' => __('People')] as $key => $label)
             <button type="button"

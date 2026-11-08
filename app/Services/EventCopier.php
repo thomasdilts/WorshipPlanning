@@ -71,6 +71,7 @@ class EventCopier
                         'starts_at' => $task->starts_at,
                         'ends_at' => $task->ends_at,
                         'sort_order' => $task->sort_order,
+                        'before_start' => $task->before_start,
                     ]);
 
                     $pictureSync = [];

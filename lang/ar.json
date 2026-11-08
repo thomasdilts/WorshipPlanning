@@ -1036,5 +1036,13 @@
     "Export all church data": "تصدير جميع بيانات الكنيسة",
     "Required languages": "اللغات المطلوبة",
     "For example English, Swedish and Arabic": "مثلًا الإنجليزية والسويدية والعربية",
-    "The app’s translations are made with AI, so some wording may need adjusting. Tell us what reads wrong and we will fix it.": "ترجمات التطبيق مُنشأة بالذكاء الاصطناعي، لذا قد تحتاج بعض العبارات إلى تعديل. أخبرنا بما يبدو غير صحيح وسنصلحه."
+    "The app’s translations are made with AI, so some wording may need adjusting. Tell us what reads wrong and we will fix it.": "ترجمات التطبيق مُنشأة بالذكاء الاصطناعي، لذا قد تحتاج بعض العبارات إلى تعديل. أخبرنا بما يبدو غير صحيح وسنصلحه.",
+    "Start :time": "البداية :time",
+    "Before the start · timed backwards": "قبل البداية · يُحسب للخلف",
+    "After the start": "بعد البداية",
+    "Before the start": "قبل البداية",
+    "Drag activities across this line to move them before or after the start": "اسحب الأنشطة عبر هذا الخط لنقلها قبل البداية أو بعدها",
+    "Drag the start time": "اسحب وقت البداية",
+    "Before the start time": "قبل وقت البداية",
+    "Done before the event starts. These activities are timed backwards from the start time.": "يتم قبل بدء الفعالية. تُحسب هذه الأنشطة للخلف من وقت البداية."
 }

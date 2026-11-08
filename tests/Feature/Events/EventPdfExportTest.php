@@ -17,6 +17,7 @@ use App\Models\User;
 use App\Services\AssignmentStateResolver;
 use App\Services\EventPdfExporter;
 use App\Services\EventTaskRowSummary;
+use App\Services\EventTaskTimeline;
 use Database\Seeders\RolesAndPermissionsSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\View;
@@ -144,6 +145,22 @@ class EventPdfExportTest extends TestCase
         $this->assertStringContainsString('<div class="people">', $html);
         $this->assertStringContainsString('Coordinator', $html);
         $this->assertStringNotContainsString('<img', $html);
+    }
+
+    public function test_service_order_marks_the_start_time_between_before_and_after_activities(): void
+    {
+        $church = Church::factory()->create();
+        $event = Event::factory()->create(['church_id' => $church->id, 'starts_at' => '2026-11-01 10:00:00']);
+        $timed = TaskTemplate::factory()->create(['church_id' => $church->id, 'use_globally' => false, 'person_usage' => FieldUsage::NotUsed]);
+        EventTask::factory()->create(['event_id' => $event->id, 'task_template_id' => $timed->id, 'name' => 'Opening song', 'sort_order' => 1, 'duration' => 5]);
+        EventTask::factory()->create(['event_id' => $event->id, 'task_template_id' => $timed->id, 'name' => 'Sound check', 'sort_order' => 9, 'duration' => 20, 'before_start' => true]);
+        app(EventTaskTimeline::class)->recalculate($event);
+
+        $html = View::make('pdf.event', ['event' => $event->fresh(['tasks.template']), 'summary' => app(EventTaskRowSummary::class)])->render();
+
+        $this->assertStringContainsString('Start 10:00', $html);
+        $this->assertMatchesRegularExpression('/Sound check.*class="start-marker".*Opening song/s', $html);
+        $this->assertStringContainsString('09:40', $html);
     }
 
     public function test_event_pdf_download_returns_pdf_response(): void

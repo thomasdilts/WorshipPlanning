@@ -31,6 +31,7 @@ class EventTask extends Model
         'starts_at',
         'ends_at',
         'sort_order',
+        'before_start',
     ];
 
     protected function casts(): array
@@ -38,6 +39,7 @@ class EventTask extends Model
         return [
             'duration' => 'integer',
             'sort_order' => 'integer',
+            'before_start' => 'boolean',
             'bible_passages' => 'array',
             'accepted_verbally_at' => 'datetime',
         ];

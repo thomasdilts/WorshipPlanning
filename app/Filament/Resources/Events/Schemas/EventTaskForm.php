@@ -414,6 +414,11 @@ class EventTaskForm
                 ->required(fn (Get $get): bool => ! static::templateIsGlobal($get))
                 ->visible(fn (Get $get): bool => ! static::templateIsGlobal($get))
                 ->helperText(__('Changing duration shifts start times of this and following timed tasks.')),
+            Toggle::make('before_start')
+                ->label(__('Before the start time'))
+                ->helperText(__('Done before the event starts. These activities are timed backwards from the start time.'))
+                ->default(false)
+                ->visible(fn (Get $get): bool => ! static::templateIsGlobal($get)),
             Select::make('assigned_user_id')
                 ->label(__('Person'))
                 ->options(function (Get $get) use ($event): array {
@@ -611,6 +616,7 @@ class EventTaskForm
             $data['ends_at'] = null;
             $data['duration'] = null;
             $data['sort_order'] = $template->default_global_order;
+            $data['before_start'] = false;
         } else {
             $data['duration'] = max(1, (int) ($data['duration'] ?? $template->default_duration ?? 5));
             // Timeline service owns start/end.

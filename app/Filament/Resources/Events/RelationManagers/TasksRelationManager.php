@@ -25,6 +25,7 @@ use Filament\Tables\Columns\ViewColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 
 /**
@@ -40,6 +41,11 @@ class TasksRelationManager extends RelationManager
      * null = all, true = whole-service (People), false = timed (Order).
      */
     protected static ?bool $globalOnly = null;
+
+    /**
+     * Sortable key of the start-time divider row in the Order table.
+     */
+    public const START_MARKER_KEY = 'start-marker';
 
     public static function getTitle(Model $ownerRecord, string $pageClass): string
     {
@@ -68,7 +74,11 @@ class TasksRelationManager extends RelationManager
 
         $table = $table
             ->recordTitleAttribute('name')
-            ->header(fn () => view('filament.events.workspace-toolbar', ['isOrder' => $isOrder]))
+            ->header(fn () => view('filament.events.workspace-toolbar', [
+                'isOrder' => $isOrder,
+                'startTime' => $event->starts_at?->timezone(config('app.timezone'))->format('H:i'),
+            ]))
+            ->recordClasses(fn (EventTask $record): ?string => $isOrder && $record->before_start ? 'wp-order-before' : null)
             ->paginated(false)
             ->emptyStateHeading($isOrder ? __('Empty service order') : __('No whole-service responsibilities'))
             ->emptyStateDescription($isOrder
@@ -249,11 +259,13 @@ class TasksRelationManager extends RelationManager
                     $q->whereDoesntHave('template')
                         ->orWhereHas('template', fn (Builder $inner) => $inner->where('use_globally', false));
                 })
+                ->orderByDesc('event_tasks.before_start')
                 ->orderBy('event_tasks.sort_order')
                 ->orderBy('event_tasks.id');
         } else {
             $query
                 ->orderByRaw('(SELECT COALESCE(use_globally, 0) FROM task_templates WHERE task_templates.id = event_tasks.task_template_id) DESC')
+                ->orderByDesc('event_tasks.before_start')
                 ->orderByRaw('CASE WHEN (SELECT COALESCE(use_globally, 0) FROM task_templates WHERE task_templates.id = event_tasks.task_template_id) = 1 THEN (SELECT default_global_order FROM task_templates WHERE task_templates.id = event_tasks.task_template_id) ELSE event_tasks.sort_order END')
                 ->orderBy('event_tasks.id');
         }
@@ -261,43 +273,79 @@ class TasksRelationManager extends RelationManager
         return $query;
     }
 
+    /**
+     * The Order table also sends the start-time divider's position; tasks above it run before the start.
+     *
+     * @param  array<int, int|string>  $order
+     */
+    public function reorderTable(array $order, int|string|null $draggedRecordKey = null): void
+    {
+        $order = array_map(fn (int|string $key): string => (string) $key, array_values($order));
+        $markerIndex = array_search(static::START_MARKER_KEY, $order, true);
+
+        if (static::$globalOnly !== false || $markerIndex === false || ! $this->getTable()->isReorderable()) {
+            parent::reorderTable($order, $draggedRecordKey);
+
+            return;
+        }
+
+        $taskOrder = array_values(array_filter($order, fn (string $key): bool => $key !== static::START_MARKER_KEY));
+        $beforeIds = array_slice($order, 0, $markerIndex);
+        $draggedRecordKey = (string) $draggedRecordKey === static::START_MARKER_KEY ? null : $draggedRecordKey;
+
+        DB::transaction(function () use ($taskOrder, $beforeIds, $draggedRecordKey): void {
+            $this->getTable()->callBeforeReordering($taskOrder);
+
+            $this->getTable()->getQuery()->update([
+                'before_start' => DB::raw(count($beforeIds) > 0
+                    ? 'CASE WHEN event_tasks.id IN ('.implode(',', array_map('intval', $beforeIds)).') THEN 1 ELSE 0 END'
+                    : '0'),
+            ]);
+
+            parent::reorderTable($taskOrder, $draggedRecordKey);
+        });
+    }
+
+    /**
+     * Moves one step up or down. Stepping past the start time moves the task to the other side of it.
+     */
     protected function moveTask(EventTask $task, int $direction): void
     {
         /** @var Event $event */
         $event = $this->getOwnerRecord();
         abort_unless(auth()->user()?->can('update', $event) && ! $this->isReadOnly(), 403);
 
-        $siblings = EventTask::query()
-            ->where('event_id', $event->id)
-            ->with('template')
-            ->orderBy('sort_order')
-            ->orderBy('id')
-            ->get()
-            ->filter(fn (EventTask $row): bool => ! $row->isGlobal())
-            ->values();
-
+        $timeline = app(EventTaskTimeline::class);
+        $siblings = $timeline->timedTasks($event);
         $index = $siblings->search(fn (EventTask $row): bool => $row->id === $task->id);
 
         if ($index === false) {
             return;
         }
 
-        $swapWith = $index + $direction;
+        $rows = $siblings->all();
+        /** @var EventTask $current */
+        $current = $rows[$index];
+        $neighbour = $rows[$index + $direction] ?? null;
 
-        if ($swapWith < 0 || $swapWith >= $siblings->count()) {
+        if ($neighbour !== null && $neighbour->before_start === $current->before_start) {
+            [$rows[$index], $rows[$index + $direction]] = [$neighbour, $current];
+        } elseif ($direction < 0 && ! $current->before_start) {
+            $current->before_start = true;
+        } elseif ($direction > 0 && $current->before_start) {
+            $current->before_start = false;
+        } else {
             return;
         }
 
-        /** @var EventTask $a */
-        $a = $siblings[$index];
-        /** @var EventTask $b */
-        $b = $siblings[$swapWith];
+        DB::transaction(function () use ($rows): void {
+            foreach (array_values($rows) as $position => $row) {
+                $row->sort_order = $position + 1;
+                $row->save();
+            }
+        });
 
-        $aOrder = $a->sort_order;
-        $a->forceFill(['sort_order' => $b->sort_order])->save();
-        $b->forceFill(['sort_order' => $aOrder])->save();
-
-        app(EventTaskTimeline::class)->recalculate($event->fresh(['tasks.template']));
+        $timeline->recalculate($event->fresh(['tasks.template']));
     }
 
     public function sendTaskMessageAction(): Action

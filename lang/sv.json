@@ -1036,5 +1036,13 @@
     "Export all church data": "Exportera all församlingsdata",
     "Required languages": "Språk som behövs",
     "For example English, Swedish and Arabic": "Till exempel engelska, svenska och arabiska",
-    "The app’s translations are made with AI, so some wording may need adjusting. Tell us what reads wrong and we will fix it.": "Appens översättningar är gjorda med AI, så en del formuleringar kan behöva justeras. Säg till om något låter fel så rättar vi det."
+    "The app’s translations are made with AI, so some wording may need adjusting. Tell us what reads wrong and we will fix it.": "Appens översättningar är gjorda med AI, så en del formuleringar kan behöva justeras. Säg till om något låter fel så rättar vi det.",
+    "Start :time": "Start :time",
+    "Before the start · timed backwards": "Före start · räknas bakåt",
+    "After the start": "Efter start",
+    "Before the start": "Före start",
+    "Drag activities across this line to move them before or after the start": "Dra aktiviteter över linjen för att flytta dem före eller efter start",
+    "Drag the start time": "Dra starttiden",
+    "Before the start time": "Före starttiden",
+    "Done before the event starts. These activities are timed backwards from the start time.": "Görs innan evenemanget börjar. Dessa aktiviteter räknas bakåt från starttiden."
 }
