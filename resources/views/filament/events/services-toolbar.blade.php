@@ -66,6 +66,12 @@
 
         <x-planner-columns :reorderable="false" />
 
+        @can('useTemplates', \App\Models\Event::class)
+            <x-filament::button tag="a" :href="EventResource::getUrl('templates')" icon="heroicon-m-bookmark" color="gray" class="wp-services-templates">
+                {{ __('Service templates') }}
+            </x-filament::button>
+        @endcan
+
         @if (EventResource::canCreate())
             <x-filament::button tag="a" :href="EventResource::getUrl('create')" icon="heroicon-m-plus" class="wp-services-create">
                 {{ __('Create event') }}

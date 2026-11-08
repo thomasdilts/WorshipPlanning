@@ -26,6 +26,8 @@ class EventsServiceProvider extends ServiceProvider
             'events.tasks_by_event',
             'task_templates.view',
             'task_templates.manage',
+            'service_templates.use',
+            'service_templates.manage',
         ]);
     }
 }

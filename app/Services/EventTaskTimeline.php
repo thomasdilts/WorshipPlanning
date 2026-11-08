@@ -74,6 +74,7 @@ class EventTaskTimeline
     public function timedTasks(Event $event): Collection
     {
         return EventTask::query()
+            ->withoutGlobalScope(EventTask::SERVICES_SCOPE)
             ->where('event_id', $event->id)
             ->with('template')
             ->orderByDesc('before_start')

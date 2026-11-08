@@ -38,7 +38,9 @@ class EditEvent extends EditRecord
     public function getSubheading(): string|Htmlable|null
     {
         $event = $this->getRecord();
-        $bits = [$event->starts_at->timezone(config('app.timezone'))->translatedFormat('D j M Y H:i')];
+        $bits = $event->is_template
+            ? [__('Service template'), $event->starts_at->timezone(config('app.timezone'))->translatedFormat('l H:i')]
+            : [$event->starts_at->timezone(config('app.timezone'))->translatedFormat('D j M Y H:i')];
 
         if (filled($event->description)) {
             $bits[] = str($event->description)->limit(80);

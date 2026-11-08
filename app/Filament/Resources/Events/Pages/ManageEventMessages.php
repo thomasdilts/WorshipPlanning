@@ -50,6 +50,11 @@ class ManageEventMessages extends ManageRelatedRecords
     public static function canAccess(array $parameters = []): bool
     {
         $user = auth()->user();
+        $record = $parameters['record'] ?? null;
+
+        if ($record instanceof Event && $record->is_template) {
+            return false;
+        }
 
         if (! $user instanceof User || $user->church_id === null || $user->church === null) {
             return false;

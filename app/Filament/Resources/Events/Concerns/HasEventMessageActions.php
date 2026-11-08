@@ -24,7 +24,7 @@ trait HasEventMessageActions
             ->tooltip(__('Event messages'))
             ->url(fn (): string => EventResource::getUrl('messages', ['record' => $event]))
             ->badge(fn (): ?string => ($count = $event->messages()->count()) > 0 ? (string) $count : null)
-            ->visible(fn (): bool => $this->canSeeEventMessages());
+            ->visible(fn (): bool => ! $event->is_template && $this->canSeeEventMessages());
     }
 
     protected function canSeeEventMessages(): bool

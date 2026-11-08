@@ -28,7 +28,11 @@ class ViewEvent extends ViewRecord
 
     public function getSubheading(): string|Htmlable|null
     {
-        return $this->getRecord()->starts_at->timezone(config('app.timezone'))->translatedFormat('D j M Y H:i');
+        $event = $this->getRecord();
+
+        return $event->is_template
+            ? __('Service template').' · '.$event->starts_at->timezone(config('app.timezone'))->translatedFormat('l H:i')
+            : $event->starts_at->timezone(config('app.timezone'))->translatedFormat('D j M Y H:i');
     }
 
     public function content(Schema $schema): Schema

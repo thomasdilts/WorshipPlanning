@@ -151,6 +151,7 @@ class UnavailabilityModuleTest extends TestCase
 
     public function test_member_can_edit_and_delete_own_unavailability_on_profile_page(): void
     {
+        $this->travelTo('2026-11-01 12:00:00');
         $church = Church::factory()->create();
         $this->seed(RolesAndPermissionsSeeder::class);
         app(ChurchModuleManager::class)->enable($church, 'unavailability');

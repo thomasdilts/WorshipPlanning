@@ -23,7 +23,7 @@ class EventPolicy
         return $this->sameChurch($user, $event)
             && $this->withChurchPermissions(
                 $user,
-                fn () => $user->can('events.view')
+                fn () => $user->can($event->is_template ? 'service_templates.use' : 'events.view')
             );
     }
 
@@ -40,7 +40,7 @@ class EventPolicy
         return $this->sameChurch($user, $event)
             && $this->withChurchPermissions(
                 $user,
-                fn () => $user->can('events.update')
+                fn () => $user->can($event->is_template ? 'service_templates.manage' : 'events.update')
             );
     }
 
@@ -49,7 +49,31 @@ class EventPolicy
         return $this->sameChurch($user, $event)
             && $this->withChurchPermissions(
                 $user,
-                fn () => $user->can('events.delete')
+                fn () => $user->can($event->is_template ? 'service_templates.manage' : 'events.delete')
+            );
+    }
+
+    /**
+     * See the service template list and create services from a template.
+     */
+    public function useTemplates(User $user): bool
+    {
+        return $this->withChurchPermissions(
+            $user,
+            fn () => $user->can('service_templates.use') && $user->can('events.create')
+        );
+    }
+
+    /**
+     * Save a service as a template.
+     */
+    public function saveAsTemplate(User $user, Event $event): bool
+    {
+        return $this->sameChurch($user, $event)
+            && ! $event->is_template
+            && $this->withChurchPermissions(
+                $user,
+                fn () => $user->can('service_templates.manage')
             );
     }
 

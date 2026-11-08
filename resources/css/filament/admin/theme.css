@@ -903,7 +903,7 @@ a.wp-schedule-event:hover {
     width: 8.5rem;
 }
 
-.wp-services-create {
+:is(.wp-services-create, .wp-services-templates) {
     white-space: nowrap;
 }
 
@@ -991,7 +991,7 @@ a.wp-schedule-event:hover {
         font-size: 0.75rem;
     }
 
-    .wp-services-create {
+    :is(.wp-services-create, .wp-services-templates) {
         flex: 1;
         justify-content: center;
     }
@@ -2043,7 +2043,7 @@ a.wp-schedule-event:hover {
     }
 
     .wp-ss-toolbar > :is(.wp-ss-search, .fi-dropdown:first-of-type,
-        .wp-services-dates, .wp-services-create, .wp-ss-actions,
+        .wp-services-dates, .wp-services-create, .wp-services-templates, .wp-ss-actions,
         .wp-ss-custom-dates) {
         grid-column: 1 / -1;
     }

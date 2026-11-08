@@ -7,6 +7,7 @@ use App\Filament\Resources\Events\Pages\CreateEvent;
 use App\Filament\Resources\Events\Pages\EditEvent;
 use App\Filament\Resources\Events\Pages\EditEventDetails;
 use App\Filament\Resources\Events\Pages\ListEvents;
+use App\Filament\Resources\Events\Pages\ListServiceTemplates;
 use App\Filament\Resources\Events\Pages\ManageEventMessages;
 use App\Filament\Resources\Events\Pages\TaskSpreadsheet;
 use App\Filament\Resources\Events\Pages\ViewEvent;
@@ -87,6 +88,7 @@ class EventResource extends Resource
         return [
             'index' => ListEvents::route('/'),
             'task-spreadsheet' => TaskSpreadsheet::route('/task-spreadsheet'),
+            'templates' => ListServiceTemplates::route('/templates'),
             'create' => CreateEvent::route('/create'),
             'view' => ViewEvent::route('/{record}'),
             'edit' => EditEvent::route('/{record}/edit'),
@@ -104,6 +106,14 @@ class EventResource extends Resource
         }
 
         return $query;
+    }
+
+    /**
+     * Service templates open in the same pages as services, so record URLs also resolve templates.
+     */
+    public static function getRecordRouteBindingEloquentQuery(): Builder
+    {
+        return static::getEloquentQuery()->withoutGlobalScope(Event::SERVICES_SCOPE);
     }
 
     public static function shouldRegisterNavigation(): bool

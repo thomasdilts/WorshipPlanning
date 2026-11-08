@@ -58,6 +58,8 @@ final class PermissionLabels
             'events.tasks_by_event' => __('View tasks by event'),
             'task_templates.view' => __('Use task templates'),
             'task_templates.manage' => __('Manage task templates'),
+            'service_templates.use' => __('Create services from service templates'),
+            'service_templates.manage' => __('Manage service templates'),
             'messaging.view' => __('View all messages'),
             'messaging.templates.manage' => __('Manage message templates'),
             'messaging.settings.manage' => __('Manage messaging / email settings'),

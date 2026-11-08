@@ -62,7 +62,8 @@ class SendTaskMessageAction
     {
         $event->loadMissing('church');
 
-        return app(MessagingAvailability::class)->anyEnabled($event->church)
+        return ! $event->is_template
+            && app(MessagingAvailability::class)->anyEnabled($event->church)
             && EventMessageForm::canSend();
     }
 

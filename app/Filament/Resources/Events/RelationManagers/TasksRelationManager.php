@@ -145,7 +145,8 @@ class TasksRelationManager extends RelationManager
                     ->icon(Heroicon::OutlinedPrinter)
                     ->color('gray')
                     ->url(fn (): string => route('events.pdf', $event))
-                    ->openUrlInNewTab(),
+                    ->openUrlInNewTab()
+                    ->visible(! $event->is_template),
                 $this->eventMessagesAction($event),
                 ActionGroup::make([
                     Action::make('editDetails')
@@ -157,11 +158,11 @@ class TasksRelationManager extends RelationManager
                         ->icon(Heroicon::OutlinedEye)
                         ->url(fn (): string => EventResource::getUrl('view', ['record' => $event])),
                     DeleteAction::make('deleteEvent')
-                        ->label(__('Delete event'))
+                        ->label($event->is_template ? __('Delete template') : __('Delete event'))
                         ->model(Event::class)
                         ->record($event)
                         ->authorize(fn (): bool => auth()->user()?->can('delete', $event) ?? false)
-                        ->successRedirectUrl(fn (): string => EventResource::getUrl('index')),
+                        ->successRedirectUrl(fn (): string => EventResource::getUrl($event->is_template ? 'templates' : 'index')),
                 ])
                     ->label(__('More'))
                     ->icon(Heroicon::OutlinedEllipsisVertical)

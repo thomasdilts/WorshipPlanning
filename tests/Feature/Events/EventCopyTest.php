@@ -70,7 +70,7 @@ class EventCopyTest extends TestCase
         $this->assertNull($task->assigned_team_id);
         $this->assertNull($task->song);
         $this->assertSame('Opening song', $task->name);
-        $this->assertSame('10:05:00', $task->starts_at);
+        $this->assertSame('10:00:00', $task->starts_at, 'Task times are recalculated from the new start time.');
 
         $withAll = app(EventCopier::class)->copy($source, [
             'starts_at' => '2026-11-15 10:00:00',
@@ -119,6 +119,7 @@ class EventCopyTest extends TestCase
 
     public function test_list_page_copy_action_creates_event(): void
     {
+        $this->travelTo('2026-11-01 12:00:00');
         $church = Church::factory()->create();
         $this->seed(RolesAndPermissionsSeeder::class);
         app(CurrentChurch::class)->set($church);

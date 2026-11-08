@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Core\Tenancy\BelongsToChurch;
 use Database\Factories\EventFactory;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection as EloquentCollection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -16,10 +17,16 @@ class Event extends Model
     /** @use HasFactory<EventFactory> */
     use BelongsToChurch, HasFactory;
 
+    /**
+     * Global scope that keeps service templates out of every normal event query.
+     */
+    public const SERVICES_SCOPE = 'services';
+
     protected $fillable = [
         'church_id',
         'name',
         'description',
+        'is_template',
         'starts_at',
         'shared_at',
         'plan_changed_at',
@@ -29,14 +36,33 @@ class Event extends Model
     {
         return [
             'starts_at' => 'datetime',
+            'is_template' => 'boolean',
             'shared_at' => 'datetime',
             'plan_changed_at' => 'datetime',
         ];
     }
 
+    protected static function booted(): void
+    {
+        static::addGlobalScope(self::SERVICES_SCOPE, function (Builder $query): void {
+            $query->where($query->getModel()->getTable().'.is_template', false);
+        });
+    }
+
+    /**
+     * Service templates of the current church (they are excluded from normal event queries).
+     *
+     * @return Builder<Event>
+     */
+    public static function templates(): Builder
+    {
+        return static::query()->withoutGlobalScope(self::SERVICES_SCOPE)->where('events.is_template', true);
+    }
+
     public function tasks(): HasMany
     {
         return $this->hasMany(EventTask::class)
+            ->withoutGlobalScope(EventTask::SERVICES_SCOPE)
             ->orderByRaw('(SELECT COALESCE(use_globally, 0) FROM task_templates WHERE task_templates.id = event_tasks.task_template_id) DESC')
             ->orderByDesc('event_tasks.before_start')
             ->orderByRaw('CASE WHEN (SELECT COALESCE(use_globally, 0) FROM task_templates WHERE task_templates.id = event_tasks.task_template_id) = 1 THEN (SELECT default_global_order FROM task_templates WHERE task_templates.id = event_tasks.task_template_id) ELSE event_tasks.sort_order END')

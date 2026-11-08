@@ -8,6 +8,9 @@ use Illuminate\Support\Carbon;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 
+/**
+ * Copies a service (or service template) with its tasks; messages and replies are never copied.
+ */
 class EventCopier
 {
     /**
@@ -17,7 +20,8 @@ class EventCopier
      *     starts_at: Carbon|string,
      *     weeks?: int,
      *     copy_people_and_teams?: bool,
-     *     copy_songs?: bool
+     *     copy_songs?: bool,
+     *     as_template?: bool
      * }  $options
      * @return Collection<int, Event>
      */
@@ -33,6 +37,7 @@ class EventCopier
             : $source->description;
         $copyPeopleAndTeams = (bool) ($options['copy_people_and_teams'] ?? false);
         $copySongs = (bool) ($options['copy_songs'] ?? false);
+        $asTemplate = (bool) ($options['as_template'] ?? false);
 
         return DB::transaction(function () use (
             $source,
@@ -42,6 +47,7 @@ class EventCopier
             $description,
             $copyPeopleAndTeams,
             $copySongs,
+            $asTemplate,
         ) {
             $source->loadMissing(['tasks.pictures', 'tasks.sharedFiles']);
 
@@ -53,6 +59,7 @@ class EventCopier
                     'name' => $name,
                     'description' => $description,
                     'starts_at' => $startsAt->copy()->addWeeks($offset),
+                    'is_template' => $asTemplate,
                 ]);
 
                 foreach ($source->tasks as $task) {
@@ -96,6 +103,8 @@ class EventCopier
                         $copy->sharedFiles()->sync($fileSync);
                     }
                 }
+
+                app(EventTaskTimeline::class)->recalculate($event);
 
                 $created->push($event->fresh(['tasks']));
             }

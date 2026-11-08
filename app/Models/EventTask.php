@@ -3,16 +3,23 @@
 namespace App\Models;
 
 use Database\Factories\EventTaskFactory;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Query\Builder as QueryBuilder;
 
 class EventTask extends Model
 {
     /** @use HasFactory<EventTaskFactory> */
     use HasFactory;
+
+    /**
+     * Global scope that keeps the tasks of service templates out of every normal task query.
+     */
+    public const SERVICES_SCOPE = 'services';
 
     protected $fillable = [
         'event_id',
@@ -50,6 +57,14 @@ class EventTask extends Model
      */
     protected static function booted(): void
     {
+        static::addGlobalScope(self::SERVICES_SCOPE, function (Builder $query): void {
+            $query->whereExists(fn (QueryBuilder $events) => $events
+                ->selectRaw('1')
+                ->from('events')
+                ->whereColumn('events.id', $query->getModel()->getTable().'.event_id')
+                ->where('events.is_template', false));
+        });
+
         static::saving(function (EventTask $task): void {
             $reassigned = $task->isDirty('assigned_user_id') || $task->isDirty('assigned_team_id');
 
@@ -66,9 +81,12 @@ class EventTask extends Model
             && (filled($this->assigned_user_id) || filled($this->assigned_team_id));
     }
 
+    /**
+     * The event or service template this task belongs to.
+     */
     public function event(): BelongsTo
     {
-        return $this->belongsTo(Event::class);
+        return $this->belongsTo(Event::class)->withoutGlobalScope(Event::SERVICES_SCOPE);
     }
 
     public function template(): BelongsTo

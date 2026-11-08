@@ -2,21 +2,15 @@
 
 namespace App\Filament\Resources\Events\Tables;
 
-use App\Filament\Resources\Events\EventResource;
+use App\Filament\Resources\Events\Actions\CopyEventAction;
+use App\Filament\Resources\Events\Actions\SaveAsTemplateAction;
 use App\Filament\Resources\Events\Pages\ListEvents;
 use App\Models\Event;
-use App\Services\EventCopier;
 use App\Services\EventTaskRowSummary;
-use Filament\Actions\Action;
 use Filament\Actions\EditAction;
 use Filament\Actions\ViewAction;
 use Filament\Forms\Components\DatePicker;
-use Filament\Forms\Components\DateTimePicker;
 use Filament\Forms\Components\Select;
-use Filament\Forms\Components\Textarea;
-use Filament\Forms\Components\TextInput;
-use Filament\Forms\Components\Toggle;
-use Filament\Notifications\Notification;
 use Filament\Support\Enums\IconSize;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Columns\TextColumn;
@@ -158,70 +152,8 @@ class EventsTable
                     }),
             ])
             ->recordActions([
-                Action::make('copy')
-                    ->label(__('Copy'))
-                    ->icon(Heroicon::OutlinedDocumentDuplicate)
-                    ->iconButton()
-                    ->color('gray')
-                    ->tooltip(__('Copy event'))
-                    ->authorize(fn (Event $record): bool => auth()->user()?->can('create', Event::class) ?? false)
-                    ->modalHeading(fn (Event $record): string => __('Copy “:name”', ['name' => $record->name]))
-                    ->modalSubmitActionLabel(__('Copy event'))
-                    ->form(fn (Event $record): array => [
-                        TextInput::make('name')
-                            ->label(__('Name'))
-                            ->required()
-                            ->maxLength(255)
-                            ->default($record->name),
-                        Textarea::make('description')
-                            ->label(__('Description'))
-                            ->rows(3)
-                            ->default($record->description),
-                        DateTimePicker::make('starts_at')
-                            ->label(__('New start'))
-                            ->required()
-                            ->seconds(false)
-                            ->minutesStep(15)
-                            ->native(false)
-                            ->default($record->starts_at?->copy()->addWeek()),
-                        TextInput::make('weeks')
-                            ->label(__('Number of weeks to copy to'))
-                            ->numeric()
-                            ->integer()
-                            ->minValue(1)
-                            ->default(1)
-                            ->required()
-                            ->helperText(__('1 = one copy at the dates above. 3 = three copies, each one week later.')),
-                        Toggle::make('copy_people_and_teams')
-                            ->label(__('Copy persons and teams'))
-                            ->default(false)
-                            ->helperText(__('Keep assignees and teams on each task. Off = blank assignments.')),
-                        Toggle::make('copy_songs')
-                            ->label(__('Copy songs'))
-                            ->default(false)
-                            ->helperText(__('Keep song titles on each task. Off = clear songs.')),
-                    ])
-                    ->action(function (Event $record, array $data, Action $action): void {
-                        $copies = app(EventCopier::class)->copy($record, [
-                            'name' => $data['name'],
-                            'description' => $data['description'] ?? null,
-                            'starts_at' => $data['starts_at'],
-                            'weeks' => (int) ($data['weeks'] ?? 1),
-                            'copy_people_and_teams' => (bool) ($data['copy_people_and_teams'] ?? false),
-                            'copy_songs' => (bool) ($data['copy_songs'] ?? false),
-                        ]);
-
-                        $count = $copies->count();
-
-                        Notification::make()
-                            ->title($count === 1 ? __('Event copied') : __(':count events copied', ['count' => $count]))
-                            ->success()
-                            ->send();
-
-                        $action->redirect(EventResource::getUrl('edit', [
-                            'record' => $copies->first(),
-                        ]));
-                    }),
+                CopyEventAction::make(),
+                SaveAsTemplateAction::make(),
                 ViewAction::make(),
                 EditAction::make(),
             ]);
