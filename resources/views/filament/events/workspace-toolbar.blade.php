@@ -4,7 +4,6 @@
     'startLabel' => __('Start :time', ['time' => $startTime ?? '']),
     'beforeLabel' => __('Before the start · timed backwards'),
     'afterLabel' => __('After the start'),
-    'dragLabel' => __('Drag activities across this line to move them before or after the start'),
     'handleLabel' => __('Drag the start time'),
 ]))" @endif>
     <div class="wp-workspace-tabs" role="group" aria-label="{{ __('Service workspace') }}">

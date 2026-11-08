@@ -81,13 +81,6 @@
 
                 band.append(before, time, after);
 
-                if (config.draggable) {
-                    const hint = document.createElement('span');
-                    hint.className = 'wp-order-start-hint';
-                    hint.textContent = config.dragLabel;
-                    band.append(hint);
-                }
-
                 cell.append(band);
                 row.append(cell);
 
