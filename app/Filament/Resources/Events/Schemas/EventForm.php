@@ -25,6 +25,7 @@ class EventForm
                     ->label(__('Starts'))
                     ->required()
                     ->seconds(false)
+                    ->minutesStep(15)
                     ->native(false),
             ]);
     }

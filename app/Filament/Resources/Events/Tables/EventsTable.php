@@ -181,6 +181,7 @@ class EventsTable
                             ->label(__('New start'))
                             ->required()
                             ->seconds(false)
+                            ->minutesStep(15)
                             ->native(false)
                             ->default($record->starts_at?->copy()->addWeek()),
                         TextInput::make('weeks')
