@@ -17,6 +17,7 @@ use App\Filament\Pages\SmsMessagingSettings;
 use App\Filament\Pages\SongStatistics;
 use App\Filament\Pages\TelegramMessagingSettings;
 use App\Filament\Pages\WhatsAppMessagingSettings;
+use App\Filament\Resources\AutomaticMessages\AutomaticMessageResource;
 use App\Filament\Resources\Churches\ChurchResource;
 use App\Filament\Resources\Events\EventResource;
 use App\Filament\Resources\Events\Pages\TaskSpreadsheet;
@@ -74,6 +75,7 @@ class PanelNavigation
                 $this->forClass(RoleResource::class, __('Roles')),
                 $this->forClass(TaskTemplateResource::class, __('Activity types')),
                 $this->forClass(MessageTemplateResource::class, __('Message templates')),
+                $this->forClass(AutomaticMessageResource::class, __('Automatic messages')),
                 $this->forClass(MessagingSettings::class),
                 $this->forClass(SmsMessagingSettings::class),
                 $this->forClass(WhatsAppMessagingSettings::class),

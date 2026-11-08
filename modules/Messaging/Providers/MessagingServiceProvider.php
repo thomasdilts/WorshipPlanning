@@ -101,6 +101,7 @@ class MessagingServiceProvider extends ServiceProvider
             'messaging.templates.manage',
             'messaging.settings.manage',
             'messaging.send',
+            'messaging.automatic.manage',
         ]);
     }
 }

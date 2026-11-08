@@ -1061,5 +1061,21 @@
     "Day and time": "Day and time",
     "Delete template “:name”": "Delete template “:name”",
     "Delete template": "Delete template",
-    "Service template": "Service template"
+    "Service template": "Service template",
+    "Automatic messages": "Automatic messages",
+    "automatic message": "automatic message",
+    "Manage automatic messages": "Manage automatic messages",
+    "Each automatic message is sent once to everyone assigned on every upcoming service, the chosen number of hours before it starts. People who declined are left out.": "Each automatic message is sent once to everyone assigned on every upcoming service, the chosen number of hours before it starts. People who declined are left out.",
+    "Hours before the service starts": "Hours before the service starts",
+    "Inactive automatic messages are never sent.": "Inactive automatic messages are never sent.",
+    "For example 72 for three days before. Checked every hour.": "For example 72 for three days before. Checked every hour.",
+    "Sent about :time before each service. Checked every hour.": "Sent about :time before each service. Checked every hour.",
+    ":count hour|:count hours": ":count hour|:count hours",
+    ":count day|:count days": ":count day|:count days",
+    ":time before the start": ":time before the start",
+    "Template deleted — never sent": "Template deleted — never sent",
+    "Sent for services": "Sent for services",
+    "No automatic messages yet": "No automatic messages yet",
+    "Add one to remind everyone on a service, for example three days before it starts.": "Add one to remind everyone on a service, for example three days before it starts.",
+    "When": "When"
 }

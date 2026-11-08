@@ -72,6 +72,15 @@ class ChurchTables
             'event_id' => 'events',
             'event_message_id' => 'event_messages',
         ]],
+        'automatic_messages' => ['scope' => 'church_id', 'refs' => [
+            'church_id' => 'churches',
+            'message_template_id' => 'message_templates',
+            'created_by_user_id' => 'users',
+        ]],
+        'automatic_message_deliveries' => ['scope' => ['automatic_message_id', 'automatic_messages'], 'refs' => [
+            'automatic_message_id' => 'automatic_messages',
+            'event_id' => 'events',
+        ]],
     ];
 
     /**

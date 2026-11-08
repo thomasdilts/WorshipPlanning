@@ -1061,5 +1061,21 @@
     "Day and time": "اليوم والوقت",
     "Delete template “:name”": "حذف القالب «:name»",
     "Delete template": "حذف القالب",
-    "Service template": "قالب خدمة"
+    "Service template": "قالب خدمة",
+    "Automatic messages": "الرسائل التلقائية",
+    "automatic message": "رسالة تلقائية",
+    "Manage automatic messages": "إدارة الرسائل التلقائية",
+    "Each automatic message is sent once to everyone assigned on every upcoming service, the chosen number of hours before it starts. People who declined are left out.": "تُرسل كل رسالة تلقائية مرة واحدة إلى كل المكلَّفين في كل خدمة قادمة، قبل بدئها بعدد الساعات المحدد. لا تُرسل لمن اعتذر.",
+    "Hours before the service starts": "عدد الساعات قبل بدء الخدمة",
+    "Inactive automatic messages are never sent.": "لا تُرسل الرسائل التلقائية غير المفعّلة أبداً.",
+    "For example 72 for three days before. Checked every hour.": "مثلاً 72 لثلاثة أيام قبلها. يتم التحقق كل ساعة.",
+    "Sent about :time before each service. Checked every hour.": "تُرسل قبل كل خدمة بحوالي :time. يتم التحقق كل ساعة.",
+    ":count hour|:count hours": ":count ساعة|:count ساعات",
+    ":count day|:count days": ":count يوم|:count أيام",
+    ":time before the start": "قبل البدء بـ :time",
+    "Template deleted — never sent": "تم حذف القالب — لن تُرسل",
+    "Sent for services": "أُرسلت لخدمات",
+    "No automatic messages yet": "لا توجد رسائل تلقائية بعد",
+    "Add one to remind everyone on a service, for example three days before it starts.": "أضف رسالة لتذكير الجميع بالخدمة، مثلاً قبل بدئها بثلاثة أيام.",
+    "When": "متى"
 }

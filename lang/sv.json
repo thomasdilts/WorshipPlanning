@@ -1061,5 +1061,21 @@
     "Day and time": "Dag och tid",
     "Delete template “:name”": "Radera mallen ”:name”",
     "Delete template": "Radera mall",
-    "Service template": "Gudstjänstmall"
+    "Service template": "Gudstjänstmall",
+    "Automatic messages": "Automatiska meddelanden",
+    "automatic message": "automatiskt meddelande",
+    "Manage automatic messages": "Hantera automatiska meddelanden",
+    "Each automatic message is sent once to everyone assigned on every upcoming service, the chosen number of hours before it starts. People who declined are left out.": "Varje automatiskt meddelande skickas en gång till alla som är tilldelade på varje kommande gudstjänst, det valda antalet timmar före start. De som har tackat nej får inget.",
+    "Hours before the service starts": "Timmar före gudstjänstens start",
+    "Inactive automatic messages are never sent.": "Inaktiva automatiska meddelanden skickas aldrig.",
+    "For example 72 for three days before. Checked every hour.": "Till exempel 72 för tre dagar före. Kontrolleras varje timme.",
+    "Sent about :time before each service. Checked every hour.": "Skickas cirka :time före varje gudstjänst. Kontrolleras varje timme.",
+    ":count hour|:count hours": ":count timme|:count timmar",
+    ":count day|:count days": ":count dag|:count dagar",
+    ":time before the start": ":time före start",
+    "Template deleted — never sent": "Mallen är borttagen — skickas aldrig",
+    "Sent for services": "Skickat för gudstjänster",
+    "No automatic messages yet": "Inga automatiska meddelanden än",
+    "Add one to remind everyone on a service, for example three days before it starts.": "Lägg till ett för att påminna alla på en gudstjänst, till exempel tre dagar före start.",
+    "When": "När"
 }

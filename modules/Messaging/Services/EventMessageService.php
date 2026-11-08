@@ -43,7 +43,7 @@ class EventMessageService
      */
     public function create(
         Event $event,
-        User $author,
+        ?User $author,
         ?string $body,
         ?string $subject,
         array $recipientUserIds = [],
@@ -69,7 +69,7 @@ class EventMessageService
                 'church_id' => $event->church_id,
                 'event_id' => $event->id,
                 'event_task_id' => $pair['task']?->id,
-                'created_by_user_id' => $author->id,
+                'created_by_user_id' => $author?->id,
                 'message_template_id' => $templateId,
                 'subject' => $subject,
                 'body' => $body,

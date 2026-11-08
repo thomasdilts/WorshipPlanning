@@ -25,3 +25,6 @@ Schedule::call(function (): void {
         }
     }
 })->name('remove-old-church-transfer-files')->hourly();
+
+/* Automatic messages are sent once per service; overlapping runs are also guarded by a unique delivery row. */
+Schedule::command('worship:send-automatic-messages')->hourly()->withoutOverlapping();

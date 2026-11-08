@@ -70,6 +70,7 @@ class RolesAndPermissionsSeeder extends Seeder
             'messaging.templates.manage',
             'messaging.settings.manage',
             'messaging.send',
+            'messaging.automatic.manage',
             'unavailability.view',
             'unavailability.manage_own',
             'unavailability.manage',

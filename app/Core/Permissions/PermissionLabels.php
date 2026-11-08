@@ -64,6 +64,7 @@ final class PermissionLabels
             'messaging.templates.manage' => __('Manage message templates'),
             'messaging.settings.manage' => __('Manage messaging / email settings'),
             'messaging.send' => __('Send messages'),
+            'messaging.automatic.manage' => __('Manage automatic messages'),
             'unavailability.view' => __('View unavailability'),
             'unavailability.manage_own' => __('Manage own unavailability'),
             'unavailability.manage' => __('Manage everyone’s unavailability'),
