@@ -94,7 +94,7 @@ class ServiceWorkspaceTest extends TestCase
         ], EventTaskForm::fillFromRecord($task->fresh())['announcement_points']);
     }
 
-    public function test_required_announcements_reject_an_empty_point(): void
+    public function test_required_announcements_can_be_cleared(): void
     {
         [$admin, $event, $task] = $this->seedWorkspaceWithTasks();
         $task->template->update(['name' => 'Pålysningar', 'description_usage' => FieldUsage::Required]);
@@ -103,9 +103,9 @@ class ServiceWorkspaceTest extends TestCase
 
         Livewire::test(OrderTasksRelationManager::class, ['ownerRecord' => $event, 'pageClass' => EditEvent::class])
             ->callTableAction('edit', $task, data: ['announcement_points' => [['text' => '']]])
-            ->assertHasTableActionErrors(['announcement_points.0.text' => 'required']);
+            ->assertHasNoTableActionErrors();
 
-        $this->assertSame('Keep this announcement', $task->fresh()->description);
+        $this->assertEmpty($task->fresh()->description);
     }
 
     public function test_optional_announcements_can_be_saved_without_points(): void

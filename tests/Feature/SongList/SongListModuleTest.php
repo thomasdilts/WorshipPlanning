@@ -182,7 +182,7 @@ class SongListModuleTest extends TestCase
         $this->assertSame('Brand new chorus', $task->song);
     }
 
-    public function test_required_song_accepts_catalog_or_manual_when_both_allowed(): void
+    public function test_required_song_accepts_catalog_manual_or_blank_when_both_allowed(): void
     {
         $song = Song::factory()->create([
             'church_id' => $this->church->id,
@@ -221,7 +221,7 @@ class SongListModuleTest extends TestCase
                 'sort_order' => 2,
                 'duration' => 5,
             ])
-            ->assertHasTableActionErrors(['song']);
+            ->assertHasNoTableActionErrors();
     }
 
     public function test_admin_can_create_song_with_lyrics(): void

@@ -92,7 +92,7 @@ class SpecialNeedsFieldUsageTest extends TestCase
         $this->assertNull($task->special_needs);
     }
 
-    public function test_special_needs_required_when_template_requires_it(): void
+    public function test_task_can_be_created_with_template_required_fields_left_blank(): void
     {
         $church = Church::factory()->create();
         $this->seed(RolesAndPermissionsSeeder::class);
@@ -104,6 +104,7 @@ class SpecialNeedsFieldUsageTest extends TestCase
 
         $template = TaskTemplate::factory()->create([
             'church_id' => $church->id,
+            'person_usage' => FieldUsage::Required,
             'special_needs_usage' => FieldUsage::Required,
         ]);
         $event = Event::factory()->create(['church_id' => $church->id]);
@@ -120,6 +121,50 @@ class SpecialNeedsFieldUsageTest extends TestCase
                 'sort_order' => 1,
                 'duration' => 5,
             ])
-            ->assertHasTableActionErrors(['special_needs']);
+            ->assertHasNoTableActionErrors();
+
+        $task = $event->tasks()->sole();
+        $this->assertNull($task->assigned_user_id);
+        $this->assertNull($task->special_needs);
+    }
+
+    public function test_editing_a_task_can_clear_fields_the_template_requires(): void
+    {
+        $church = Church::factory()->create();
+        $this->seed(RolesAndPermissionsSeeder::class);
+        app(CurrentChurch::class)->set($church);
+
+        $admin = User::factory()->create(['church_id' => $church->id]);
+        RolesAndPermissionsSeeder::assignDefaultRoles($admin, 'Church Admin');
+        app(PermissionRegistrar::class)->setPermissionsTeamId($church->id);
+
+        $template = TaskTemplate::factory()->create([
+            'church_id' => $church->id,
+            'person_usage' => FieldUsage::Required,
+            'special_needs_usage' => FieldUsage::Required,
+        ]);
+        $event = Event::factory()->create(['church_id' => $church->id]);
+        $task = EventTask::factory()->create([
+            'event_id' => $event->id,
+            'task_template_id' => $template->id,
+            'assigned_user_id' => $admin->id,
+            'special_needs' => 'Needs a stool',
+        ]);
+
+        $this->actingAs($admin);
+
+        Livewire::test(TasksRelationManager::class, [
+            'ownerRecord' => $event,
+            'pageClass' => EditEvent::class,
+        ])
+            ->callTableAction('edit', $task, data: [
+                'assigned_user_id' => null,
+                'special_needs' => null,
+            ])
+            ->assertHasNoTableActionErrors();
+
+        $task->refresh();
+        $this->assertNull($task->assigned_user_id);
+        $this->assertNull($task->special_needs);
     }
 }

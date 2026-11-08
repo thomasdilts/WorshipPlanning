@@ -422,6 +422,35 @@ class TaskSpreadsheetTest extends TestCase
             ->assertSee('Carol');
     }
 
+    public function test_edit_task_modal_can_remove_a_required_person(): void
+    {
+        $template = TaskTemplate::factory()->create([
+            'church_id' => $this->church->id,
+            'person_usage' => FieldUsage::Required,
+            'team_usage' => FieldUsage::NotUsed,
+        ]);
+        $event = Event::factory()->create([
+            'church_id' => $this->church->id,
+            'starts_at' => now()->addDays(5),
+            'ends_at' => now()->addDays(5)->addHours(2),
+        ]);
+        $task = EventTask::factory()->create([
+            'event_id' => $event->id,
+            'task_template_id' => $template->id,
+            'assigned_user_id' => $this->admin->id,
+        ]);
+
+        $this->actingAs($this->admin);
+
+        Livewire::test(TaskSpreadsheet::class)
+            ->callAction('editEventTask', data: [
+                'assigned_user_id' => null,
+            ], arguments: ['taskId' => $task->id])
+            ->assertHasNoActionErrors();
+
+        $this->assertNull($task->refresh()->assigned_user_id);
+    }
+
     public function test_month_row_bands_alternate_by_month_and_row(): void
     {
         $rows = collect([

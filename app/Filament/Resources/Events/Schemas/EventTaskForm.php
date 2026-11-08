@@ -146,7 +146,7 @@ class EventTaskForm
                 ->afterStateUpdated(fn (?string $state, Set $set) => $set('announcement_points', AnnouncementPoints::fromDescription($state) ?: [['text' => '']]))
                 ->columnSpanFull()
                 ->visible(fn (Get $get): bool => static::templateUsage($get, 'description')->isUsed() && ! static::isAnnouncement($get))
-                ->required(fn (Get $get): bool => static::templateUsage($get, 'description')->isRequired()),
+                ->markAsRequired(fn (Get $get): bool => static::templateUsage($get, 'description')->isRequired()),
             Repeater::make('announcement_points')
                 ->label(__('Announcement points'))
                 ->helperText(__('Write one announcement in each numbered box. Add as many points as you need; the PDF uses the same order.'))
@@ -154,8 +154,7 @@ class EventTaskForm
                     Textarea::make('text')
                         ->label(__('Announcement'))
                         ->hiddenLabel()
-                        ->rows(3)
-                        ->required(fn (Get $get): bool => TaskTemplate::query()->find($get('../../task_template_id'))?->usage('description')->isRequired() ?? false),
+                        ->rows(3),
                 ])
                 ->itemLabel(__('Announcement'))
                 ->itemNumbers()
@@ -164,7 +163,6 @@ class EventTaskForm
                 ->reorderableWithButtons()
                 ->live(onBlur: true)
                 ->afterStateUpdated(fn (?array $state, Set $set) => $set('description', AnnouncementPoints::toDescription($state ?? [])))
-                ->minItems(fn (Get $get): int => static::templateUsage($get, 'description')->isRequired() ? 1 : 0)
                 ->columnSpanFull()
                 ->visible(fn (Get $get): bool => static::templateUsage($get, 'description')->isUsed() && static::isAnnouncement($get)),
             Select::make('song_id')
@@ -186,21 +184,8 @@ class EventTaskForm
 
                     return static::templateUsage($get, 'song')->isUsed();
                 })
-                // Required song = catalog pick OR (when allowed) manual title — not both.
-                ->required(fn (Get $get): bool => static::songCatalogRequired($get, $songListEnabled))
-                ->rules([
-                    fn (Get $get): \Closure => function (string $attribute, mixed $value, \Closure $fail) use ($get, $songListEnabled): void {
-                        if (! static::templateUsage($get, 'song')->isRequired()) {
-                            return;
-                        }
-
-                        if (static::songRequirementMet($get, $songListEnabled)) {
-                            return;
-                        }
-
-                        $fail(static::songRequirementMessage($get, $songListEnabled));
-                    },
-                ])
+                // Asterisk only: blank is allowed so an assignment can be cleared or added later.
+                ->markAsRequired(fn (Get $get): bool => static::songCatalogRequired($get, $songListEnabled))
                 ->afterStateUpdated(function (?int $state, callable $set): void {
                     if (! $state) {
                         return;
@@ -235,25 +220,7 @@ class EventTaskForm
 
                     return static::templateAllowsManualSong($get);
                 })
-                ->required(fn (Get $get): bool => static::songManualRequired($get, $songListEnabled))
-                ->rules([
-                    fn (Get $get): \Closure => function (string $attribute, mixed $value, \Closure $fail) use ($get, $songListEnabled): void {
-                        // When the catalog select is hidden, it cannot carry the shared rule.
-                        if ($songListEnabled) {
-                            return;
-                        }
-
-                        if (! static::templateUsage($get, 'song')->isRequired()) {
-                            return;
-                        }
-
-                        if (static::songRequirementMet($get, $songListEnabled)) {
-                            return;
-                        }
-
-                        $fail(static::songRequirementMessage($get, $songListEnabled));
-                    },
-                ])
+                ->markAsRequired(fn (Get $get): bool => static::songManualRequired($get, $songListEnabled))
                 ->afterStateUpdated(function (?string $state, callable $set, Get $get) use ($songListEnabled): void {
                     if (! $songListEnabled) {
                         return;
@@ -302,7 +269,7 @@ class EventTaskForm
 
                     return static::templateUsage($get, 'picture')->isUsed();
                 })
-                ->required(function (Get $get) use ($picturesEnabled): bool {
+                ->markAsRequired(function (Get $get) use ($picturesEnabled): bool {
                     if (! $picturesEnabled) {
                         return false;
                     }
@@ -332,7 +299,7 @@ class EventTaskForm
 
                     return static::templateUsage($get, 'file')->isUsed();
                 })
-                ->required(function (Get $get) use ($fileSharingEnabled): bool {
+                ->markAsRequired(function (Get $get) use ($fileSharingEnabled): bool {
                     if (! $fileSharingEnabled) {
                         return false;
                     }
@@ -345,7 +312,7 @@ class EventTaskForm
                 ->rows(2)
                 ->columnSpanFull()
                 ->visible(fn (Get $get): bool => static::templateUsage($get, 'special_needs')->isUsed())
-                ->required(fn (Get $get): bool => static::templateUsage($get, 'special_needs')->isRequired()),
+                ->markAsRequired(fn (Get $get): bool => static::templateUsage($get, 'special_needs')->isRequired()),
             Repeater::make('bible_passages')
                 ->label(__('Bible verses'))
                 ->helperText(function () use ($event): string {
@@ -432,8 +399,7 @@ class EventTaskForm
 
                     return static::templateUsage($get, 'bible')->isUsed();
                 })
-                ->minItems(fn (Get $get): int => static::templateUsage($get, 'bible')->isRequired() ? 1 : 0)
-                ->required(function (Get $get) use ($bibleVersesEnabled): bool {
+                ->markAsRequired(function (Get $get) use ($bibleVersesEnabled): bool {
                     if (! $bibleVersesEnabled) {
                         return false;
                     }
@@ -471,7 +437,7 @@ class EventTaskForm
                 ->live()
                 ->afterStateUpdated(fn (Set $set) => $set('accepted_verbally', false))
                 ->visible(fn (Get $get): bool => static::templateUsage($get, 'person')->isUsed())
-                ->required(fn (Get $get): bool => static::templateUsage($get, 'person')->isRequired())
+                ->markAsRequired(fn (Get $get): bool => static::templateUsage($get, 'person')->isRequired())
                 ->helperText(function (?int $state, Get $get) use ($event, $abilitiesEnabled): ?HtmlString {
                     if ($abilitiesEnabled && blank($get('task_template_id'))) {
                         return new HtmlString(e(__('Select a task template first to see eligible people.')));
@@ -529,7 +495,7 @@ class EventTaskForm
 
                     return static::templateUsage($get, 'team')->isUsed();
                 })
-                ->required(function (Get $get) use ($teamsEnabled): bool {
+                ->markAsRequired(function (Get $get) use ($teamsEnabled): bool {
                     if (! $teamsEnabled) {
                         return false;
                     }
@@ -987,32 +953,6 @@ class EventTaskForm
         }
 
         return blank($get('song_id'));
-    }
-
-    protected static function songRequirementMet(Get $get, bool $songListEnabled): bool
-    {
-        if ($songListEnabled && filled($get('song_id'))) {
-            return true;
-        }
-
-        if ($songListEnabled && ! static::templateAllowsManualSong($get)) {
-            return false;
-        }
-
-        return filled(trim((string) ($get('song') ?? '')));
-    }
-
-    protected static function songRequirementMessage(Get $get, bool $songListEnabled): string
-    {
-        if ($songListEnabled && static::templateAllowsManualSong($get)) {
-            return __('Select a song from the song list or enter one manually.');
-        }
-
-        if ($songListEnabled) {
-            return __('Select a song from the song list.');
-        }
-
-        return __('Enter a song title.');
     }
 
     protected static function resolveTemplate(Get $get): ?TaskTemplate
