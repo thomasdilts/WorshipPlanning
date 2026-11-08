@@ -37,25 +37,35 @@
                     sortable.option('delay', 0);
                 });
             },
-            buildStartMarker() {
+            buildStartMarker(templateRow) {
                 const row = document.createElement('tr');
                 row.className = 'wp-order-start-marker';
-                if (config.draggable) row.setAttribute('x-sortable-item', config.markerKey);
 
-                const cell = document.createElement('td');
-                const band = document.createElement('div');
-                band.className = 'wp-order-start-band';
+                const templateHandle = config.draggable ? templateRow.querySelector('.wp-order-drag-handle') : null;
+                const handleCell = templateHandle?.closest('td');
 
-                if (config.draggable) {
-                    const handle = document.createElement('button');
-                    handle.type = 'button';
-                    handle.className = 'wp-order-start-handle';
-                    handle.setAttribute('x-sortable-handle', '');
+                if (handleCell) {
+                    row.setAttribute('x-sortable-item', config.markerKey);
+
+                    // Same cell and grab bar as the task rows, so the handle lines up with theirs.
+                    const cell = handleCell.cloneNode(true);
+                    cell.querySelectorAll('*').forEach(node => {
+                        [...node.attributes]
+                            .filter(attribute => attribute.name.startsWith('wire:'))
+                            .forEach(attribute => node.removeAttribute(attribute.name));
+                    });
+                    const handle = cell.querySelector('.wp-order-drag-handle');
+                    handle.removeAttribute('data-order-record-key');
+                    handle.removeAttribute('data-table-reorder-label');
                     handle.setAttribute('aria-label', config.handleLabel);
                     handle.title = config.handleLabel;
-                    handle.textContent = '⠿';
-                    band.append(handle);
+                    row.append(cell);
                 }
+
+                const cell = document.createElement('td');
+                cell.className = 'wp-order-start-band-cell';
+                const band = document.createElement('div');
+                band.className = 'wp-order-start-band';
 
                 const before = document.createElement('span');
                 before.className = 'wp-order-start-side';
@@ -95,13 +105,13 @@
                 }
 
                 if (!marker) {
-                    marker = this.buildStartMarker();
+                    marker = this.buildStartMarker(rows[0]);
                     this.awaitingServer = false;
                 }
 
-                const cell = marker.firstElementChild;
-                const columns = String(rows[0].children.length);
-                if (cell.getAttribute('colspan') !== columns) cell.setAttribute('colspan', columns);
+                const bandCell = marker.querySelector(':scope > td.wp-order-start-band-cell');
+                const columns = String(rows[0].children.length - (marker.children.length - 1));
+                if (bandCell.getAttribute('colspan') !== columns) bandCell.setAttribute('colspan', columns);
 
                 const items = [...body.querySelectorAll(':scope > tr.fi-ta-row, :scope > tr.wp-order-start-marker')];
                 const at = items.indexOf(marker);
