@@ -860,11 +860,6 @@ a.wp-schedule-event:hover {
     color: var(--wp-text-muted);
 }
 
-.wp-staffing-overrun {
-    color: var(--wp-declined-text);
-    font-weight: 600;
-}
-
 .wp-staffing-ready {
     color: var(--wp-confirmed-text);
     font-weight: 600;

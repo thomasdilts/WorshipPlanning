@@ -24,8 +24,7 @@ class EventStaffingSummary
      *     confirmed: int,
      *     conflict: int,
      *     ready: bool,
-     *     calculated_ends_at: ?Carbon,
-     *     overrun_minutes: int
+     *     calculated_ends_at: ?Carbon
      * }
      */
     public function for(Event $event): array
@@ -59,13 +58,6 @@ class EventStaffingSummary
             }
         }
 
-        $calculatedEnd = $this->calculatedEndsAt($event);
-        $overrun = 0;
-
-        if ($calculatedEnd !== null && $event->ends_at !== null && $calculatedEnd->gt($event->ends_at)) {
-            $overrun = (int) $event->ends_at->diffInMinutes($calculatedEnd);
-        }
-
         return [
             'total' => $staffingTasks->count(),
             'vacant' => $vacant,
@@ -74,8 +66,7 @@ class EventStaffingSummary
             'confirmed' => $confirmed,
             'conflict' => 0,
             'ready' => $vacant === 0 && $declined === 0 && $awaiting === 0,
-            'calculated_ends_at' => $calculatedEnd,
-            'overrun_minutes' => $overrun,
+            'calculated_ends_at' => $this->calculatedEndsAt($event),
         ];
     }
 

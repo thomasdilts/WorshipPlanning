@@ -455,11 +455,11 @@ class EventTaskForm
 
                     $service = app(UnavailabilityConflictService::class);
 
-                    if (! $service->userIsUnavailable($user, $event->starts_at, $event->ends_at, $event->church)) {
+                    if (! $service->userIsUnavailable($user, $event->starts_at, $event->endsAt(), $event->church)) {
                         return null;
                     }
 
-                    $ranges = $service->forUser($user, $event->starts_at, $event->ends_at)
+                    $ranges = $service->forUser($user, $event->starts_at, $event->endsAt())
                         ->map(fn ($u) => $u->label())
                         ->implode('; ');
 

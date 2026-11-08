@@ -31,21 +31,18 @@ class EventListDateFilterTest extends TestCase
             'church_id' => $church->id,
             'name' => 'Past service',
             'starts_at' => now()->subDays(3)->setTime(10, 0),
-            'ends_at' => now()->subDays(3)->setTime(12, 0),
         ]);
 
         $today = Event::factory()->create([
             'church_id' => $church->id,
             'name' => 'Today service',
             'starts_at' => now()->setTime(10, 0),
-            'ends_at' => now()->setTime(12, 0),
         ]);
 
         $future = Event::factory()->create([
             'church_id' => $church->id,
             'name' => 'Future service',
             'starts_at' => now()->addDays(5)->setTime(10, 0),
-            'ends_at' => now()->addDays(5)->setTime(12, 0),
         ]);
 
         $this->actingAs($admin);
@@ -68,7 +65,6 @@ class EventListDateFilterTest extends TestCase
             'church_id' => $church->id,
             'name' => 'Past service',
             'starts_at' => now()->subDays(3)->setTime(10, 0),
-            'ends_at' => now()->subDays(3)->setTime(12, 0),
         ]);
 
         $this->actingAs($admin);
@@ -94,15 +90,15 @@ class EventListDateFilterTest extends TestCase
         RolesAndPermissionsSeeder::assignDefaultRoles($admin, 'Church Admin');
         $morning = Event::factory()->create([
             'church_id' => $church->id, 'name' => 'Morning service',
-            'starts_at' => '2026-10-25 10:00', 'ends_at' => '2026-10-25 12:00',
+            'starts_at' => '2026-10-25 10:00',
         ]);
         $prayer = Event::factory()->create([
             'church_id' => $church->id, 'name' => 'Prayer meeting', 'description' => 'Quiet reflection',
-            'starts_at' => '2026-11-02 19:00', 'ends_at' => '2026-11-02 21:00',
+            'starts_at' => '2026-11-02 19:00',
         ]);
         $evening = Event::factory()->create([
             'church_id' => $church->id, 'name' => 'Evening service',
-            'starts_at' => '2026-11-03 18:00', 'ends_at' => '2026-11-03 20:00',
+            'starts_at' => '2026-11-03 18:00',
         ]);
         $this->actingAs($admin);
 
@@ -146,11 +142,11 @@ class EventListDateFilterTest extends TestCase
         RolesAndPermissionsSeeder::assignDefaultRoles($admin, 'Church Admin');
         $mine = Event::factory()->create([
             'church_id' => $church->id, 'name' => 'Our service',
-            'starts_at' => now()->addDay(), 'ends_at' => now()->addDay()->addHour(),
+            'starts_at' => now()->addDay(),
         ]);
         $theirs = Event::factory()->create([
             'church_id' => $otherChurch->id, 'name' => 'Private service',
-            'starts_at' => now()->addDay(), 'ends_at' => now()->addDay()->addHour(),
+            'starts_at' => now()->addDay(),
         ]);
         app(CurrentChurch::class)->set($church);
         $this->actingAs($admin);

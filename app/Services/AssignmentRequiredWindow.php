@@ -33,13 +33,9 @@ class AssignmentRequiredWindow
         }
 
         if ($task->isGlobal() || blank($task->duration)) {
-            if ($event->ends_at === null) {
-                return null;
-            }
-
             return [
                 'from' => $event->starts_at->copy(),
-                'to' => $event->ends_at->copy(),
+                'to' => $event->endsAt(),
             ];
         }
 
@@ -52,13 +48,9 @@ class AssignmentRequiredWindow
             }
         }
 
-        if ($event->ends_at === null) {
-            return null;
-        }
-
         return [
             'from' => $event->starts_at->copy(),
-            'to' => $event->ends_at->copy(),
+            'to' => $event->endsAt(),
         ];
     }
 

@@ -256,7 +256,6 @@ class AssignedTasksListTest extends TestCase
             'church_id' => $church->id,
             'name' => $name.' event',
             'starts_at' => $when->copy()->setTime(10, 0),
-            'ends_at' => $when->copy()->setTime(12, 0),
         ]);
 
         return EventTask::factory()->create([
@@ -278,7 +277,6 @@ class AssignedTasksListTest extends TestCase
             'church_id' => $church->id,
             'name' => $name.' event',
             'starts_at' => $when->copy()->setTime(10, 0),
-            'ends_at' => $when->copy()->setTime(12, 0),
         ]);
 
         return EventTask::factory()->create([

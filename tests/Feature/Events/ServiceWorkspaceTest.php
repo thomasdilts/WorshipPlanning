@@ -186,12 +186,11 @@ class ServiceWorkspaceTest extends TestCase
         $this->assertSame('10:00:00', $second->fresh()->starts_at);
     }
 
-    public function test_staffing_summary_reports_overrun_when_program_exceeds_event_end(): void
+    public function test_event_end_is_calculated_from_timed_tasks_only(): void
     {
         [$admin, $event] = $this->seedWorkspace();
         $event->update([
             'starts_at' => '2026-11-01 10:00:00',
-            'ends_at' => '2026-11-01 10:20:00',
         ]);
 
         $template = TaskTemplate::factory()->create([
@@ -207,11 +206,16 @@ class ServiceWorkspaceTest extends TestCase
             'duration' => 30,
             'sort_order' => 1,
         ]);
+        EventTask::factory()->create([
+            'event_id' => $event->id,
+            'task_template_id' => TaskTemplate::factory()->create(['church_id' => $admin->church_id, 'use_globally' => true])->id,
+            'duration' => 90,
+        ]);
 
         $summary = app(EventStaffingSummary::class)->for($event->fresh(['tasks.template']));
 
-        $this->assertSame(10, $summary['overrun_minutes']);
         $this->assertSame('10:30', $summary['calculated_ends_at']?->format('H:i'));
+        $this->assertSame('2026-11-01 10:30', $event->fresh()->endsAt()->format('Y-m-d H:i'));
     }
 
     public function test_dragging_activities_reorders_and_recalculates_without_moving_whole_service_roles(): void
@@ -315,7 +319,6 @@ class ServiceWorkspaceTest extends TestCase
             'church_id' => $church->id,
             'name' => 'Sunday gathering',
             'starts_at' => '2026-11-01 10:00:00',
-            'ends_at' => '2026-11-01 11:30:00',
         ]);
 
         return [$admin, $event];

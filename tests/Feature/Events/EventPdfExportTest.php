@@ -92,7 +92,7 @@ class EventPdfExportTest extends TestCase
         EventTask::factory()->create(['event_id' => $event->id, 'task_template_id' => $absence->id, 'name' => 'Frånvaro']);
         $template = TaskTemplate::factory()->create(['church_id' => $church->id, 'name' => 'Reading', 'description_usage' => FieldUsage::Required, 'person_usage' => FieldUsage::NotUsed]);
         $reader = User::factory()->create(['church_id' => $church->id, 'display_name' => 'Absent Reader']);
-        Unavailability::factory()->create(['church_id' => $church->id, 'user_id' => $reader->id, 'starts_on' => $event->starts_at->toDateString(), 'ends_on' => $event->ends_at->toDateString()]);
+        Unavailability::factory()->create(['church_id' => $church->id, 'user_id' => $reader->id, 'starts_on' => $event->starts_at->toDateString(), 'ends_on' => $event->starts_at->toDateString()]);
         $task = EventTask::factory()->create(['event_id' => $event->id, 'task_template_id' => $template->id, 'name' => 'Reading', 'description' => null, 'starts_at' => '10:00:00', 'duration' => 5, 'assigned_user_id' => $reader->id]);
         $event->load(['church', 'tasks.template', 'tasks.assignedUser', 'tasks.assignedTeam', 'tasks.sharedFiles', 'tasks.pictures', 'tasks.catalogSong']);
 

@@ -292,7 +292,6 @@ class UnavailabilityModuleTest extends TestCase
             'church_id' => $church->id,
             'name' => 'Sunday Service',
             'starts_at' => '2026-11-05 10:00:00',
-            'ends_at' => '2026-11-05 12:00:00',
         ]);
 
         Unavailability::factory()->create([
@@ -341,7 +340,6 @@ class UnavailabilityModuleTest extends TestCase
         $event = Event::factory()->create([
             'church_id' => $church->id,
             'starts_at' => '2026-11-05 10:00:00',
-            'ends_at' => '2026-11-05 12:00:00',
         ]);
 
         Unavailability::factory()->forTeam($team)->create([
@@ -381,7 +379,6 @@ class UnavailabilityModuleTest extends TestCase
         $event = Event::factory()->create([
             'church_id' => $church->id,
             'starts_at' => '2026-11-05 10:00:00',
-            'ends_at' => '2026-11-05 12:00:00',
         ]);
 
         Unavailability::factory()->create([
@@ -417,7 +414,6 @@ class UnavailabilityModuleTest extends TestCase
         $event = Event::factory()->create([
             'church_id' => $church->id,
             'starts_at' => '2026-11-05 10:00:00',
-            'ends_at' => '2026-11-05 12:00:00',
         ]);
 
         Unavailability::factory()->create([

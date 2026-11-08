@@ -104,7 +104,6 @@ class EventTaskRowSummaryTest extends TestCase
         $event = Event::factory()->create([
             'church_id' => $church->id,
             'starts_at' => now()->addDay()->setTime(10, 0),
-            'ends_at' => now()->addDay()->setTime(12, 0),
         ]);
 
         Unavailability::factory()->create([
@@ -112,7 +111,7 @@ class EventTaskRowSummaryTest extends TestCase
             'user_id' => $person->id,
             'team_id' => null,
             'starts_on' => $event->starts_at->toDateString(),
-            'ends_on' => $event->ends_at->toDateString(),
+            'ends_on' => $event->starts_at->toDateString(),
         ]);
 
         $missingTask = EventTask::factory()->create([

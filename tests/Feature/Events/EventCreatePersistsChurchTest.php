@@ -30,7 +30,6 @@ class EventCreatePersistsChurchTest extends TestCase
                 'name' => 'Sunday Service',
                 'description' => 'Main gathering',
                 'starts_at' => now()->addDays(2)->setTime(10, 0),
-                'ends_at' => now()->addDays(2)->setTime(12, 0),
             ])
             ->call('create')
             ->assertHasNoFormErrors();

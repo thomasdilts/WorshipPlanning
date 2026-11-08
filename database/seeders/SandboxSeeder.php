@@ -190,7 +190,6 @@ class SandboxSeeder extends Seeder
                 'name' => 'Sunday gathering',
                 'description' => null,
                 'starts_at' => $startsAt,
-                'ends_at' => $startsAt->copy()->addHours(2),
             ]);
 
             $this->task($event, $templates['Welcome'], 10, userId: $volunteers['grace']->id);

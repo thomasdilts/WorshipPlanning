@@ -31,7 +31,7 @@ class DemoSnapshotLoader
      * @var array<string, list<string>>
      */
     public const SHIFTED_COLUMNS = [
-        'events' => ['starts_at', 'ends_at', 'shared_at', 'plan_changed_at', 'created_at', 'updated_at'],
+        'events' => ['starts_at', 'shared_at', 'plan_changed_at', 'created_at', 'updated_at'],
         'event_tasks' => ['accepted_verbally_at', 'created_at', 'updated_at'],
         'event_task_responses' => ['requested_at', 'occurred_at', 'created_at', 'updated_at'],
         'unavailabilities' => ['starts_on', 'ends_on', 'created_at', 'updated_at'],

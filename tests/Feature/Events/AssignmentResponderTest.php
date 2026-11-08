@@ -91,7 +91,6 @@ class AssignmentResponderTest extends TestCase
         $event = Event::factory()->create([
             'church_id' => $this->church->id,
             'starts_at' => now()->addDays(3),
-            'ends_at' => now()->addDays(3)->addHours(2),
         ]);
         $template = TaskTemplate::factory()->create([
             'church_id' => $this->church->id,
@@ -188,7 +187,6 @@ class AssignmentResponderTest extends TestCase
         $event = Event::factory()->create([
             'church_id' => $this->church->id,
             'starts_at' => now()->addDays(4),
-            'ends_at' => now()->addDays(4)->addHours(2),
         ]);
         $template = TaskTemplate::factory()->create([
             'church_id' => $this->church->id,

@@ -61,13 +61,11 @@ class TaskSpreadsheetPhase3Test extends TestCase
             'church_id' => $this->church->id,
             'name' => 'Soon',
             'starts_at' => now()->addWeeks(2),
-            'ends_at' => now()->addWeeks(2)->addHours(2),
         ]);
         $far = Event::factory()->create([
             'church_id' => $this->church->id,
             'name' => 'Later',
             'starts_at' => now()->addWeeks(8),
-            'ends_at' => now()->addWeeks(8)->addHours(2),
         ]);
 
         EventTask::factory()->create([
@@ -101,13 +99,11 @@ class TaskSpreadsheetPhase3Test extends TestCase
             'church_id' => $this->church->id,
             'name' => 'Needs filler',
             'starts_at' => now()->addDays(3),
-            'ends_at' => now()->addDays(3)->addHours(2),
         ]);
         $confirmedEvent = Event::factory()->create([
             'church_id' => $this->church->id,
             'name' => 'All set',
             'starts_at' => now()->addDays(4),
-            'ends_at' => now()->addDays(4)->addHours(2),
         ]);
 
         EventTask::factory()->create([
@@ -148,7 +144,6 @@ class TaskSpreadsheetPhase3Test extends TestCase
         $event = Event::factory()->create([
             'church_id' => $this->church->id,
             'starts_at' => now()->addDays(5),
-            'ends_at' => now()->addDays(5)->addHours(2),
         ]);
         $first = EventTask::factory()->create([
             'event_id' => $event->id,
@@ -230,7 +225,6 @@ class TaskSpreadsheetPhase3Test extends TestCase
             'church_id' => $this->church->id,
             'name' => 'Morning service',
             'starts_at' => now()->addDay(),
-            'ends_at' => now()->addDay()->addHour(),
         ]);
         EventTask::factory()->create(['event_id' => $event->id, 'task_template_id' => $template->id]);
         $this->actingAs($this->admin);
@@ -295,7 +289,6 @@ class TaskSpreadsheetPhase3Test extends TestCase
         $event = Event::factory()->create([
             'church_id' => $otherChurch->id,
             'starts_at' => now()->addDays(2),
-            'ends_at' => now()->addDays(2)->addHours(2),
         ]);
         $task = EventTask::factory()->create([
             'event_id' => $event->id,
@@ -332,13 +325,11 @@ class TaskSpreadsheetPhase3Test extends TestCase
             'church_id' => $this->church->id,
             'name' => 'My gap',
             'starts_at' => now()->addDays(3),
-            'ends_at' => now()->addDays(3)->addHours(2),
         ]);
         $theirs = Event::factory()->create([
             'church_id' => $this->church->id,
             'name' => 'Their gap',
             'starts_at' => now()->addDays(4),
-            'ends_at' => now()->addDays(4)->addHours(2),
         ]);
 
         $myTask = EventTask::factory()->create([

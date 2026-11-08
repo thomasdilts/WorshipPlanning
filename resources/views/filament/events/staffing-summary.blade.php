@@ -38,11 +38,6 @@
                 {{ __('Program ends :time', ['time' => $summary['calculated_ends_at']->format('H:i')]) }}
             </span>
         @endif
-        @if ($summary['overrun_minutes'] > 0)
-            <span class="wp-staffing-overrun">
-                {{ __('Overruns scheduled end by :minutes min', ['minutes' => $summary['overrun_minutes']]) }}
-            </span>
-        @endif
         @if ($summary['ready'])
             <span class="wp-staffing-ready">{{ __('Staffing looks complete') }}</span>
         @endif

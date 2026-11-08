@@ -4,7 +4,6 @@ namespace App\Filament\Resources\Events\Pages;
 
 use App\Filament\Resources\Events\Concerns\HasEventMessageActions;
 use App\Filament\Resources\Events\EventResource;
-use App\Services\EventStaffingSummary;
 use Filament\Resources\Pages\ViewRecord;
 use Filament\Schemas\Components\View as SchemaView;
 use Filament\Schemas\Schema;
@@ -29,19 +28,7 @@ class ViewEvent extends ViewRecord
 
     public function getSubheading(): string|Htmlable|null
     {
-        $event = $this->getRecord();
-        $summary = app(EventStaffingSummary::class)->for($event);
-
-        $range = $event->starts_at->timezone(config('app.timezone'))
-            ->translatedFormat('D j M Y H:i')
-            .' – '
-            .$event->ends_at->timezone(config('app.timezone'))->format('H:i');
-
-        if ($summary['overrun_minutes'] > 0) {
-            return $range.' · '.__('Overruns by :minutes min', ['minutes' => $summary['overrun_minutes']]);
-        }
-
-        return $range;
+        return $this->getRecord()->starts_at->timezone(config('app.timezone'))->translatedFormat('D j M Y H:i');
     }
 
     public function content(Schema $schema): Schema

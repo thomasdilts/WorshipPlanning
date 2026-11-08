@@ -37,7 +37,6 @@ class EventCopyTest extends TestCase
             'name' => 'Sunday Service',
             'description' => 'Original',
             'starts_at' => '2026-11-01 10:00:00',
-            'ends_at' => '2026-11-01 12:00:00',
         ]);
 
         $template = TaskTemplate::factory()->create(['church_id' => $church->id]);
@@ -57,7 +56,6 @@ class EventCopyTest extends TestCase
             'name' => 'Sunday Service (copy)',
             'description' => 'New series',
             'starts_at' => '2026-11-08 10:00:00',
-            'ends_at' => '2026-11-08 12:00:00',
             'copy_people_and_teams' => false,
             'copy_songs' => false,
         ])->first();
@@ -76,7 +74,6 @@ class EventCopyTest extends TestCase
 
         $withAll = app(EventCopier::class)->copy($source, [
             'starts_at' => '2026-11-15 10:00:00',
-            'ends_at' => '2026-11-15 12:00:00',
             'copy_people_and_teams' => true,
             'copy_songs' => true,
         ])->first();
@@ -97,7 +94,6 @@ class EventCopyTest extends TestCase
             'church_id' => $church->id,
             'name' => 'Sunday Service',
             'starts_at' => '2026-11-01 10:00:00',
-            'ends_at' => '2026-11-01 12:00:00',
         ]);
 
         $template = TaskTemplate::factory()->create(['church_id' => $church->id]);
@@ -109,7 +105,6 @@ class EventCopyTest extends TestCase
         $copies = app(EventCopier::class)->copy($source, [
             'name' => 'Advent series',
             'starts_at' => '2026-11-08 10:00:00',
-            'ends_at' => '2026-11-08 12:00:00',
             'weeks' => 3,
         ]);
 
@@ -135,7 +130,6 @@ class EventCopyTest extends TestCase
             'church_id' => $church->id,
             'name' => 'Midweek',
             'starts_at' => '2026-11-05 19:00:00',
-            'ends_at' => '2026-11-05 20:30:00',
         ]);
 
         $template = TaskTemplate::factory()->create(['church_id' => $church->id]);
@@ -151,7 +145,6 @@ class EventCopyTest extends TestCase
                 'name' => 'Midweek copy',
                 'description' => 'Updated notes',
                 'starts_at' => '2026-11-12 19:00:00',
-                'ends_at' => '2026-11-12 20:30:00',
                 'weeks' => 2,
                 'copy_people_and_teams' => false,
                 'copy_songs' => true,

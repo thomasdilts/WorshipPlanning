@@ -15,10 +15,9 @@ use Illuminate\Support\Facades\DB;
  *
  * Policy (never shifts a stored start time):
  * - order: `starts_at`, then `id`
- * - duration: next task's start minus this start; the last task runs to the event end
- * - events with ambiguity are reported and left untouched unless explicitly accepted. Ambiguity includes tasks
- *   sharing a start time (usually unscheduled placeholders), a true overnight event, and an event end that is
- *   before the event start (legacy copy artifact; with acceptance only its time of day is used)
+ * - duration: next task's start minus this start; the last task keeps its stored duration (events have no end)
+ * - events with ambiguity are reported and left untouched unless explicitly accepted. Ambiguity means tasks
+ *   sharing a start time (usually unscheduled placeholders)
  * - events where the app already wrote end times are left untouched (nothing is guessed over real edits)
  */
 class LegacyTimelineRepair
@@ -27,13 +26,7 @@ class LegacyTimelineRepair
 
     public const FLAG_MISSING_START = 'timed_task_without_start';
 
-    public const FLAG_OVERNIGHT = 'event_spans_midnight';
-
-    public const FLAG_END_BEFORE_START = 'event_end_before_start';
-
     public const FLAG_SAME_START = 'tasks_share_start_time';
-
-    public const FLAG_INVALID_EVENT_END = 'event_end_unusable_for_last_task';
 
     public const FLAG_LEADING_OFFSET = 'first_task_not_at_event_start';
 
@@ -131,7 +124,6 @@ class LegacyTimelineRepair
             'event_id' => $event->id,
             'name' => $event->name,
             'starts_at' => $event->starts_at?->toDateTimeString(),
-            'ends_at' => $event->ends_at?->toDateTimeString(),
             'flags' => [],
             'tasks' => [],
         ];
@@ -148,27 +140,12 @@ class LegacyTimelineRepair
                 : self::FLAG_MIXED;
         }
 
-        $eventEndsOnStartDay = $event->starts_at !== null && $event->ends_at !== null && $event->starts_at->isSameDay($event->ends_at);
-
-        if ($event->starts_at !== null && $event->ends_at !== null && ! $eventEndsOnStartDay) {
-            $flags[] = $event->ends_at->lessThan($event->starts_at) ? self::FLAG_END_BEFORE_START : self::FLAG_OVERNIGHT;
-        }
-
         $ordered = $legacy
             ->sortBy([fn (EventTask $a, EventTask $b): int => $this->seconds($a->starts_at) <=> $this->seconds($b->starts_at), ['id', 'asc']])
             ->values();
 
         if ($ordered->pluck('starts_at')->duplicates()->isNotEmpty()) {
             $flags[] = self::FLAG_SAME_START;
-        }
-
-        $eventEnd = $event->ends_at !== null && ($eventEndsOnStartDay || $event->ends_at->lessThan($event->starts_at))
-            ? $this->seconds($event->ends_at->format('H:i:s'))
-            : null;
-        $lastStart = $this->seconds($ordered->last()->starts_at);
-
-        if ($eventEnd === null || $eventEnd <= $lastStart) {
-            $flags[] = self::FLAG_INVALID_EVENT_END;
         }
 
         if ($event->starts_at !== null && $this->seconds($ordered->first()->starts_at) !== $this->seconds($event->starts_at->format('H:i:s'))) {
@@ -187,7 +164,7 @@ class LegacyTimelineRepair
         $count = $ordered->count();
         foreach ($ordered as $index => $task) {
             $start = $this->seconds($task->starts_at);
-            $nextStart = $index + 1 < $count ? $this->seconds($ordered[$index + 1]->starts_at) : $eventEnd;
+            $nextStart = $index + 1 < $count ? $this->seconds($ordered[$index + 1]->starts_at) : null;
             $usable = $nextStart !== null && $nextStart > $start;
             $minutes = $usable ? max(1, (int) round(($nextStart - $start) / 60)) : max(1, (int) $task->duration);
             $endSeconds = $usable ? $nextStart : $start + $minutes * 60;
@@ -206,7 +183,7 @@ class LegacyTimelineRepair
                     'ends_at' => gmdate('H:i:s', $endSeconds % 86400),
                     'sort_order' => $index + 1,
                 ],
-                'inferred' => $usable ? ($index + 1 < $count ? 'next_start' : 'event_end') : 'kept_existing_duration',
+                'inferred' => $usable ? 'next_start' : 'kept_existing_duration',
             ];
         }
 

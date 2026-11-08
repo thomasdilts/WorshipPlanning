@@ -41,9 +41,9 @@ class LegacyTimelineRepairTest extends TestCase
     /**
      * @param  array<string, string>  $service
      */
-    private function legacyEvent(Church $church, array $service = self::SERVICE, string $start = '2026-10-25 09:00:00', string $end = '2026-10-25 13:00:00'): Event
+    private function legacyEvent(Church $church, array $service = self::SERVICE, string $start = '2026-10-25 09:00:00'): Event
     {
-        $event = Event::factory()->create(['church_id' => $church->id, 'starts_at' => $start, 'ends_at' => $end]);
+        $event = Event::factory()->create(['church_id' => $church->id, 'starts_at' => $start]);
 
         $timed = TaskTemplate::factory()->create(['church_id' => $church->id, 'use_globally' => false]);
         $global = TaskTemplate::factory()->create(['church_id' => $church->id, 'use_globally' => true]);
@@ -71,7 +71,7 @@ class LegacyTimelineRepairTest extends TestCase
         return EventTask::query()->where('event_id', $event->id)->get()->keyBy('name')->all();
     }
 
-    public function test_it_restores_legacy_durations_order_and_end_times(): void
+    public function test_it_restores_legacy_durations_order_and_end_times_and_the_last_task_keeps_its_duration(): void
     {
         $event = $this->legacyEvent($this->church);
         $repair = app(LegacyTimelineRepair::class);
@@ -80,7 +80,7 @@ class LegacyTimelineRepairTest extends TestCase
         $tasks = $this->tasksByName($event);
 
         $this->assertSame(
-            [75, 15, 30, 4, 3, 15, 35, 18, 45],
+            [75, 15, 30, 4, 3, 15, 35, 18, 5],
             collect(self::SERVICE)->map(fn (string $name): int => $tasks[$name]->duration)->values()->all(),
         );
         $this->assertSame(
@@ -88,7 +88,7 @@ class LegacyTimelineRepairTest extends TestCase
             collect(self::SERVICE)->map(fn (string $name): int => $tasks[$name]->sort_order)->values()->all(),
         );
         $this->assertSame('10:15:00', $tasks['Lovsångsövning']->ends_at);
-        $this->assertSame('13:00:00', $tasks['Avslut']->ends_at);
+        $this->assertSame('12:20:00', $tasks['Avslut']->ends_at);
         $this->assertSame('11:22:00', $tasks['Predikan']->starts_at, 'Stored start times are never shifted.');
     }
 
@@ -149,24 +149,6 @@ class LegacyTimelineRepairTest extends TestCase
 
         $accepted = $repair->plan($this->church->id, acceptAmbiguous: true);
         $this->assertSame('repair', $accepted['events'][0]['status']);
-    }
-
-    public function test_event_end_before_start_and_true_overnight_are_not_silently_repaired(): void
-    {
-        $badEnd = $this->legacyEvent($this->church, start: '2024-07-07 09:00:00', end: '2024-06-30 13:00:00');
-        $overnight = $this->legacyEvent($this->church, start: '2026-12-31 22:00:00', end: '2027-01-01 01:00:00');
-        $repair = app(LegacyTimelineRepair::class);
-
-        $plan = collect($repair->plan($this->church->id)['events'])->keyBy('event_id');
-
-        $this->assertSame('skipped', $plan[$badEnd->id]['status']);
-        $this->assertContains(LegacyTimelineRepair::FLAG_END_BEFORE_START, $plan[$badEnd->id]['flags']);
-        $this->assertSame('skipped', $plan[$overnight->id]['status']);
-        $this->assertContains(LegacyTimelineRepair::FLAG_OVERNIGHT, $plan[$overnight->id]['flags']);
-
-        $accepted = collect($repair->plan($this->church->id, acceptAmbiguous: true)['events'])->keyBy('event_id');
-        $lastBadEnd = collect($accepted[$badEnd->id]['tasks'])->last();
-        $this->assertSame('13:00:00', $lastBadEnd['after']['ends_at'], 'Only the time of day of a broken end date is used.');
     }
 
     public function test_events_already_edited_in_the_app_are_never_overwritten(): void

@@ -41,7 +41,6 @@ class EditEventDetailsPageTest extends TestCase
                 'name' => 'Updated Service',
                 'description' => 'New description',
                 'starts_at' => $event->starts_at,
-                'ends_at' => $event->ends_at,
             ])
             ->call('save')
             ->assertHasNoFormErrors();

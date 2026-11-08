@@ -123,7 +123,6 @@ class PicturesModuleTest extends TestCase
         $source = Event::factory()->create([
             'church_id' => $this->church->id,
             'starts_at' => '2026-11-01 10:00:00',
-            'ends_at' => '2026-11-01 12:00:00',
         ]);
 
         $task = EventTask::factory()->create([
@@ -134,7 +133,6 @@ class PicturesModuleTest extends TestCase
 
         $copy = app(EventCopier::class)->copy($source, [
             'starts_at' => '2026-11-08 10:00:00',
-            'ends_at' => '2026-11-08 12:00:00',
         ])->first();
 
         $copiedTask = $copy->tasks->first();

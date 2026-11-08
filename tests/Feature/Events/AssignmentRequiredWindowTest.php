@@ -23,7 +23,6 @@ class AssignmentRequiredWindowTest extends TestCase
         $event = Event::factory()->create([
             'church_id' => $church->id,
             'starts_at' => '2026-11-01 10:00:00',
-            'ends_at' => '2026-11-01 12:00:00',
         ]);
         $template = TaskTemplate::factory()->create([
             'church_id' => $church->id,
@@ -63,7 +62,6 @@ class AssignmentRequiredWindowTest extends TestCase
         $event = Event::factory()->create([
             'church_id' => $church->id,
             'starts_at' => '2026-11-01 10:00:00',
-            'ends_at' => '2026-11-01 12:00:00',
         ]);
         $template = TaskTemplate::factory()->create([
             'church_id' => $church->id,
@@ -102,7 +100,6 @@ class AssignmentRequiredWindowTest extends TestCase
         $event = Event::factory()->create([
             'church_id' => $church->id,
             'starts_at' => '2026-11-01 10:00:00',
-            'ends_at' => '2026-11-01 12:00:00',
         ]);
         $template = TaskTemplate::factory()->create([
             'church_id' => $church->id,

@@ -50,7 +50,7 @@
         <h1>{{ $event->name }}</h1>
         <div class="meta">
             {{ $event->starts_at->timezone(config('app.timezone'))->translatedFormat('D j M Y') }}
-            · {{ $event->starts_at->timezone(config('app.timezone'))->format('H:i') }}–{{ $event->ends_at->timezone(config('app.timezone'))->format('H:i') }}
+            · {{ $event->starts_at->timezone(config('app.timezone'))->format('H:i') }}
         </div>
     </div>
     <div class="order">

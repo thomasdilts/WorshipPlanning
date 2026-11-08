@@ -15,7 +15,6 @@ class EventCopier
      *     name?: string|null,
      *     description?: string|null,
      *     starts_at: Carbon|string,
-     *     ends_at: Carbon|string,
      *     weeks?: int,
      *     copy_people_and_teams?: bool,
      *     copy_songs?: bool
@@ -25,12 +24,6 @@ class EventCopier
     public function copy(Event $source, array $options): Collection
     {
         $startsAt = Carbon::parse($options['starts_at']);
-        $endsAt = Carbon::parse($options['ends_at']);
-
-        if ($endsAt->lt($startsAt)) {
-            throw new \InvalidArgumentException('End must be after start.');
-        }
-
         $weeks = max(1, (int) ($options['weeks'] ?? 1));
         $name = array_key_exists('name', $options)
             ? (string) $options['name']
@@ -44,7 +37,6 @@ class EventCopier
         return DB::transaction(function () use (
             $source,
             $startsAt,
-            $endsAt,
             $weeks,
             $name,
             $description,
@@ -61,7 +53,6 @@ class EventCopier
                     'name' => $name,
                     'description' => $description,
                     'starts_at' => $startsAt->copy()->addWeeks($offset),
-                    'ends_at' => $endsAt->copy()->addWeeks($offset),
                 ]);
 
                 foreach ($source->tasks as $task) {

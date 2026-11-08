@@ -18,9 +18,6 @@ class EventInfolist
                 TextEntry::make('starts_at')
                     ->label(__('Starts'))
                     ->dateTime('D M j, Y H:i'),
-                TextEntry::make('ends_at')
-                    ->label(__('Ends'))
-                    ->dateTime('D M j, Y H:i'),
             ]);
     }
 }

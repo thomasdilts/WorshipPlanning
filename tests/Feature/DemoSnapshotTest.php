@@ -65,7 +65,6 @@ class DemoSnapshotTest extends TestCase
             'name' => 'Gudstjänst',
             'description' => 'Person: Karin Realname',
             'starts_at' => '2026-11-08 11:00:00',
-            'ends_at' => '2026-11-08 13:00:00',
         ]);
         $this->task = EventTask::factory()->create([
             'event_id' => $this->upcoming->id,
@@ -81,7 +80,6 @@ class DemoSnapshotTest extends TestCase
             'church_id' => $this->church->id,
             'name' => 'Gudstjänst',
             'starts_at' => '2025-01-05 11:00:00',
-            'ends_at' => '2025-01-05 13:00:00',
         ]);
     }
 

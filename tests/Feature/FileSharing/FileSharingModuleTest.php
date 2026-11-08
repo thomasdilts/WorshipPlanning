@@ -181,7 +181,6 @@ class FileSharingModuleTest extends TestCase
         $source = Event::factory()->create([
             'church_id' => $this->church->id,
             'starts_at' => now()->addWeek(),
-            'ends_at' => now()->addWeek()->addHours(2),
         ]);
         $task = EventTask::factory()->create([
             'event_id' => $source->id,
@@ -191,7 +190,6 @@ class FileSharingModuleTest extends TestCase
 
         $copy = app(EventCopier::class)->copy($source, [
             'starts_at' => now()->addWeeks(2),
-            'ends_at' => now()->addWeeks(2)->addHours(2),
         ])->first();
 
         $copiedTask = $copy->tasks->first();

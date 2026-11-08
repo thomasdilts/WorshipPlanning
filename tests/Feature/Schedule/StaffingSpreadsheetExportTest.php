@@ -49,7 +49,6 @@ class StaffingSpreadsheetExportTest extends TestCase
             'church_id' => $church->id,
             'name' => 'Sunday Service',
             'starts_at' => '2026-11-01 10:00:00',
-            'ends_at' => '2026-11-01 12:00:00',
         ]);
 
         EventTask::factory()->create([
@@ -62,7 +61,6 @@ class StaffingSpreadsheetExportTest extends TestCase
             'church_id' => $other->id,
             'name' => 'Foreign Service',
             'starts_at' => '2026-11-01 10:00:00',
-            'ends_at' => '2026-11-01 12:00:00',
         ]);
 
         $rows = app(StaffingSpreadsheetExporter::class)->rows(
@@ -123,7 +121,6 @@ class StaffingSpreadsheetExportTest extends TestCase
             'church_id' => $church->id,
             'name' => 'Needs filler',
             'starts_at' => now()->addDays(3),
-            'ends_at' => now()->addDays(3)->addHours(2),
         ]);
         EventTask::factory()->create([
             'event_id' => $vacant->id,
@@ -135,7 +132,6 @@ class StaffingSpreadsheetExportTest extends TestCase
             'church_id' => $church->id,
             'name' => 'All set',
             'starts_at' => now()->addDays(4),
-            'ends_at' => now()->addDays(4)->addHours(2),
         ]);
         EventTask::factory()->create([
             'event_id' => $staffed->id,

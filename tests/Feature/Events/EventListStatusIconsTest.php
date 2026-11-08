@@ -43,7 +43,6 @@ class EventListStatusIconsTest extends TestCase
         $event = Event::factory()->create([
             'church_id' => $church->id,
             'starts_at' => now()->addDay()->setTime(10, 0),
-            'ends_at' => now()->addDay()->setTime(12, 0),
         ]);
 
         $staffingTask = EventTask::factory()->create([
@@ -95,7 +94,6 @@ class EventListStatusIconsTest extends TestCase
             'name' => 'Sunday service',
             'description' => 'Communion Sunday',
             'starts_at' => now()->addDays(2)->setTime(10, 0),
-            'ends_at' => now()->addDays(2)->setTime(12, 0),
         ]);
 
         EventTask::factory()->create([

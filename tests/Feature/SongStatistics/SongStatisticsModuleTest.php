@@ -56,12 +56,10 @@ class SongStatisticsModuleTest extends TestCase
         $eventA = Event::factory()->create([
             'church_id' => $this->church->id,
             'starts_at' => '2026-11-01 10:00:00',
-            'ends_at' => '2026-11-01 12:00:00',
         ]);
         $eventB = Event::factory()->create([
             'church_id' => $this->church->id,
             'starts_at' => '2026-11-08 10:00:00',
-            'ends_at' => '2026-11-08 12:00:00',
         ]);
 
         EventTask::factory()->create([

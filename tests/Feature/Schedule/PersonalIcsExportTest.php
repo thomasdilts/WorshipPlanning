@@ -35,7 +35,6 @@ class PersonalIcsExportTest extends TestCase
             'church_id' => $church->id,
             'name' => 'Sunday Service',
             'starts_at' => '2026-11-01 10:00:00',
-            'ends_at' => '2026-11-01 12:00:00',
         ]);
 
         $template = TaskTemplate::factory()->create([
@@ -89,7 +88,6 @@ class PersonalIcsExportTest extends TestCase
             'church_id' => $churchA->id,
             'name' => 'Past Service',
             'starts_at' => '2026-09-01 10:00:00',
-            'ends_at' => '2026-09-01 12:00:00',
         ]);
         EventTask::factory()->create([
             'event_id' => $past->id,
@@ -103,7 +101,6 @@ class PersonalIcsExportTest extends TestCase
             'church_id' => $churchA->id,
             'name' => 'Declined Service',
             'starts_at' => '2026-11-08 10:00:00',
-            'ends_at' => '2026-11-08 12:00:00',
         ]);
         $declinedTask = EventTask::factory()->create([
             'event_id' => $declinedEvent->id,
@@ -123,7 +120,6 @@ class PersonalIcsExportTest extends TestCase
             'church_id' => $churchB->id,
             'name' => 'Foreign Service',
             'starts_at' => '2026-11-15 10:00:00',
-            'ends_at' => '2026-11-15 12:00:00',
         ]);
         EventTask::factory()->create([
             'event_id' => $foreign->id,
@@ -137,7 +133,6 @@ class PersonalIcsExportTest extends TestCase
             'church_id' => $churchA->id,
             'name' => 'Keep Service',
             'starts_at' => '2026-11-22 10:00:00',
-            'ends_at' => '2026-11-22 12:00:00',
         ]);
         $keepTask = EventTask::factory()->create([
             'event_id' => $keep->id,
@@ -188,7 +183,6 @@ class PersonalIcsExportTest extends TestCase
             'church_id' => $church->id,
             'name' => 'Service; Morning, A',
             'starts_at' => '2026-11-01 10:00:00',
-            'ends_at' => '2026-11-01 12:00:00',
         ]);
 
         EventTask::factory()->create([

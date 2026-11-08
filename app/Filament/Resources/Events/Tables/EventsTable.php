@@ -183,13 +183,6 @@ class EventsTable
                             ->seconds(false)
                             ->native(false)
                             ->default($record->starts_at?->copy()->addWeek()),
-                        DateTimePicker::make('ends_at')
-                            ->label(__('New end'))
-                            ->required()
-                            ->seconds(false)
-                            ->native(false)
-                            ->default($record->ends_at?->copy()->addWeek())
-                            ->afterOrEqual('starts_at'),
                         TextInput::make('weeks')
                             ->label(__('Number of weeks to copy to'))
                             ->numeric()
@@ -212,7 +205,6 @@ class EventsTable
                             'name' => $data['name'],
                             'description' => $data['description'] ?? null,
                             'starts_at' => $data['starts_at'],
-                            'ends_at' => $data['ends_at'],
                             'weeks' => (int) ($data['weeks'] ?? 1),
                             'copy_people_and_teams' => (bool) ($data['copy_people_and_teams'] ?? false),
                             'copy_songs' => (bool) ($data['copy_songs'] ?? false),

@@ -158,7 +158,7 @@ class AssignmentResponseLinkTest extends TestCase
 
         $token = app(AssignmentResponseLink::class)->tokenFor($task, $person)->token;
 
-        $this->travelTo($task->event->ends_at->copy()->addDay()->addMinute());
+        $this->travelTo($task->event->endsAt()->addDay()->addMinute());
 
         $this->post(route('assignments.quick.store', ['token' => $token]), ['decision' => 'confirm'])
             ->assertStatus(410);
@@ -202,7 +202,6 @@ class AssignmentResponseLinkTest extends TestCase
         $event = Event::factory()->create([
             'church_id' => $church->id,
             'starts_at' => now()->addDays(5),
-            'ends_at' => now()->addDays(5)->addHours(2),
         ]);
         $template = TaskTemplate::factory()->create([
             'church_id' => $church->id,

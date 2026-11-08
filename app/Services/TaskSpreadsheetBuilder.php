@@ -318,7 +318,8 @@ class TaskSpreadsheetBuilder
         }
 
         $rangeStart = $events->min('starts_at');
-        $rangeEnd = $events->max('ends_at');
+        $endsAtByEvent = $events->mapWithKeys(fn (Event $event): array => [$event->id => $event->endsAt()]);
+        $rangeEnd = $endsAtByEvent->max();
 
         $records = Unavailability::query()
             ->where('church_id', $church->id)
@@ -330,7 +331,7 @@ class TaskSpreadsheetBuilder
 
         foreach ($events as $event) {
             $matching = $records
-                ->filter(fn (Unavailability $record) => $record->overlapsRange($event->starts_at, $event->ends_at));
+                ->filter(fn (Unavailability $record) => $record->overlapsRange($event->starts_at, $endsAtByEvent[$event->id]));
 
             $byEvent->put($event->id, [
                 'names' => $matching

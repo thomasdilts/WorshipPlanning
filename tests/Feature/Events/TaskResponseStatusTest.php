@@ -57,7 +57,6 @@ class TaskResponseStatusTest extends TestCase
         $this->event = Event::factory()->create([
             'church_id' => $this->church->id,
             'starts_at' => now()->addDays(5),
-            'ends_at' => now()->addDays(5)->addHours(2),
         ]);
 
         $template = TaskTemplate::factory()->create([

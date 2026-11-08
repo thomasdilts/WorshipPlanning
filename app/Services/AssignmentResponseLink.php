@@ -128,7 +128,7 @@ class AssignmentResponseLink
     protected function expiryFor(EventTask $task): CarbonInterface
     {
         $task->loadMissing('event');
-        $eventEnd = $task->event?->ends_at ?? $task->event?->starts_at;
+        $eventEnd = $task->event?->endsAt();
 
         if ($eventEnd === null || $eventEnd->isPast()) {
             return now()->addDays(30);

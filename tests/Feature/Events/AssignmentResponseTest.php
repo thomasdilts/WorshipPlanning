@@ -173,7 +173,6 @@ class AssignmentResponseTest extends TestCase
 
         $copies = app(EventCopier::class)->copy($this->event->fresh(), [
             'starts_at' => now()->addWeek(),
-            'ends_at' => now()->addWeek()->addHours(2),
             'copy_people_and_teams' => true,
         ]);
 

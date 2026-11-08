@@ -22,7 +22,6 @@ class EventFactory extends Factory
             'name' => fake()->randomElement(['Sunday Service', 'Evening Worship', 'Prayer Meeting']).' '.fake()->date('M j'),
             'description' => fake()->optional()->sentence(),
             'starts_at' => $starts,
-            'ends_at' => (clone $starts)->modify('+2 hours'),
         ];
     }
 }

@@ -50,7 +50,6 @@ class TeamWorkspaceTest extends TestCase
             'church_id' => $church->id,
             'name' => 'Morning service',
             'starts_at' => now()->addDays(3),
-            'ends_at' => now()->addDays(3)->addHours(2),
         ]);
         $template = TaskTemplate::factory()->create([
             'church_id' => $church->id,

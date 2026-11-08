@@ -26,12 +26,6 @@ class EventForm
                     ->required()
                     ->seconds(false)
                     ->native(false),
-                DateTimePicker::make('ends_at')
-                    ->label(__('Ends'))
-                    ->required()
-                    ->seconds(false)
-                    ->native(false)
-                    ->after('starts_at'),
             ]);
     }
 }
