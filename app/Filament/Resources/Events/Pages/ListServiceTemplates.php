@@ -6,10 +6,15 @@ use App\Filament\Resources\Events\Actions\CopyEventAction;
 use App\Filament\Resources\Events\EventResource;
 use App\Models\Event;
 use App\Models\User;
+use App\Services\EventCopier;
 use Filament\Actions\Action;
 use Filament\Actions\DeleteAction;
+use Filament\Forms\Components\Select;
+use Filament\Forms\Components\TextInput;
+use Filament\Notifications\Notification;
 use Filament\Resources\Pages\Page;
 use Filament\Schemas\Components\EmbeddedTable;
+use Filament\Schemas\Components\Utilities\Set;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Columns\TextColumn;
@@ -18,6 +23,7 @@ use Filament\Tables\Contracts\HasTable;
 use Filament\Tables\Table;
 use Illuminate\Contracts\Support\Htmlable;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Validation\Rules\Exists;
 
 /**
  * Service templates: complete services (activities, people, teams, songs) that new services are copied from.
@@ -51,7 +57,75 @@ class ListServiceTemplates extends Page implements HasTable
 
     public function getSubheading(): string|Htmlable|null
     {
-        return __('Create a new service from a template with the copy button. Church admins save services as templates from the services list.');
+        return __('Use templates when creating events. Church admins can add a template from any existing service.');
+    }
+
+    protected function getHeaderActions(): array
+    {
+        return [
+            Action::make('createTemplate')
+                ->label(__('Add service template'))
+                ->icon(Heroicon::OutlinedPlus)
+                ->authorize(fn (): bool => auth()->user()?->can('service_templates.manage') ?? false)
+                ->modalHeading(__('Add service template'))
+                ->modalDescription(__('Choose an existing service to copy its activities, people, teams and songs into a reusable template.'))
+                ->modalSubmitActionLabel(__('Save template'))
+                ->schema([
+                    Select::make('source_event_id')
+                        ->label(__('Existing service'))
+                        ->placeholder(__('Choose a service'))
+                        ->helperText(__('Search by service name or date (YYYY-MM-DD).'))
+                        ->searchable()
+                        ->options(fn (): array => $this->serviceOptions())
+                        ->getSearchResultsUsing(fn (string $search): array => $this->serviceOptions($search))
+                        ->getOptionLabelUsing(fn (mixed $value): ?string => EventResource::getEloquentQuery()->find($value)?->name)
+                        ->exists('events', 'id', modifyRuleUsing: fn (Exists $rule): Exists => $rule
+                            ->where('church_id', auth()->user()?->church_id)
+                            ->where('is_template', false))
+                        ->required()
+                        ->live()
+                        ->afterStateUpdated(function (mixed $state, Set $set): void {
+                            $source = filled($state) ? EventResource::getEloquentQuery()->find($state) : null;
+
+                            if ($source !== null) {
+                                $set('name', $source->name);
+                            }
+                        }),
+                    TextInput::make('name')
+                        ->label(__('Template name'))
+                        ->required()
+                        ->maxLength(100),
+                ])
+                ->action(function (array $data): void {
+                    $source = EventResource::getEloquentQuery()->findOrFail($data['source_event_id']);
+                    abort_unless(auth()->user()?->can('saveAsTemplate', $source), 403);
+
+                    app(EventCopier::class)->copy($source, [
+                        'name' => $data['name'],
+                        'starts_at' => $source->starts_at,
+                        'copy_people_and_teams' => true,
+                        'copy_songs' => true,
+                        'as_template' => true,
+                    ]);
+
+                    Notification::make()->title(__('Service template saved'))->success()->send();
+                    $this->resetTable();
+                }),
+        ];
+    }
+
+    /** @return array<int, string> */
+    protected function serviceOptions(?string $search = null): array
+    {
+        return EventResource::getEloquentQuery()
+            ->when(filled($search), fn (Builder $query): Builder => $query->where(fn (Builder $query): Builder => $query
+                ->where('name', 'like', '%'.$search.'%')
+                ->orWhere('starts_at', 'like', '%'.$search.'%')))
+            ->orderByDesc('starts_at')
+            ->limit(50)
+            ->get()
+            ->mapWithKeys(fn (Event $event): array => [$event->id => $event->name.' · '.$event->starts_at->translatedFormat('j M Y H:i')])
+            ->all();
     }
 
     public function getBreadcrumbs(): array
@@ -77,7 +151,7 @@ class ListServiceTemplates extends Page implements HasTable
             ->defaultSort('name')
             ->paginated(false)
             ->emptyStateHeading(__('No service templates yet'))
-            ->emptyStateDescription(__('Church admins can save any service as a template with the bookmark button in the services list.'))
+            ->emptyStateDescription(__('Church admins can use Add service template to start from an existing service.'))
             ->recordUrl(fn (Event $record): string => static::workspaceUrl($record))
             ->columns([
                 TextColumn::make('name')

@@ -4,7 +4,9 @@ namespace Tests\Feature\Events;
 
 use App\Core\Tenancy\CurrentChurch;
 use App\Enums\FieldUsage;
+use App\Filament\Resources\Events\EventResource;
 use App\Filament\Resources\Events\Pages\EditEvent;
+use App\Filament\Resources\Events\Pages\ListEvents;
 use App\Filament\Resources\Events\Pages\ViewEvent;
 use App\Filament\Resources\Events\RelationManagers\OrderTasksRelationManager;
 use App\Filament\Resources\Events\RelationManagers\PeopleTasksRelationManager;
@@ -19,12 +21,39 @@ use App\Services\EventStaffingSummary;
 use Database\Seeders\RolesAndPermissionsSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Livewire\Livewire;
+use PHPUnit\Framework\Attributes\TestWith;
 use Spatie\Permission\PermissionRegistrar;
 use Tests\TestCase;
 
 class ServiceWorkspaceTest extends TestCase
 {
     use RefreshDatabase;
+
+    #[TestWith(['Church Admin', false, 'edit'])]
+    #[TestWith(['Event Planner', false, 'edit'])]
+    #[TestWith(['Member', false, 'view'])]
+    #[TestWith(['Member', true, 'edit'])]
+    public function test_service_rows_open_the_page_allowed_by_edit_permission(string $role, bool $grantEditPermission, string $page): void
+    {
+        [$user, $event] = $this->seedWorkspace();
+        $user->syncRoles($role);
+
+        if ($grantEditPermission) {
+            $user->givePermissionTo('events.update');
+        }
+
+        $event->update(['starts_at' => now()->addDay()->setTime(10, 0)]);
+        $this->actingAs($user);
+
+        $component = Livewire::test(ListEvents::class)
+            ->assertSuccessful()
+            ->assertCanSeeTableRecords([$event]);
+
+        $this->assertSame(
+            EventResource::getUrl($page, ['record' => $event]),
+            $component->instance()->getTable()->getRecordUrl($event),
+        );
+    }
 
     public function test_workspace_shows_order_and_people_tabs_with_staffing_summary(): void
     {

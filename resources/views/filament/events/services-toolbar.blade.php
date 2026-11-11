@@ -21,7 +21,7 @@
                     const table = this.$el.closest('.fi-ta');
                     const content = table?.querySelector('.fi-ta-content-ctn');
                     if (!content) return;
-                    const footer = table.querySelector('.fi-pagination');
+                    const footer = table.querySelector(matchMedia('(max-width: 767px)').matches ? '.wp-mobile-pagination' : '.fi-pagination');
                     const bottomSpace = (document.querySelector('.wp-tabbar')?.getBoundingClientRect().height ?? 0) + 16;
                     const available = Math.max(160, window.innerHeight - content.getBoundingClientRect().top - (footer?.getBoundingClientRect().height ?? 0) - bottomSpace);
                     const height = Math.floor(available) + 'px';
@@ -65,12 +65,6 @@
         </div>
 
         <x-planner-columns :reorderable="false" />
-
-        @can('useTemplates', \App\Models\Event::class)
-            <x-filament::button tag="a" :href="EventResource::getUrl('templates')" icon="heroicon-m-bookmark" color="gray" class="wp-services-templates">
-                {{ __('Service templates') }}
-            </x-filament::button>
-        @endcan
 
         @if (EventResource::canCreate())
             <x-filament::button tag="a" :href="EventResource::getUrl('create')" icon="heroicon-m-plus" class="wp-services-create">

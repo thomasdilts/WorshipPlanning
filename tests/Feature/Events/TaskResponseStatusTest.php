@@ -6,6 +6,7 @@ use App\Core\Modules\ChurchModuleManager;
 use App\Core\Tenancy\CurrentChurch;
 use App\Enums\AssignmentState;
 use App\Enums\FieldUsage;
+use App\Enums\MessageTemplatePurpose;
 use App\Filament\Resources\Events\Pages\EditEvent;
 use App\Filament\Resources\Events\Pages\TaskSpreadsheet;
 use App\Filament\Resources\Events\RelationManagers\TasksRelationManager;
@@ -142,12 +143,26 @@ class TaskResponseStatusTest extends TestCase
     public function test_save_and_send_message_opens_the_message_popup_with_the_person_selected(): void
     {
         app(ChurchModuleManager::class)->enable($this->church, 'messaging');
+        $responseTemplate = MessageTemplate::query()->create([
+            'church_id' => $this->church->id,
+            'key' => 'krava-svar',
+            'name' => 'Our renamed invitation',
+            'purpose' => MessageTemplatePurpose::Service,
+            'is_active' => true,
+            'body' => '<p>Invitation preview</p>',
+            'text_body' => 'Separate text preview',
+        ]);
 
         $this->tasksTable()
             ->callAction(TestAction::make('edit')->table($this->task)->arguments(['sendMessage' => true]))
             ->assertHasNoErrors()
             ->assertActionMounted('sendTaskMessage')
-            ->assertSchemaStateSet(['recipient_task_ids' => [$this->task->id]])
+            ->assertSchemaStateSet([
+                'recipient_task_ids' => [$this->task->id],
+                'message_template_id' => $responseTemplate->id,
+            ])
+            ->assertMountedActionModalSee('Invitation preview')
+            ->assertMountedActionModalDontSee(['Separate text preview', 'Text message (SMS / WhatsApp)'])
             ->fillForm(['message_template_id' => MessageTemplate::query()->create([
                 'church_id' => $this->church->id,
                 'name' => 'Ask',
@@ -161,6 +176,46 @@ class TaskResponseStatusTest extends TestCase
 
         $this->assertSame('Can you come?', $message->subject);
         $this->assertSame([$this->person->id], $message->recipients()->pluck('users.id')->all());
+    }
+
+    public function test_spreadsheet_save_and_send_preselects_the_response_template(): void
+    {
+        app(ChurchModuleManager::class)->enable($this->church, 'messaging');
+        $responseTemplate = MessageTemplate::query()->create([
+            'church_id' => $this->church->id,
+            'key' => 'krava-svar',
+            'name' => 'Require response',
+            'text_body' => 'Please reply',
+            'purpose' => MessageTemplatePurpose::Service,
+            'is_active' => true,
+        ]);
+
+        Livewire::test(TaskSpreadsheet::class)
+            ->callAction('editEventTask', arguments: ['taskId' => $this->task->id, 'sendMessage' => true])
+            ->assertHasNoErrors()
+            ->assertActionMounted('sendTaskMessage')
+            ->assertSchemaStateSet([
+                'recipient_task_ids' => [$this->task->id],
+                'message_template_id' => $responseTemplate->id,
+            ]);
+    }
+
+    public function test_save_and_send_does_not_preselect_an_inactive_response_template(): void
+    {
+        app(ChurchModuleManager::class)->enable($this->church, 'messaging');
+        MessageTemplate::query()->create([
+            'church_id' => $this->church->id,
+            'key' => 'krava-svar',
+            'name' => 'Require response',
+            'text_body' => 'Please reply',
+            'purpose' => MessageTemplatePurpose::Service,
+            'is_active' => false,
+        ]);
+
+        $this->tasksTable()
+            ->callAction(TestAction::make('edit')->table($this->task)->arguments(['sendMessage' => true]))
+            ->assertActionMounted('sendTaskMessage')
+            ->assertSchemaStateSet(['message_template_id' => null]);
     }
 
     public function test_creating_a_task_can_save_and_open_the_message_popup_with_the_person_selected(): void

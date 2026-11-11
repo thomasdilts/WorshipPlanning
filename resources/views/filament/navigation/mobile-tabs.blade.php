@@ -18,7 +18,13 @@
             class="wp-tabbar-item"
             aria-controls="fi-main-sidebar"
             x-data
-            x-on:click="$store.sidebar.open()"
+            x-bind:aria-expanded="$store.sidebar.isOpen"
+            x-on:click="
+                document.querySelectorAll('#fi-main-sidebar .fi-sidebar-group.fi-collapsible[data-group-label]').forEach(group => {
+                    $store.sidebar.collapseGroup(group.dataset.groupLabel);
+                });
+                $store.sidebar.open();
+            "
         >
             <x-filament::icon icon="heroicon-o-bars-3" aria-hidden="true" />
             <span>{{ __('More') }}</span>

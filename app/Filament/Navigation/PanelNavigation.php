@@ -20,6 +20,7 @@ use App\Filament\Pages\WhatsAppMessagingSettings;
 use App\Filament\Resources\AutomaticMessages\AutomaticMessageResource;
 use App\Filament\Resources\Churches\ChurchResource;
 use App\Filament\Resources\Events\EventResource;
+use App\Filament\Resources\Events\Pages\ListServiceTemplates;
 use App\Filament\Resources\Events\Pages\TaskSpreadsheet;
 use App\Filament\Resources\Languages\LanguageResource;
 use App\Filament\Resources\MessageTemplates\MessageTemplateResource;
@@ -72,6 +73,11 @@ class PanelNavigation
                     ->visible(fn (): bool => ChurchStarter::shouldRegisterNavigation()),
                 $this->forClass(ChurchSettings::class, __('Church')),
                 $this->forClass(RoleResource::class, __('Roles')),
+                NavigationItem::make(__('Service templates'))
+                    ->icon(Heroicon::OutlinedBookmark)
+                    ->url(fn (): string => EventResource::getUrl('templates'))
+                    ->isActiveWhen(fn (): bool => original_request()->routeIs(ListServiceTemplates::getRouteName()))
+                    ->visible(fn (): bool => ListServiceTemplates::canAccess()),
                 $this->forClass(TaskTemplateResource::class, __('Activity templates')),
                 $this->forClass(MessageTemplateResource::class, __('Message templates')),
                 $this->forClass(AutomaticMessageResource::class, __('Automatic messages')),
@@ -92,7 +98,7 @@ class PanelNavigation
         foreach ($groups as ['group' => $group, 'collapsedLabel' => $collapsedLabel]) {
             $visible = array_values(array_filter($group->getItems(), fn (NavigationItem $item): bool => $item->isVisible()));
 
-            if (count($visible) === 1) {
+            if (count($visible) === 1 && $visible[0]->getLabel() !== __('Service templates')) {
                 $item = $visible[0]->group(null);
                 $builder->item($collapsedLabel === null ? $item : $item->label($collapsedLabel));
 
@@ -117,7 +123,8 @@ class PanelNavigation
             ->visible(fn (): bool => TaskSpreadsheet::canAccess());
         $services = $this->forClass(EventResource::class)
             ->isActiveWhen(fn (): bool => original_request()->routeIs(EventResource::getRouteBaseName().'.*')
-                && ! original_request()->routeIs(TaskSpreadsheet::getRouteName()));
+                && ! original_request()->routeIs(TaskSpreadsheet::getRouteName())
+                && ! original_request()->routeIs(ListServiceTemplates::getRouteName()));
         $mySchedule = $this->forClass(MyTasks::class, __('My schedule'), Heroicon::OutlinedClipboardDocumentCheck);
         $availability = $this->forClass(MyUnavailability::class, __('Availability'), Heroicon::OutlinedCalendarDateRange);
         $myMessages = $this->forClass(MyMessages::class, __('My messages'), Heroicon::OutlinedInbox);

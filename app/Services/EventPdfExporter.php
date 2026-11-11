@@ -6,7 +6,6 @@ use App\Models\Event;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Response;
 use Illuminate\Support\Str;
-use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class EventPdfExporter
 {
@@ -15,7 +14,7 @@ class EventPdfExporter
         protected AssignmentStateResolver $states,
     ) {}
 
-    public function download(Event $event): Response|StreamedResponse
+    public function stream(Event $event): Response
     {
         $event->load([
             'church',
@@ -37,6 +36,6 @@ class EventPdfExporter
             'logoPath' => $event->church?->logoAbsolutePath(),
         ])
             ->setPaper('a4', 'landscape')
-            ->download($filename);
+            ->stream($filename);
     }
 }

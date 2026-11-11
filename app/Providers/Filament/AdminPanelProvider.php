@@ -8,6 +8,8 @@ use App\Filament\Navigation\PanelNavigation;
 use App\Filament\Pages\Auth\Login;
 use App\Filament\Pages\Dashboard;
 use App\Filament\Pages\EditProfile;
+use App\Filament\Pages\MyTasks;
+use App\Filament\Resources\Events\Pages\ListEvents;
 use App\Http\Middleware\SetCurrentChurch;
 use App\Http\Middleware\SetUserLocale;
 use App\Support\InitialsAvatarProvider;
@@ -20,6 +22,7 @@ use Filament\Panel;
 use Filament\PanelProvider;
 use Filament\Support\Colors\Color;
 use Filament\Support\Enums\Width;
+use Filament\Tables\View\TablesRenderHook;
 use Filament\View\PanelsRenderHook;
 use Filament\Widgets\AccountWidget;
 use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
@@ -92,6 +95,13 @@ class AdminPanelProvider extends PanelProvider
             ])
             ->topNavigation()
             ->breadcrumbs(false)
+            ->renderHook(PanelsRenderHook::SIDEBAR_NAV_START, fn () => view('filament.navigation.mobile-profile'))
+            ->renderHook(PanelsRenderHook::SIDEBAR_NAV_END, fn () => view('filament.navigation.mobile-account-menu'))
+            ->renderHook(
+                TablesRenderHook::CONTENT_AFTER,
+                fn (array $data) => view('filament.tables.mobile-pagination', $data),
+                scopes: [ListEvents::class, MyTasks::class],
+            )
             ->renderHook(PanelsRenderHook::BODY_END, fn (): string => auth()->check()
                 ? view('filament.navigation.mobile-tabs', ['tabs' => app(PanelNavigation::class)->mobileTabs()])->render()
                     .view('filament.events.order-drag-script')->render()

@@ -4,19 +4,24 @@ namespace Tests\Feature\Messaging;
 
 use App\Core\Modules\ChurchModuleManager;
 use App\Core\Tenancy\CurrentChurch;
+use App\Enums\AssignmentResponseStatus;
 use App\Enums\MessagePreference;
 use App\Enums\MessageTemplatePurpose;
 use App\Filament\Resources\Events\Pages\EditEvent;
 use App\Filament\Resources\Events\Pages\ManageEventMessages;
 use App\Filament\Resources\Events\RelationManagers\OrderTasksRelationManager;
+use App\Filament\Resources\Events\Schemas\EventMessageForm;
 use App\Models\Church;
 use App\Models\Event;
 use App\Models\EventMessage;
 use App\Models\EventTask;
+use App\Models\EventTaskResponse;
 use App\Models\MessageTemplate;
 use App\Models\OutboundMessage;
 use App\Models\TaskTemplate;
+use App\Models\Team;
 use App\Models\User;
+use App\Services\AssignmentResponder;
 use App\Services\AssignmentResponseLink;
 use Database\Seeders\RolesAndPermissionsSeeder;
 use Filament\Actions\Action;
@@ -26,6 +31,7 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Validation\ValidationException;
 use Livewire\Livewire;
 use Modules\Messaging\Services\EventMessageService;
 use Modules\Messaging\Support\MessagingAvailability;
@@ -686,6 +692,94 @@ class EventMessagesTest extends TestCase
 
         $this->assertSame($secondTask->id, $message->event_task_id);
         $this->assertSame([$this->assignee->id], $message->recipients()->pluck('users.id')->all());
+    }
+
+    public function test_popup_only_lists_tasks_that_have_not_been_accepted(): void
+    {
+        app(ChurchModuleManager::class)->enable($this->church, 'teams');
+        $accepted = $this->event->tasks()->first();
+        $accepted->update(['name' => 'Accepted position']);
+        app(AssignmentResponder::class)->confirm($accepted, $this->assignee);
+        EventTask::factory()->create([
+            'event_id' => $this->event->id,
+            'task_template_id' => $accepted->task_template_id,
+            'assigned_user_id' => $this->assignee->id,
+            'name' => 'Unanswered position for same person',
+        ]);
+        EventTask::factory()->create([
+            'event_id' => $this->event->id,
+            'task_template_id' => $accepted->task_template_id,
+            'assigned_user_id' => $this->outsider->id,
+            'name' => 'Verbally accepted position',
+            'accepted_verbally_at' => now(),
+        ]);
+        $team = Team::factory()->create(['church_id' => $this->church->id]);
+        $teamTask = EventTask::factory()->create([
+            'event_id' => $this->event->id,
+            'task_template_id' => $accepted->task_template_id,
+            'assigned_user_id' => null,
+            'assigned_team_id' => $team->id,
+            'name' => 'Accepted team position',
+        ]);
+        EventTaskResponse::factory()->create([
+            'church_id' => $this->church->id,
+            'event_task_id' => $teamTask->id,
+            'assignee_team_id' => $team->id,
+            'status' => AssignmentResponseStatus::Confirmed,
+        ]);
+        $this->actingAs($this->admin);
+
+        Livewire::test(ManageEventMessages::class, ['record' => $this->event->getRouteKey()])
+            ->mountAction(TestAction::make('create')->table())
+            ->assertMountedActionModalSee('Unanswered position for same person')
+            ->assertMountedActionModalDontSee(['Accepted position', 'Verbally accepted position', 'Accepted team position']);
+    }
+
+    public function test_sending_rechecks_acceptance_and_ignores_stale_selected_tasks(): void
+    {
+        $accepted = $this->event->tasks()->first();
+        $pending = EventTask::factory()->create([
+            'event_id' => $this->event->id,
+            'task_template_id' => $accepted->task_template_id,
+            'assigned_user_id' => $this->outsider->id,
+        ]);
+        $this->event->load('tasks.responses');
+        app(AssignmentResponder::class)->confirm($accepted, $this->assignee);
+        $this->actingAs($this->admin);
+
+        EventMessageForm::create($this->event, [
+            'message_template_id' => $this->messageTemplate()->id,
+            'recipient_task_ids' => [$accepted->id, $pending->id],
+        ]);
+
+        $message = EventMessage::query()->sole();
+        $this->assertSame($pending->id, $message->event_task_id);
+        $this->assertSame([$this->outsider->id], $message->recipients()->pluck('users.id')->all());
+    }
+
+    public function test_sending_rejects_a_selection_when_every_task_has_been_accepted(): void
+    {
+        $task = $this->event->tasks()->first();
+        app(AssignmentResponder::class)->confirm($task, $this->assignee);
+        $this->actingAs($this->admin);
+
+        try {
+            EventMessageForm::create($this->event, [
+                'message_template_id' => $this->messageTemplate()->id,
+                'recipient_task_ids' => [$task->id],
+            ]);
+            $this->fail('Accepted tasks must not receive another invitation.');
+        } catch (ValidationException $exception) {
+            $this->assertSame([
+                'recipient_task_ids' => [__('Select at least one task that has not been accepted.')],
+            ], $exception->errors());
+        }
+
+        $this->assertSame(0, EventMessage::query()->count());
+
+        Livewire::test(ManageEventMessages::class, ['record' => $this->event->getRouteKey()])
+            ->mountAction(TestAction::make('create')->table())
+            ->assertMountedActionModalSee('No assignments awaiting acceptance.');
     }
 
     public function test_table_shows_the_task_and_the_latest_sent_time(): void

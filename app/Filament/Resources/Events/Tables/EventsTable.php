@@ -4,6 +4,7 @@ namespace App\Filament\Resources\Events\Tables;
 
 use App\Filament\Resources\Events\Actions\CopyEventAction;
 use App\Filament\Resources\Events\Actions\SaveAsTemplateAction;
+use App\Filament\Resources\Events\EventResource;
 use App\Filament\Resources\Events\Pages\ListEvents;
 use App\Models\Event;
 use App\Services\EventTaskRowSummary;
@@ -29,7 +30,12 @@ class EventsTable
     {
         return $table
             ->header(fn () => view('filament.events.services-toolbar'))
+            ->recordUrl(fn (Event $record): string => EventResource::getUrl(
+                EventResource::canEdit($record) ? 'edit' : 'view',
+                ['record' => $record],
+            ))
             ->defaultSort('starts_at')
+            ->defaultPaginationPageOption(25)
             ->deferFilters(false)
             ->hiddenFilterIndicators()
             ->deferColumnManager(false)

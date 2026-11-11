@@ -1,4 +1,5 @@
 {
+    "My profile": "My profile",
     "#": "#",
     "(no subject)": "(no subject)",
     "1 = one copy at the dates above. 3 = three copies, each one week later.": "1 = one copy at the dates above. 3 = three copies, each one week later.",
@@ -1079,5 +1080,23 @@
     "When": "When",
     "Activity templates": "Activity templates",
     "Module selection": "Module selection",
-    "Bible settings": "Bible settings"
+    "Bible settings": "Bible settings",
+    "Start date": "Start date",
+    "Add service template": "Add service template",
+    "Existing service": "Existing service",
+    "Choose a service": "Choose a service",
+    "Search by service name or date (YYYY-MM-DD).": "Search by service name or date (YYYY-MM-DD).",
+    "Choose start time": "Choose start time",
+    "Use templates when creating events. Church admins can add a template from any existing service.": "Use templates when creating events. Church admins can add a template from any existing service.",
+    "Choose an existing service to copy its activities, people, teams and songs into a reusable template.": "Choose an existing service to copy its activities, people, teams and songs into a reusable template.",
+    "Church admins can use Add service template to start from an existing service.": "Church admins can use Add service template to start from an existing service.",
+    "Start time": "Start time",
+    "No template — create a blank event": "No template — create a blank event",
+    "Choose a template to fill in the name and time and copy its service order. You can change the details below.": "Choose a template to fill in the name and time and copy its service order. You can change the details below.",
+    "No assignments awaiting acceptance.": "No assignments awaiting acceptance.",
+    "Only tasks that have not been accepted are shown. One message is sent for each selected task.": "Only tasks that have not been accepted are shown. One message is sent for each selected task.",
+    "Select at least one task that has not been accepted.": "Select at least one task that has not been accepted.",
+    "Only “:type” teams. Messages to a team go to its leader(s).": "Only “:type” teams. Messages to a team go to its leader(s).",
+    "Event messages sent to this team go to its leader(s).": "Event messages sent to this team go to its leader(s).",
+    ":name is unavailable during this event (:ranges).": ":name is unavailable during this event (:ranges)."
 }

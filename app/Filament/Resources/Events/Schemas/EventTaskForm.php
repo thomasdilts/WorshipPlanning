@@ -39,7 +39,10 @@ class EventTaskForm
 {
     public static function configure(Schema $schema, Event $event): Schema
     {
-        return $schema->components(static::components($event));
+        return $schema
+            ->dense()
+            ->columns(['default' => 1, 'md' => 2])
+            ->components(static::components($event));
     }
 
     /**
@@ -144,7 +147,6 @@ class EventTaskForm
                 ->rows(2)
                 ->live(onBlur: true)
                 ->afterStateUpdated(fn (?string $state, Set $set) => $set('announcement_points', AnnouncementPoints::fromDescription($state) ?: [['text' => '']]))
-                ->columnSpanFull()
                 ->visible(fn (Get $get): bool => static::templateUsage($get, 'description')->isUsed() && ! static::isAnnouncement($get))
                 ->markAsRequired(fn (Get $get): bool => static::templateUsage($get, 'description')->isRequired()),
             Repeater::make('announcement_points')
@@ -154,13 +156,15 @@ class EventTaskForm
                     Textarea::make('text')
                         ->label(__('Announcement'))
                         ->hiddenLabel()
-                        ->rows(3),
+                        ->rows(2)
+                        ->autosize(),
                 ])
                 ->itemLabel(__('Announcement'))
                 ->itemNumbers()
                 ->addActionLabel(__('Add announcement'))
                 ->defaultItems(1)
                 ->reorderableWithButtons()
+                ->extraAttributes(['class' => 'wp-announcement-editor'])
                 ->live(onBlur: true)
                 ->afterStateUpdated(fn (?array $state, Set $set) => $set('description', AnnouncementPoints::toDescription($state ?? [])))
                 ->columnSpanFull()
@@ -176,7 +180,6 @@ class EventTaskForm
                     ->options((int) $event->church_id, null, 25))
                 ->nullable()
                 ->live()
-                ->columnSpanFull()
                 ->visible(function (Get $get) use ($songListEnabled): bool {
                     if (! $songListEnabled) {
                         return false;
@@ -207,7 +210,6 @@ class EventTaskForm
             TextInput::make('song')
                 ->label($songListEnabled ? __('Song title (one-off)') : __('Song'))
                 ->maxLength(255)
-                ->columnSpanFull()
                 ->live()
                 ->visible(function (Get $get) use ($songListEnabled): bool {
                     if (! static::templateUsage($get, 'song')->isUsed()) {
@@ -261,7 +263,6 @@ class EventTaskForm
                     ->all())
                 ->options(fn (): array => app(PlanningAttachmentSearch::class)
                     ->pictureOptions((int) $event->church_id, null, 25))
-                ->columnSpanFull()
                 ->visible(function (Get $get) use ($picturesEnabled): bool {
                     if (! $picturesEnabled) {
                         return false;
@@ -291,7 +292,6 @@ class EventTaskForm
                     ->all())
                 ->options(fn (): array => app(PlanningAttachmentSearch::class)
                     ->fileOptions((int) $event->church_id, null, 25))
-                ->columnSpanFull()
                 ->visible(function (Get $get) use ($fileSharingEnabled): bool {
                     if (! $fileSharingEnabled) {
                         return false;
@@ -310,7 +310,6 @@ class EventTaskForm
             Textarea::make('special_needs')
                 ->label(__('Special needs'))
                 ->rows(2)
-                ->columnSpanFull()
                 ->visible(fn (Get $get): bool => static::templateUsage($get, 'special_needs')->isUsed())
                 ->markAsRequired(fn (Get $get): bool => static::templateUsage($get, 'special_needs')->isRequired()),
             Repeater::make('bible_passages')
@@ -416,6 +415,8 @@ class EventTaskForm
                 ->helperText(__('Changing duration shifts start times of this and following timed tasks.')),
             Toggle::make('before_start')
                 ->label(__('Before the start time'))
+                ->inline()
+                ->extraFieldWrapperAttributes(['class' => 'wp-task-option'])
                 ->helperText(__('Done before the event starts. These activities are timed backwards from the start time.'))
                 ->default(false)
                 ->visible(fn (Get $get): bool => ! static::templateIsGlobal($get)),
@@ -470,7 +471,7 @@ class EventTaskForm
 
                     return new HtmlString(
                         '<strong class="text-danger-600 dark:text-danger-400">'
-                        .e($user->displayName().' is unavailable during this event ('.$ranges.').')
+                        .e(__(':name is unavailable during this event (:ranges).', ['name' => $user->displayName(), 'ranges' => $ranges]))
                         .'</strong>'
                     );
                 }),
@@ -511,11 +512,13 @@ class EventTaskForm
                     $typeName = static::resolveTemplate($get)?->teamType?->name;
 
                     return $typeName
-                        ? "Only “{$typeName}” teams. Messages to a team go to its leader(s)."
-                        : 'Event messages sent to this team go to its leader(s).';
+                        ? __('Only “:type” teams. Messages to a team go to its leader(s).', ['type' => $typeName])
+                        : __('Event messages sent to this team go to its leader(s).');
                 }),
             Toggle::make('accepted_verbally')
                 ->label(__('Accepted verbally'))
+                ->inline()
+                ->extraFieldWrapperAttributes(['class' => 'wp-task-option'])
                 ->helperText(__('They said yes in person or by phone. This overrides any reply to messages, and is cleared if the person or team changes.'))
                 ->visible(fn (Get $get): bool => filled($get('assigned_user_id')) || filled($get('assigned_team_id'))),
             TextInput::make('sort_order')

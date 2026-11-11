@@ -11,6 +11,7 @@ use Filament\Actions\Contracts\HasActions;
 use Filament\Actions\EditAction;
 use Filament\Forms\Components\Hidden;
 use Filament\Notifications\Notification;
+use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 
@@ -29,6 +30,8 @@ class EditEventTaskAction
             ->modalHeading(fn (array $arguments): string => static::heading($arguments))
             ->modalDescription(fn (array $arguments): ?string => static::description($arguments))
             ->modalSubmitActionLabel(__('Save changes'))
+            ->modalWidth('3xl')
+            ->modalSubmitAction(fn (Action $action): Action => $action->color('gray'))
             ->extraModalFooterActions(fn (Action $action, array $arguments): array => [
                 static::saveAndMessageButton($action, static::resolveTask($arguments)),
             ])
@@ -40,13 +43,13 @@ class EditEventTaskAction
                     'expected_updated_at' => $task->updated_at?->toJSON(),
                 ];
             })
-            ->schema(function (array $arguments): array {
+            ->schema(function (Schema $schema, array $arguments): Schema {
                 $task = static::resolveTask($arguments);
 
-                return [
+                return $schema->dense()->columns(['default' => 1, 'md' => 2])->components([
                     Hidden::make('expected_updated_at'),
                     ...EventTaskForm::components($task->event),
-                ];
+                ]);
             })
             ->action(function (array $data, array $arguments, Action $action, HasActions $livewire) use ($after): void {
                 $task = static::resolveTask($arguments);
@@ -88,6 +91,9 @@ class EditEventTaskAction
     public static function makeTableAction(Event $event): EditAction
     {
         return EditAction::make()
+            ->modalHeading(fn (EventTask $record): string => __('Edit task — :name', ['name' => $record->displayName()]))
+            ->modalWidth('3xl')
+            ->modalSubmitAction(fn (Action $action): Action => $action->color('gray'))
             ->mutateRecordDataUsing(fn (array $data, EventTask $record): array => EventTaskForm::fillFromRecord($record))
             ->mutateFormDataUsing(fn (array $data): array => EventTaskForm::normalize($data, $event))
             ->using(fn (array $data, EventTask $record): EventTask => EventTaskForm::persist($record, $data, $event))
@@ -111,7 +117,7 @@ class EditEventTaskAction
         return $action->makeModalSubmitAction('saveAndMessage', arguments: ['sendMessage' => true])
             ->label(__('Save and send message'))
             ->icon(Heroicon::OutlinedPaperAirplane)
-            ->color('gray')
+            ->color('primary')
             ->visible($event !== null && SendTaskMessageAction::isAvailableFor($event));
     }
 

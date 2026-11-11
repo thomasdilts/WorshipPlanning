@@ -1,4 +1,5 @@
 {
+    "My profile": "ملفي الشخصي",
     "#": "#",
     "(no subject)": "(بدون موضوع)",
     "1 = one copy at the dates above. 3 = three copies, each one week later.": "1 = نسخة واحدة في التواريخ أعلاه. 3 = ثلاث نسخ، كل واحدة بعد أسبوع.",
@@ -1079,5 +1080,23 @@
     "When": "متى",
     "Activity templates": "قوالب الأنشطة",
     "Module selection": "اختيار الوحدات",
-    "Bible settings": "إعدادات الكتاب المقدس"
+    "Bible settings": "إعدادات الكتاب المقدس",
+    "Start date": "تاريخ البدء",
+    "Add service template": "إضافة قالب خدمة",
+    "Existing service": "خدمة موجودة",
+    "Choose a service": "اختر خدمة",
+    "Search by service name or date (YYYY-MM-DD).": "ابحث باسم الخدمة أو بالتاريخ (YYYY-MM-DD).",
+    "Choose start time": "اختر وقت البدء",
+    "Use templates when creating events. Church admins can add a template from any existing service.": "استخدم القوالب عند إنشاء الأحداث. يمكن لمسؤولي الكنيسة إضافة قالب من أي خدمة موجودة.",
+    "Choose an existing service to copy its activities, people, teams and songs into a reusable template.": "اختر خدمة موجودة لنسخ أنشطتها والأشخاص والفرق والترانيم إلى قالب قابل لإعادة الاستخدام.",
+    "Church admins can use Add service template to start from an existing service.": "يمكن لمسؤولي الكنيسة استخدام زر إضافة قالب خدمة للبدء من خدمة موجودة.",
+    "Start time": "وقت البدء",
+    "No template — create a blank event": "بدون قالب — إنشاء حدث فارغ",
+    "Choose a template to fill in the name and time and copy its service order. You can change the details below.": "اختر قالبًا لتعبئة الاسم والوقت ونسخ برنامج الخدمة. يمكنك تعديل التفاصيل أدناه.",
+    "No assignments awaiting acceptance.": "لا توجد مهام بانتظار الموافقة.",
+    "Only tasks that have not been accepted are shown. One message is sent for each selected task.": "تُعرض فقط المهام التي لم تتم الموافقة عليها. تُرسل رسالة واحدة لكل مهمة محددة.",
+    "Select at least one task that has not been accepted.": "اختر مهمة واحدة على الأقل لم تتم الموافقة عليها.",
+    "Only “:type” teams. Messages to a team go to its leader(s).": "تُعرض فقط الفرق من نوع «:type». تُرسل رسائل الفريق إلى قادته.",
+    "Event messages sent to this team go to its leader(s).": "تُرسل رسائل المناسبة الموجّهة إلى هذا الفريق إلى قادته.",
+    ":name is unavailable during this event (:ranges).": ":name غير متاح أثناء هذه المناسبة (:ranges)."
 }

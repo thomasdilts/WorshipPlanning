@@ -19,7 +19,7 @@ class MessageTemplateFields
     /**
      * @return list<Component>
      */
-    public static function components(MessageTemplatePurpose $purpose): array
+    public static function components(MessageTemplatePurpose $purpose, bool $singlePreview = false): array
     {
         return [
             Select::make('message_template_id')
@@ -33,13 +33,14 @@ class MessageTemplateFields
             ViewField::make('template_preview')
                 ->hiddenLabel()
                 ->view('filament.messaging.message-preview')
-                ->viewData(function (Get $get): array {
+                ->viewData(function (Get $get) use ($singlePreview): array {
                     $template = self::template($get);
 
                     return [
                         'subject' => null,
                         'html' => $template?->body ?? '',
                         'text' => $template?->text_body,
+                        'singlePreview' => $singlePreview,
                     ];
                 })
                 ->visible(fn (Get $get): bool => self::template($get) !== null)

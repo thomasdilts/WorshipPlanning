@@ -43,8 +43,8 @@
         .responsibility strong { display: block; margin-bottom: 2px; }
         .empty { color: #52636b; }
         .before-start td { background: #f1f4f6; }
-        .start-marker td { padding: 1px 8px; line-height: 1.1; background: #e2e7eb; color: #172b2c; text-align: center; border-top: 1px solid #c9d2d9; border-bottom: 1px solid #c9d2d9; }
-        .start-marker .start-time { font-size: 9px; font-weight: bold; letter-spacing: 1px; }
+        .start-marker td { padding: 0 8px; font-size: 8.2px; line-height: 1; background: #e2e7eb; color: #172b2c; text-align: center; border-top: 1px solid #c9d2d9; border-bottom: 1px solid #c9d2d9; }
+        .start-marker .start-time { font-size: 8.2px; font-weight: bold; letter-spacing: 1px; }
         .start-marker .start-side { font-size: 7px; padding: 0 14px; }
     </style>
 </head>

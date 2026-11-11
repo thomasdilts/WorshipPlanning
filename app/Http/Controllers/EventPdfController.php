@@ -6,11 +6,10 @@ use App\Core\Tenancy\CurrentChurch;
 use App\Models\Event;
 use App\Services\EventPdfExporter;
 use Illuminate\Http\Response;
-use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class EventPdfController extends Controller
 {
-    public function __invoke(Event $event, EventPdfExporter $exporter): Response|StreamedResponse
+    public function __invoke(Event $event, EventPdfExporter $exporter): Response
     {
         $user = auth()->user();
         abort_unless($user !== null, 403);
@@ -29,6 +28,6 @@ class EventPdfController extends Controller
             403
         );
 
-        return $exporter->download($event);
+        return $exporter->stream($event);
     }
 }

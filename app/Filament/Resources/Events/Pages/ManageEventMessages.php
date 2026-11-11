@@ -144,6 +144,8 @@ class ManageEventMessages extends ManageRelatedRecords
                     ->modalWidth('3xl')
                     ->createAnother(false)
                     ->modalSubmitActionLabel(__('Send'))
+                    ->modalSubmitAction(fn (Action $action): Action => $action
+                        ->disabled(EventMessageForm::unacceptedTaskIds($this->getOwnerRecord()) === []))
                     ->form(fn (): array => EventMessageForm::components($this->getOwnerRecord()))
                     ->using(function (array $data): EventMessage {
                         /** @var Event $event */

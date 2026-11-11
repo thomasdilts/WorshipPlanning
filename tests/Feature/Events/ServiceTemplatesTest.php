@@ -17,6 +17,7 @@ use App\Models\User;
 use Database\Seeders\RolesAndPermissionsSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Livewire\Livewire;
+use PHPUnit\Framework\Attributes\TestWith;
 use Spatie\Permission\PermissionRegistrar;
 use Tests\TestCase;
 
@@ -75,6 +76,50 @@ class ServiceTemplatesTest extends TestCase
 
         Livewire::test(ListEvents::class)
             ->assertTableActionHidden('saveAsTemplate', $service);
+    }
+
+    public function test_church_admin_adds_a_template_from_an_old_service_on_the_templates_page(): void
+    {
+        $source = $this->serviceWithTask(['song' => 'Amazing Grace']);
+        $source->update(['starts_at' => '2025-01-05 11:00:00']);
+        $this->actingAs($this->userWithRole('Church Admin'));
+
+        Livewire::test(ListServiceTemplates::class)
+            ->callAction('createTemplate', data: ['source_event_id' => $source->id, 'name' => 'Sunday worship'])
+            ->assertHasNoActionErrors();
+
+        $template = Event::templates()->sole();
+        $this->assertSame('Sunday worship', $template->name);
+        $this->assertSame('2025-01-05 11:00:00', $template->starts_at->toDateTimeString());
+        $this->assertSame($this->person->id, $template->tasks()->sole()->assigned_user_id);
+        $this->assertSame($this->team->id, $template->tasks()->sole()->assigned_team_id);
+        $this->assertSame('Amazing Grace', $template->tasks()->sole()->song);
+        $this->assertModelExists($source);
+    }
+
+    public function test_event_planners_do_not_see_the_add_template_button(): void
+    {
+        $this->actingAs($this->userWithRole('Event Planner'));
+
+        Livewire::test(ListServiceTemplates::class)->assertActionHidden('createTemplate');
+    }
+
+    #[TestWith([false])]
+    #[TestWith([true])]
+    public function test_the_add_template_action_rejects_other_churches_and_existing_templates(bool $isTemplate): void
+    {
+        $source = Event::factory()->create([
+            'church_id' => $isTemplate ? $this->church->id : Church::factory()->create()->id,
+            'is_template' => $isTemplate,
+        ]);
+        $this->actingAs($this->userWithRole('Church Admin'));
+        $templatesBefore = Event::templates()->count();
+
+        Livewire::test(ListServiceTemplates::class)
+            ->callAction('createTemplate', data: ['source_event_id' => $source->id, 'name' => 'Invalid source'])
+            ->assertHasActionErrors(['source_event_id']);
+
+        $this->assertSame($templatesBefore, Event::templates()->count());
     }
 
     public function test_event_planner_creates_a_service_from_a_template_with_its_people(): void

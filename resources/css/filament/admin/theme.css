@@ -5,6 +5,97 @@
 @source '../../../../resources/views/**/*';
 @source '../../../../modules/**/*';
 
+.wp-event-start-calendar .fi-fo-date-time-picker-calendar-day-today {
+    outline: 2px solid var(--wp-primary);
+    outline-offset: -2px;
+    font-weight: 700;
+}
+
+.wp-event-start-calendar .fi-fo-date-time-picker-calendar {
+    min-block-size: 14rem;
+    align-content: start;
+}
+
+.wp-start-time {
+    position: relative;
+}
+
+.wp-start-time .fi-input-wrp-content-ctn {
+    display: flex;
+    align-items: center;
+}
+
+.wp-event-start-calendar .fi-fo-date-time-picker-display-text-input,
+.wp-start-time .wp-start-time-input {
+    height: var(--wp-control-height);
+    min-height: var(--wp-control-height);
+}
+
+.wp-start-time-input {
+    min-width: 0;
+    flex: 1;
+}
+
+.wp-start-time-input::-webkit-calendar-picker-indicator {
+    display: none;
+}
+
+.wp-start-time-toggle {
+    display: grid;
+    place-items: center;
+    width: 2.75rem;
+    min-height: var(--wp-control-height);
+    color: var(--wp-text-muted);
+    cursor: pointer;
+}
+
+.wp-start-time-toggle .fi-icon {
+    width: 1.25rem;
+    height: 1.25rem;
+}
+
+.wp-start-time-options {
+    position: absolute;
+    inset-inline: 0;
+    top: calc(100% + 0.375rem);
+    z-index: 30;
+    max-height: 15rem;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    border-radius: var(--wp-radius-control);
+    padding-block: 0.25rem;
+    background: var(--wp-surface);
+    color: var(--wp-text);
+    box-shadow: 0 6px 20px rgb(0 0 0 / 0.14);
+}
+
+.wp-start-time-options [role="option"] {
+    display: block;
+    width: 100%;
+    min-height: 2.75rem;
+    padding-inline: 0.75rem;
+    text-align: start;
+    font-size: 0.875rem;
+    font-variant-numeric: tabular-nums;
+    cursor: pointer;
+}
+
+.wp-start-time-options-above {
+    top: auto;
+    bottom: calc(100% + 0.375rem);
+}
+
+.wp-start-time-options [role="option"]:is(:hover, :focus-visible),
+.wp-start-time-options [aria-selected="true"] {
+    background: var(--wp-nav-selected-bg);
+    color: var(--wp-nav-selected-text);
+}
+
+.wp-start-time :focus-visible {
+    outline: 2px solid var(--wp-focus);
+    outline-offset: -2px;
+}
+
 /*
  * WorshipPlanning panel theme.
  *
@@ -85,6 +176,10 @@
 .fi-body {
     background-color: var(--wp-bg);
     color: var(--wp-text);
+}
+
+.fi-topbar-ctn {
+    overflow: visible;
 }
 
 .fi-topbar {
@@ -231,6 +326,11 @@
 }
 
 /* ---------- Phone tab bar ---------- */
+
+.wp-mobile-only,
+.wp-mobile-pagination {
+    display: none;
+}
 
 .wp-tabbar {
     position: fixed;
@@ -400,9 +500,9 @@
 
 .wp-user-avatar {
     position: relative;
-    width: 2rem;
-    height: 2rem;
-    border-radius: 9999px;
+    width: 2.5rem;
+    height: 2.5rem;
+    border-radius: 0.5rem;
     object-fit: cover;
     flex-shrink: 0;
     display: inline-flex;
@@ -440,9 +540,16 @@
 }
 
 .wp-user-with-avatar.wp-user-avatar-sm .wp-user-avatar {
-    width: 1.25rem;
-    height: 1.25rem;
-    font-size: 0.625rem;
+    width: 2rem;
+    height: 2rem;
+    font-size: 0.75rem;
+}
+
+.fi-user-avatar {
+    width: 2.5rem;
+    height: 2.5rem;
+    border-radius: 0.5rem;
+    object-fit: cover;
 }
 
 .dark img.fi-logo {
@@ -484,6 +591,21 @@
 }
 
 /* ---------- Task rows ---------- */
+
+.wp-task-option .fi-fo-field-label {
+    min-block-size: 2.5rem;
+    align-items: center;
+}
+
+.wp-task-option .fi-fo-field-label > .fi-toggle {
+    margin-block: 0;
+}
+
+@media (min-width: 48rem) {
+    .wp-task-option {
+        padding-block-start: 1.75rem;
+    }
+}
 
 .wp-task-summary {
     display: flex;
@@ -1422,6 +1544,33 @@ a.wp-schedule-event:hover {
     color: var(--wp-text);
 }
 
+.wp-spreadsheet .wp-ss-cell:has(.wp-user-with-avatar):not(.wp-ss-multiple) {
+    min-height: 2.75rem;
+    min-width: 11rem;
+    max-width: 16rem;
+    padding-inline-start: 3.375rem;
+}
+
+.wp-spreadsheet .wp-ss-cell:has(.wp-user-with-avatar):not(.wp-ss-multiple) .wp-user-avatar {
+    position: absolute;
+    inset-inline-start: 0;
+    inset-block-start: 50%;
+    transform: translateY(-50%);
+    width: 2.75rem;
+    height: 2.75rem;
+    font-size: 0.875rem;
+}
+
+.wp-spreadsheet .wp-ss-cell .wp-user-avatar-name {
+    white-space: normal;
+    overflow-wrap: anywhere;
+}
+
+.wp-spreadsheet .wp-ss-multiple:has(.wp-user-with-avatar) .wp-ss-cell-main {
+    display: block;
+    overflow: visible;
+}
+
 .wp-spreadsheet .wp-ss-multiple .wp-ss-cell-main {
     display: -webkit-box;
     -webkit-box-orient: vertical;
@@ -1479,9 +1628,35 @@ a.wp-schedule-event:hover {
     padding-block: 0.125rem;
 }
 
-.wp-spreadsheet .wp-ss-cell .wp-avatar {
-    width: 1.125rem;
-    height: 1.125rem;
+.wp-spreadsheet .wp-ss-cell-statuses {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+    min-width: 0;
+    max-width: 100%;
+}
+
+.wp-spreadsheet .wp-ss-cell-statuses:has(> :nth-child(2)) {
+    width: 100%;
+    contain: inline-size;
+}
+
+.wp-spreadsheet .wp-ss-cell-statuses:has(> :nth-child(2)) .wp-status {
+    flex: 0 1 auto;
+    min-width: 0;
+    gap: 0.25rem;
+    padding-inline: 0.375rem;
+}
+
+.wp-spreadsheet .wp-ss-cell-statuses .wp-status-label {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.wp-spreadsheet .wp-ss-cell-statuses:has(> :nth-child(2)) .fi-icon {
+    width: 0.75rem;
+    height: 0.75rem;
 }
 
 
@@ -1919,6 +2094,67 @@ a.wp-schedule-event:hover {
 .wp-user-profile-link:focus-visible { outline: 2px solid var(--wp-focus); outline-offset: 2px; }
 .wp-announcement-points { list-style: decimal; padding-inline-start: 1.4rem; margin: 0; }
 .wp-announcement-points li { padding-inline-start: 0.2rem; margin-block: 0.3rem; white-space: pre-line; }
+.wp-announcement-editor.fi-fo-repeater,
+.wp-announcement-editor .fi-fo-repeater-items {
+    gap: 0.5rem;
+}
+
+.wp-announcement-editor .fi-fo-repeater-item {
+    display: flex;
+    align-items: flex-start;
+    box-shadow: none;
+    background: var(--wp-surface-sunken);
+}
+
+.wp-announcement-editor .fi-fo-repeater-item-header {
+    flex: 0 0 auto;
+    flex-direction: column;
+    gap: 0.375rem;
+    padding: 0.5rem;
+}
+
+.wp-announcement-editor .fi-fo-repeater-item-header-end-actions {
+    margin-inline-start: 0;
+    gap: 0.25rem;
+}
+
+.wp-announcement-editor .fi-fo-repeater-item-content {
+    flex: 1;
+    min-width: 0;
+    padding: 0.5rem;
+    padding-inline-start: 0;
+    border-top: 0;
+}
+
+.wp-announcement-editor .fi-fo-repeater-add {
+    justify-content: flex-start;
+}
+
+@media (max-width: 640px) {
+    .wp-announcement-editor .fi-fo-repeater-item {
+        display: block;
+    }
+
+    .wp-announcement-editor .fi-fo-repeater-item-header {
+        flex-direction: row;
+        flex-wrap: wrap;
+        gap: 0.25rem;
+        padding-block: 0.25rem;
+    }
+
+    .wp-announcement-editor .fi-fo-repeater-item-header-label {
+        order: -1;
+        margin-inline-end: auto;
+    }
+
+    .wp-announcement-editor .fi-fo-repeater-item-header-start-actions {
+        gap: 0.25rem;
+    }
+
+    .wp-announcement-editor .fi-fo-repeater-item-content {
+        padding: 0 0.5rem 0.5rem;
+    }
+}
 .wp-ss-cell { position: relative; isolation: isolate; }
 .wp-ss-cell-edit { position: absolute; inset: 0; z-index: 1; width: 100%; height: 100%; border-radius: inherit; cursor: pointer; }
 .wp-ss-cell-edit:focus-visible { outline: 2px solid var(--wp-focus); outline-offset: 3px; }
@@ -2009,6 +2245,31 @@ a.wp-schedule-event:hover {
 }
 
 @media (max-width: 767px) {
+    .fi-topbar-ctn {
+        display: none;
+    }
+
+    .fi-main-sidebar {
+        z-index: 40;
+        height: 100dvh;
+        overflow-y: auto;
+        overscroll-behavior-y: contain;
+    }
+
+    .fi-main-sidebar .fi-sidebar-header-ctn {
+        flex-shrink: 0;
+    }
+
+    .fi-main-sidebar .fi-sidebar-nav {
+        min-height: 0;
+        overflow-y: auto;
+        padding-bottom: max(1rem, env(safe-area-inset-bottom));
+    }
+
+    .wp-mobile-only {
+        display: flex;
+    }
+
     .fi-main,
     .fi-page,
     .fi-page-content,
@@ -2024,7 +2285,7 @@ a.wp-schedule-event:hover {
     }
 
     html {
-        scroll-padding-block: 5rem calc(6rem + env(safe-area-inset-bottom));
+        scroll-padding-block: 1rem calc(6rem + env(safe-area-inset-bottom));
     }
 
     .fi-header-heading,
@@ -2096,8 +2357,78 @@ a.wp-schedule-event:hover {
         justify-content: center;
     }
 
-    :is(.wp-events-list, .wp-spreadsheet) .fi-pagination-records-per-page-select select {
+    .wp-spreadsheet .fi-pagination-records-per-page-select select {
         min-height: 3rem;
+        font-size: 1rem;
+    }
+
+    .wp-my-tasks .fi-ta-filters-above-content-ctn {
+        padding: 0.5rem;
+    }
+
+    .wp-my-tasks .fi-ta-header-toolbar:has(.fi-ta-search-field) {
+        display: none;
+    }
+
+    .wp-schedule-search {
+        padding: 0.75rem 0.75rem 0;
+    }
+
+    .wp-schedule-search .wp-ss-search {
+        width: 100%;
+    }
+
+    .wp-schedule-filters > .fi-ta-filters {
+        padding: 0.75rem;
+        border-top: 1px solid var(--wp-border);
+    }
+
+    .wp-schedule-filters .fi-ta-filters-heading {
+        display: none;
+    }
+
+    :is(.wp-events-list, .wp-my-tasks) .fi-pagination {
+        display: none;
+    }
+
+    .wp-mobile-pagination {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 0.5rem;
+        padding: 0.25rem 0.75rem;
+        border-top: 1px solid var(--wp-border);
+    }
+
+    .wp-mobile-pagination-pages {
+        display: flex;
+        align-items: center;
+        gap: 0.125rem;
+    }
+
+    .wp-mobile-pagination .fi-icon-btn {
+        min-width: 2.75rem;
+        min-height: 2.75rem;
+    }
+
+    .wp-mobile-pagination-current {
+        min-width: 1.5rem;
+        text-align: center;
+        font-size: 0.875rem;
+        font-variant-numeric: tabular-nums;
+    }
+
+    .wp-mobile-pagination-size {
+        flex: 0 0 auto;
+        width: 4.5rem;
+    }
+
+    .wp-mobile-pagination-size .fi-select-input {
+        min-height: 2rem;
+        height: 2rem;
+        padding-block: 0;
+        padding-inline-start: 0.5rem;
+        padding-inline-end: 1.5rem;
         font-size: 1rem;
     }
 

@@ -1,4 +1,5 @@
 {
+    "My profile": "Min profil",
     "#": "#",
     "(no subject)": "(inget ämne)",
     "1 = one copy at the dates above. 3 = three copies, each one week later.": "1 = en kopia vid datumen ovan. 3 = tre kopior, en vecka apart var.",
@@ -1079,5 +1080,23 @@
     "When": "När",
     "Activity templates": "Aktivitetsmallar",
     "Module selection": "Modulval",
-    "Bible settings": "Bibelinställningar"
+    "Bible settings": "Bibelinställningar",
+    "Start date": "Startdatum",
+    "Add service template": "Lägg till gudstjänstmall",
+    "Existing service": "Befintlig gudstjänst",
+    "Choose a service": "Välj en gudstjänst",
+    "Search by service name or date (YYYY-MM-DD).": "Sök på gudstjänstens namn eller datum (ÅÅÅÅ-MM-DD).",
+    "Choose start time": "Välj starttid",
+    "Use templates when creating events. Church admins can add a template from any existing service.": "Använd mallar när du skapar händelser. Kyrkans administratörer kan lägga till en mall från en befintlig gudstjänst.",
+    "Choose an existing service to copy its activities, people, teams and songs into a reusable template.": "Välj en befintlig gudstjänst för att kopiera dess aktiviteter, personer, team och sånger till en återanvändbar mall.",
+    "Church admins can use Add service template to start from an existing service.": "Kyrkans administratörer kan välja Lägg till gudstjänstmall för att utgå från en befintlig gudstjänst.",
+    "Start time": "Starttid",
+    "No template — create a blank event": "Ingen mall — skapa en tom händelse",
+    "Choose a template to fill in the name and time and copy its service order. You can change the details below.": "Välj en mall för att fylla i namn och tid och kopiera gudstjänstordningen. Du kan ändra uppgifterna nedan.",
+    "No assignments awaiting acceptance.": "Inga uppgifter väntar på att bli accepterade.",
+    "Only tasks that have not been accepted are shown. One message is sent for each selected task.": "Bara uppgifter som inte har accepterats visas. Ett meddelande skickas för varje vald uppgift.",
+    "Select at least one task that has not been accepted.": "Välj minst en uppgift som inte har accepterats.",
+    "Only “:type” teams. Messages to a team go to its leader(s).": "Bara team av typen ”:type”. Meddelanden till ett team går till dess ledare.",
+    "Event messages sent to this team go to its leader(s).": "Evenemangsmeddelanden till det här teamet går till dess ledare.",
+    ":name is unavailable during this event (:ranges).": ":name är inte tillgänglig under det här evenemanget (:ranges)."
 }

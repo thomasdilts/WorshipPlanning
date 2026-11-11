@@ -46,19 +46,23 @@
                 {!! $html !!}
             @endif
         </span>
-        @if ($multiple)
-            <span class="wp-status wp-status-neutral">
-                {{ __(':count activities', ['count' => count($taskIds)]) }}
+        @if ($multiple || $conflict || $state?->showsOnGrid())
+            <span class="wp-ss-cell-statuses">
+                @if ($multiple)
+                    <span class="wp-status wp-status-neutral" title="{{ __(':count activities', ['count' => count($taskIds)]) }}">
+                        <span class="wp-status-label">{{ __(':count activities', ['count' => count($taskIds)]) }}</span>
+                    </span>
+                @endif
+                @if ($conflict)
+                    <span class="wp-status wp-status-conflict" title="{{ __('Unavailable') }}">
+                        <x-filament::icon icon="heroicon-m-exclamation-triangle" aria-hidden="true" />
+                        <span class="wp-status-label">{{ __('Unavailable') }}</span>
+                    </span>
+                @endif
+                @if ($state?->showsOnGrid())
+                    <x-assignment-status :state="$state" :title="$state->label()" />
+                @endif
             </span>
-        @endif
-        @if ($conflict)
-            <span class="wp-status wp-status-conflict">
-                <x-filament::icon icon="heroicon-m-exclamation-triangle" aria-hidden="true" />
-                {{ __('Unavailable') }}
-            </span>
-        @endif
-        @if ($state?->showsOnGrid())
-            <x-assignment-status :state="$state" />
         @endif
     </div>
 @endif

@@ -86,6 +86,7 @@ class PanelNavigationTest extends TestCase
         $this->assertContains('Services', $navigation['top']);
         $this->assertContains('My schedule', $navigation['top']);
         $this->assertContains('Availability', $navigation['top']);
+        $this->assertContains('Service templates', $navigation['groups']['Settings']);
     }
 
     public function test_volunteer_reaches_my_schedule_but_not_planning_or_settings(): void
@@ -105,6 +106,7 @@ class PanelNavigationTest extends TestCase
         $this->assertArrayHasKey('Settings', $navigation['groups']);
         $this->assertContains('Roles', $navigation['groups']['Settings']);
         $this->assertContains('Activity templates', $navigation['groups']['Settings']);
+        $this->assertContains('Service templates', $navigation['groups']['Settings']);
         $this->assertContains('Export church data', $navigation['groups']['Settings']);
     }
 

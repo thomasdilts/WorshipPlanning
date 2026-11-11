@@ -18,6 +18,28 @@ class EventListDateFilterTest extends TestCase
 {
     use RefreshDatabase;
 
+    public function test_services_show_twenty_five_rows_per_page_by_default(): void
+    {
+        $church = Church::factory()->create();
+        $this->seed(RolesAndPermissionsSeeder::class);
+        app(CurrentChurch::class)->set($church);
+        $admin = User::factory()->create(['church_id' => $church->id]);
+        RolesAndPermissionsSeeder::assignDefaultRoles($admin, 'Church Admin');
+        Event::factory()->count(26)->create([
+            'church_id' => $church->id,
+            'starts_at' => now()->addDay()->setTime(10, 0),
+        ]);
+        $this->actingAs($admin);
+
+        $component = Livewire::test(ListEvents::class)->assertSuccessful();
+
+        $this->assertCount(25, $component->instance()->getTableRecords());
+
+        $component->call('setPage', 2)->assertSuccessful();
+
+        $this->assertCount(1, $component->instance()->getTableRecords());
+    }
+
     public function test_events_list_defaults_to_today_and_forward(): void
     {
         $church = Church::factory()->create();

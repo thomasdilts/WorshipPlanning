@@ -3,9 +3,11 @@
 namespace App\Filament\Resources\Events\Actions;
 
 use App\Core\Tenancy\CurrentChurch;
+use App\Enums\MessageTemplatePurpose;
 use App\Filament\Resources\Events\Schemas\EventMessageForm;
 use App\Models\Event;
 use App\Models\EventTask;
+use App\Models\MessageTemplate;
 use Filament\Actions\Action;
 use Filament\Actions\Contracts\HasActions;
 use Filament\Notifications\Notification;
@@ -31,13 +33,23 @@ class SendTaskMessageAction
             ]))
             ->modalWidth('3xl')
             ->modalSubmitActionLabel(__('Send'))
+            ->modalSubmitAction(fn (Action $action, array $arguments): Action => $action
+                ->disabled(EventMessageForm::unacceptedTaskIds(static::resolveTask($arguments)->event) === []))
             ->schema(fn (array $arguments): array => EventMessageForm::components(static::resolveTask($arguments)->event))
             ->fillForm(function (array $arguments): array {
                 $task = static::resolveTask($arguments);
+                $canSelectTask = in_array($task->id, EventMessageForm::unacceptedTaskIds($task->event), true);
 
                 return [
-                    'recipient_task_ids' => filled($task->assigned_user_id) ? [$task->id] : [],
-                    'team_task_ids' => blank($task->assigned_user_id) && filled($task->assigned_team_id) ? [$task->id] : [],
+                    'message_template_id' => ($arguments['requireResponse'] ?? false)
+                        ? MessageTemplate::query()
+                            ->where('is_active', true)
+                            ->where('purpose', MessageTemplatePurpose::Service)
+                            ->where('key', 'krava-svar')
+                            ->value('id')
+                        : null,
+                    'recipient_task_ids' => $canSelectTask && filled($task->assigned_user_id) ? [$task->id] : [],
+                    'team_task_ids' => $canSelectTask && blank($task->assigned_user_id) && filled($task->assigned_team_id) ? [$task->id] : [],
                 ];
             })
             ->action(function (array $data, array $arguments): void {
@@ -85,7 +97,7 @@ class SendTaskMessageAction
             return;
         }
 
-        $livewire->replaceMountedAction('sendTaskMessage', ['taskId' => $task->id]);
+        $livewire->replaceMountedAction('sendTaskMessage', ['taskId' => $task->id, 'requireResponse' => true]);
     }
 
     /**

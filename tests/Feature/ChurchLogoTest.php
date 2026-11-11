@@ -101,7 +101,7 @@ class ChurchLogoTest extends TestCase
         $this->assertStringContainsString('max-height: 28px', $html);
         $this->assertStringContainsString($church->logoAbsolutePath(), $html);
 
-        $response = app(EventPdfExporter::class)->download($event->fresh(['church', 'tasks']));
+        $response = app(EventPdfExporter::class)->stream($event->fresh(['church', 'tasks']));
         $this->assertTrue(
             str_contains($response->headers->get('content-type'), 'pdf')
             || str_contains((string) $response->headers->get('content-disposition'), '.pdf')

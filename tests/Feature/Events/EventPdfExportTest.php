@@ -135,7 +135,7 @@ class EventPdfExportTest extends TestCase
         ]);
         EventTask::factory()->count(6)->create(['event_id' => $event->id, 'task_template_id' => $global->id, 'name' => 'Coordinator']);
 
-        $response = app(EventPdfExporter::class)->download($event);
+        $response = app(EventPdfExporter::class)->stream($event);
         $pdf = $response->getContent();
 
         $this->assertSame(1, preg_match_all('/\/Type\s*\/Page\b/', $pdf));
@@ -163,7 +163,7 @@ class EventPdfExportTest extends TestCase
         $this->assertStringContainsString('09:40', $html);
     }
 
-    public function test_event_pdf_download_returns_pdf_response(): void
+    public function test_event_pdf_stream_returns_pdf_response(): void
     {
         $church = Church::factory()->create(['name' => 'PDF Church']);
         $this->seed(RolesAndPermissionsSeeder::class);
@@ -190,7 +190,7 @@ class EventPdfExportTest extends TestCase
 
         app(CurrentChurch::class)->set($church);
 
-        $response = app(EventPdfExporter::class)->download($event);
+        $response = app(EventPdfExporter::class)->stream($event);
 
         $this->assertTrue(
             str_contains($response->headers->get('content-type'), 'pdf')
@@ -198,7 +198,7 @@ class EventPdfExportTest extends TestCase
         );
     }
 
-    public function test_authenticated_user_can_download_event_pdf_via_route(): void
+    public function test_authenticated_user_can_open_event_pdf_inline_via_route(): void
     {
         $church = Church::factory()->create();
         $this->seed(RolesAndPermissionsSeeder::class);
@@ -209,6 +209,7 @@ class EventPdfExportTest extends TestCase
         $event = Event::factory()->create([
             'church_id' => $church->id,
             'name' => 'Sunday Service',
+            'starts_at' => '2026-11-01 18:30:00',
         ]);
 
         app(PermissionRegistrar::class)->setPermissionsTeamId($church->id);
@@ -216,7 +217,8 @@ class EventPdfExportTest extends TestCase
         $this->actingAs($admin)
             ->get(route('events.pdf', $event))
             ->assertOk()
-            ->assertHeader('content-disposition');
+            ->assertHeader('content-type', 'application/pdf')
+            ->assertHeader('content-disposition', 'inline; filename=sunday-service-2026-11-01.pdf');
     }
 
     public function test_pdf_view_matches_service_order_columns_and_flags_problems(): void
