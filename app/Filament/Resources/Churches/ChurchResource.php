@@ -91,6 +91,9 @@ class ChurchResource extends Resource
                     ->required()
                     ->default('en')
                     ->searchable(),
+                Toggle::make('uses_24_hour_time')
+                    ->label(__('Use 24-hour time'))
+                    ->default(true),
                 Toggle::make('is_active')
                     ->label(__('Active'))
                     ->default(true),

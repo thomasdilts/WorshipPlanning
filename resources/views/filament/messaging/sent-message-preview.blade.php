@@ -8,7 +8,7 @@
 <div class="space-y-4 text-sm">
     <div class="flex flex-wrap gap-x-6 gap-y-1 text-gray-500 dark:text-gray-400">
         <span>{{ __('Type') }}: <span class="font-medium text-gray-950 dark:text-white">{{ $channel }}</span></span>
-        <span>{{ __('Sent') }}: <span class="font-medium text-gray-950 dark:text-white">{{ $message->created_at?->translatedFormat('j M Y, H:i') }}</span></span>
+        <span>{{ __('Sent') }}: <span class="font-medium text-gray-950 dark:text-white">{{ $message->created_at?->translatedFormat(\App\Support\DateTimeFormats::dateTime()) }}</span></span>
         @if ($message->event)
             <span>{{ __('Event') }}: <span class="font-medium text-gray-950 dark:text-white">{{ $message->event->name }}</span></span>
         @endif

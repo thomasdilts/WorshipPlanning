@@ -37,7 +37,8 @@
         x-on:focusout="if (!$el.contains($event.relatedTarget)) open = false"
         x-on:keydown.escape.prevent.stop="open = false; $refs.input.focus()">
         <x-filament::input.wrapper :valid="!$errors->has($getStatePath())">
-            <input type="time" step="60" id="{{ $getId() }}" x-ref="input" x-model="state"
+            {{-- A native time input follows the browser's locale (AM/PM in en-US), so 24-hour churches get HH:MM text. --}}
+            <input @if (\App\Support\DateTimeFormats::uses24HourTime()) type="text" inputmode="numeric" maxlength="5" placeholder="HH:MM" pattern="([01][0-9]|2[0-3]):[0-5][0-9]" autocomplete="off" @else type="time" step="60" @endif id="{{ $getId() }}" x-ref="input" x-model="state"
                 class="fi-input wp-start-time-input" @required($isRequired()) @disabled($isDisabled())
                 aria-controls="{{ $getId() }}-options" aria-haspopup="listbox" x-bind:aria-expanded="open"
                 x-on:click="showMenu()" x-on:keydown.arrow-down.prevent="showMenu(true)" />
@@ -57,7 +58,7 @@
                 @php($time = sprintf('%02d:%02d', intdiv($minutes, 60), $minutes % 60))
                 <button type="button" role="option" tabindex="-1" data-time="{{ $time }}"
                     x-bind:aria-selected="state === @js($time)" x-on:click="choose(@js($time))">
-                    {{ \Illuminate\Support\Carbon::createFromTime(intdiv($minutes, 60), $minutes % 60)->isoFormat('LT') }}
+                    {{ \App\Support\DateTimeFormats::formatTime($time) }}
                 </button>
             @endforeach
         </div>

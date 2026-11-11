@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Core\Tenancy\BelongsToChurch;
+use App\Support\DateTimeFormats;
 use Database\Factories\UnavailabilityFactory;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -111,12 +112,12 @@ class Unavailability extends Model
 
     public function label(): string
     {
-        $range = $this->starts_on->format('M j, Y')
+        $range = $this->starts_on->translatedFormat(DateTimeFormats::date())
             .' – '
-            .$this->ends_on->format('M j, Y');
+            .$this->ends_on->translatedFormat(DateTimeFormats::date());
 
         if ($this->starts_on->equalTo($this->ends_on)) {
-            $range = $this->starts_on->format('M j, Y');
+            $range = $this->starts_on->translatedFormat(DateTimeFormats::date());
         }
 
         return $range;

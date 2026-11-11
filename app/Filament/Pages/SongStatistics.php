@@ -158,12 +158,12 @@ class SongStatistics extends Page implements HasTable
                     ->toggleable(),
                 TextColumn::make('first_used_at')
                     ->label(__('First used'))
-                    ->dateTime('M j, Y')
+                    ->date()
                     ->sortable()
                     ->toggleable(),
                 TextColumn::make('last_used_at')
                     ->label(__('Last used'))
-                    ->dateTime('M j, Y')
+                    ->date()
                     ->sortable()
                     ->toggleable(),
             ])

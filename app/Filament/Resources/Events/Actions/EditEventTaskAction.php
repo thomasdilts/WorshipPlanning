@@ -6,6 +6,7 @@ use App\Core\Tenancy\CurrentChurch;
 use App\Filament\Resources\Events\Schemas\EventTaskForm;
 use App\Models\Event;
 use App\Models\EventTask;
+use App\Support\DateTimeFormats;
 use Filament\Actions\Action;
 use Filament\Actions\Contracts\HasActions;
 use Filament\Actions\EditAction;
@@ -166,8 +167,8 @@ class EditEventTaskAction
         }
 
         $when = collect([
-            $event->starts_at?->translatedFormat('D j M Y'),
-            $event->starts_at?->format('H:i'),
+            $event->starts_at?->translatedFormat(DateTimeFormats::dateWithWeekday()),
+            DateTimeFormats::formatTime($event->starts_at),
             $event->name,
         ])->filter()->implode(' · ');
 

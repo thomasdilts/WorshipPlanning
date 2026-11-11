@@ -807,8 +807,8 @@ class EventMessagesTest extends TestCase
             'record' => $this->event->getRouteKey(),
         ])
             ->assertTableColumnStateSet('task_name', $this->event->tasks()->first()->displayName(), $message)
-            ->assertSee('3 Oct 2026, 18:40')
-            ->assertDontSee('1 Oct 2026, 09:15');
+            ->assertSee('3 Oct 2026 18:40')
+            ->assertDontSee('1 Oct 2026 09:15');
     }
 
     public function test_message_for_a_reassigned_task_fails_instead_of_sending(): void

@@ -78,6 +78,48 @@ class EventTemplateCreationTest extends TestCase
         $this->assertSame('Sunday template', $source->fresh()->name);
     }
 
+    public function test_copy_options_appear_only_after_choosing_a_template(): void
+    {
+        $church = $this->signInPlanner();
+        $source = Event::factory()->create(['church_id' => $church->id, 'is_template' => true]);
+
+        Livewire::test(CreateEvent::class)
+            ->assertFormFieldHidden('weeks')
+            ->assertFormFieldHidden('copy_people_and_teams')
+            ->assertFormFieldHidden('copy_songs')
+            ->fillForm(['service_template_id' => $source->id])
+            ->assertFormFieldVisible('weeks')
+            ->assertFormSet(['weeks' => 1, 'copy_people_and_teams' => true, 'copy_songs' => true]);
+    }
+
+    public function test_creating_from_a_template_can_fill_several_weeks_without_people_or_songs(): void
+    {
+        $church = $this->signInPlanner();
+        $source = Event::factory()->create(['church_id' => $church->id, 'is_template' => true, 'starts_at' => '2026-01-04 10:00:00']);
+        $person = User::factory()->create(['church_id' => $church->id]);
+        $activity = TaskTemplate::factory()->create(['church_id' => $church->id, 'use_globally' => false]);
+        EventTask::factory()->create(['event_id' => $source->id, 'task_template_id' => $activity->id, 'assigned_user_id' => $person->id, 'song' => 'Amazing Grace', 'duration' => 10, 'sort_order' => 1]);
+
+        Livewire::test(CreateEvent::class)
+            ->fillForm(['service_template_id' => $source->id])
+            ->fillForm(['starts_at' => '2026-12-06', 'weeks' => 3, 'copy_people_and_teams' => false, 'copy_songs' => false])
+            ->call('create')
+            ->assertHasNoFormErrors()
+            ->assertNotified(__(':count events copied', ['count' => 3]));
+
+        $events = Event::query()->orderBy('starts_at')->get();
+        $this->assertSame(
+            ['2026-12-06 10:00:00', '2026-12-13 10:00:00', '2026-12-20 10:00:00'],
+            $events->map(fn (Event $event): string => $event->starts_at->toDateTimeString())->all(),
+        );
+
+        foreach ($events as $event) {
+            $task = $event->tasks()->sole();
+            $this->assertNull($task->assigned_user_id);
+            $this->assertNull($task->song);
+        }
+    }
+
     public function test_clearing_the_template_keeps_the_details_and_creates_a_blank_event(): void
     {
         $church = $this->signInPlanner();

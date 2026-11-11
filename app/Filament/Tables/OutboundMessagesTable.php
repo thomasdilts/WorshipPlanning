@@ -52,7 +52,7 @@ class OutboundMessagesTable
             ->columns(array_values(array_filter([
                 TextColumn::make('created_at')
                     ->label(__('Date'))
-                    ->dateTime('j M Y, H:i')
+                    ->dateTime()
                     ->sortable(),
                 TextColumn::make('kind')
                     ->label(__('About'))

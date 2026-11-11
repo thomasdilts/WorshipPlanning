@@ -12,6 +12,7 @@ use App\Models\Event;
 use App\Models\EventTask;
 use App\Services\EventTaskRowSummary;
 use App\Services\EventTaskTimeline;
+use App\Support\DateTimeFormats;
 use Filament\Actions\Action;
 use Filament\Actions\ActionGroup;
 use Filament\Actions\Contracts\HasActions;
@@ -26,7 +27,6 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Str;
 
 /**
  * Shared service-order table. Subclasses set {@see $globalOnly} for Order vs People.
@@ -76,7 +76,7 @@ class TasksRelationManager extends RelationManager
             ->recordTitleAttribute('name')
             ->header(fn () => view('filament.events.workspace-toolbar', [
                 'isOrder' => $isOrder,
-                'startTime' => $event->starts_at?->timezone(config('app.timezone'))->format('H:i'),
+                'startTime' => DateTimeFormats::formatTime($event->starts_at?->timezone(config('app.timezone'))),
             ]))
             ->recordClasses(fn (EventTask $record): ?string => $isOrder && $record->before_start ? 'wp-order-before' : null)
             ->paginated(false)
@@ -103,7 +103,7 @@ class TasksRelationManager extends RelationManager
                             return '—';
                         }
 
-                        return Str::of((string) $state)->substr(0, 5)->toString();
+                        return (string) DateTimeFormats::formatTime((string) $state);
                     }),
                 TextColumn::make('duration')
                     ->label(__('Mins'))

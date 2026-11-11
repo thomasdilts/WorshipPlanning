@@ -8,6 +8,7 @@ use App\Filament\Resources\Events\EventResource;
 use App\Filament\Resources\Events\Pages\ListEvents;
 use App\Models\Event;
 use App\Services\EventTaskRowSummary;
+use App\Support\DateTimeFormats;
 use Filament\Actions\EditAction;
 use Filament\Actions\ViewAction;
 use Filament\Forms\Components\DatePicker;
@@ -58,13 +59,13 @@ class EventsTable
                     ->html()
                     ->formatStateUsing(fn (Event $record): HtmlString => new HtmlString(
                         '<time class="wp-ss-date" datetime="'.e($record->starts_at?->toDateString()).'">'
-                        .'<span class="wp-ss-date-main">'.e($record->starts_at?->translatedFormat('j M Y')).'</span>'
+                        .'<span class="wp-ss-date-main">'.e($record->starts_at?->translatedFormat(DateTimeFormats::date())).'</span>'
                         .'<span class="wp-ss-date-meta">'.e($record->starts_at?->translatedFormat('l')).' · '.e(__('Week :number', ['number' => $record->starts_at?->isoWeek()])).'</span></time>'
                     ))
                     ->sortable(),
                 TextColumn::make('event_time')
                     ->label(__('Time'))
-                    ->state(fn (Event $record): ?string => $record->starts_at?->format('H:i')),
+                    ->state(fn (Event $record): ?string => DateTimeFormats::formatTime($record->starts_at)),
                 TextColumn::make('name')
                     ->label(__('Event'))
                     ->weight('medium')
@@ -128,7 +129,6 @@ class EventsTable
                     ->schema([
                         DatePicker::make('date')
                             ->label(__('Show events from'))
-                            ->displayFormat('M j, Y')
                             ->default(fn (): string => now()->toDateString()),
                         DatePicker::make('until')
                             ->label(__('Until')),

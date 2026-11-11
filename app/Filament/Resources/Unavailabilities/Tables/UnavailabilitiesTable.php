@@ -43,11 +43,11 @@ class UnavailabilitiesTable
                     ->visible($canManageOthers),
                 TextColumn::make('starts_on')
                     ->label(__('Starts'))
-                    ->date('M j, Y')
+                    ->date()
                     ->sortable(),
                 TextColumn::make('ends_on')
                     ->label(__('Ends'))
-                    ->date('M j, Y')
+                    ->date()
                     ->sortable(),
                 TextColumn::make('note')
                     ->label(__('Note'))

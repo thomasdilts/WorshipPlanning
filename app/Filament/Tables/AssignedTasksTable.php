@@ -10,6 +10,7 @@ use App\Models\EventTask;
 use App\Models\User;
 use App\Services\AssignmentResponder;
 use App\Services\AssignmentStateResolver;
+use App\Support\DateTimeFormats;
 use App\Support\UserAvatar;
 use Filament\Actions\Action;
 use Filament\Forms\Components\DatePicker;
@@ -26,7 +27,6 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\HtmlString;
-use Illuminate\Support\Str;
 
 class AssignedTasksTable
 {
@@ -45,7 +45,7 @@ class AssignedTasksTable
             ->columns($asSchedule ? self::scheduleColumns() : [
                 TextColumn::make('event.starts_at')
                     ->label(__('Event date'))
-                    ->dateTime('D M j, Y')
+                    ->date(DateTimeFormats::dateWithWeekday())
                     ->sortable(),
                 TextColumn::make('event.name')
                     ->label(__('Event'))
@@ -60,7 +60,7 @@ class AssignedTasksTable
                         }
 
                         $time = filled($record->starts_at)
-                            ? Str::of((string) $record->starts_at)->substr(0, 5)->toString()
+                            ? DateTimeFormats::formatTime((string) $record->starts_at)
                             : null;
 
                         return $time ? __('Starts :time', ['time' => $time]) : null;
@@ -108,7 +108,6 @@ class AssignedTasksTable
                         DatePicker::make('date')
                             ->label(__('Show tasks from'))
                             ->native(false)
-                            ->displayFormat('M j, Y')
                             ->default(fn (): string => now()->toDateString())
                             ->helperText(__('Default is today onwards. Clear to include past events.')),
                     ])
@@ -136,7 +135,7 @@ class AssignedTasksTable
                             return [];
                         }
 
-                        $label = Carbon::parse($from)->translatedFormat('j M Y');
+                        $label = Carbon::parse($from)->translatedFormat(DateTimeFormats::date());
 
                         return [
                             Indicator::make(__('From :date', ['date' => $label]))

@@ -94,11 +94,11 @@ class MyUnavailability extends Page implements HasTable
                     ->color(fn (Unavailability $record): string => $record->ends_on->lt(today()) ? 'gray' : ($record->starts_on->lte(today()) ? 'warning' : 'primary')),
                 TextColumn::make('starts_on')
                     ->label(__('Starts'))
-                    ->date('M j, Y')
+                    ->date()
                     ->sortable(),
                 TextColumn::make('ends_on')
                     ->label(__('Ends'))
-                    ->date('M j, Y')
+                    ->date()
                     ->sortable(),
                 TextColumn::make('note')
                     ->label(__('Note'))

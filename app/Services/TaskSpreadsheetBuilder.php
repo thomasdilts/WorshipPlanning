@@ -8,6 +8,7 @@ use App\Models\Event;
 use App\Models\EventTask;
 use App\Models\TaskTemplate;
 use App\Models\Unavailability;
+use App\Support\DateTimeFormats;
 use App\Support\UserAvatar;
 use Illuminate\Database\Eloquent\Collection as EloquentCollection;
 use Illuminate\Support\Carbon;
@@ -105,12 +106,12 @@ class TaskSpreadsheetBuilder
                 'key' => 'event:'.$event->id,
                 'event_id' => $event->id,
                 'event_date' => $event->starts_at?->toDateString(),
-                'event_date_label' => $event->starts_at?->translatedFormat('D j M Y'),
-                'event_calendar_label' => $event->starts_at?->translatedFormat('j M Y'),
+                'event_date_label' => $event->starts_at?->translatedFormat(DateTimeFormats::dateWithWeekday()),
+                'event_calendar_label' => $event->starts_at?->translatedFormat(DateTimeFormats::date()),
                 'event_day_label' => $event->starts_at?->translatedFormat('l'),
                 'event_week' => $event->starts_at?->isoWeek(),
                 'event_tone' => $eventTones->get($event->name, 0) % 3,
-                'event_time_label' => $event->starts_at?->format('H:i'),
+                'event_time_label' => DateTimeFormats::formatTime($event->starts_at),
                 'event_name' => $event->name,
                 'needs_attention' => false,
                 'my_team_needs' => false,

@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\Events\Schemas;
 
+use App\Support\DateTimeFormats;
 use Filament\Infolists\Components\TextEntry;
 use Filament\Schemas\Schema;
 
@@ -17,7 +18,7 @@ class EventInfolist
                     ->columnSpanFull(),
                 TextEntry::make('starts_at')
                     ->label(__('Starts'))
-                    ->dateTime('D M j, Y H:i'),
+                    ->dateTime(DateTimeFormats::dateWithWeekdayTime()),
             ]);
     }
 }

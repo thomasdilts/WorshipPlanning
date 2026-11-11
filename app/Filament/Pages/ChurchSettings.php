@@ -9,6 +9,7 @@ use BackedEnum;
 use Filament\Actions\Action;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\Toggle;
 use Filament\Notifications\Notification;
 use Filament\Pages\Page;
 use Filament\Schemas\Components\Actions;
@@ -84,6 +85,7 @@ class ChurchSettings extends Page
         $this->form->fill([
             'name' => $church->name,
             'logo_path' => $church->logo_path,
+            'uses_24_hour_time' => $church->uses_24_hour_time,
         ]);
     }
 
@@ -116,6 +118,13 @@ class ChurchSettings extends Page
                             // The page has no record, so name the one existing path that may be kept.
                             ->preventFilePathTampering(allowFilePathUsing: fn (string $file): bool => $file === $this->church()?->logo_path)
                             ->helperText(__('Transparent PNG preferred. Dark mode sits the mark on a soft plate so it stays readable.')),
+                    ]),
+                Section::make(__('Date and time'))
+                    ->description(__('Dates are written in each person\'s own language.'))
+                    ->schema([
+                        Toggle::make('uses_24_hour_time')
+                            ->label(__('Use 24-hour time'))
+                            ->helperText(__('On: 14:30. Off: 2:30 PM.')),
                     ]),
             ])
             ->statePath('data');
@@ -154,6 +163,7 @@ class ChurchSettings extends Page
         $church->update([
             'name' => (string) $data['name'],
             'logo_path' => filled($newLogo) ? (string) $newLogo : null,
+            'uses_24_hour_time' => (bool) ($data['uses_24_hour_time'] ?? true),
         ]);
 
         if (filled($previousLogo) && $previousLogo !== $church->logo_path) {

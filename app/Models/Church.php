@@ -11,11 +11,17 @@ class Church extends Model
 {
     use HasFactory;
 
+    /** @var array<string, mixed> */
+    protected $attributes = [
+        'uses_24_hour_time' => true,
+    ];
+
     protected $fillable = [
         'name',
         'slug',
         'timezone',
         'locale',
+        'uses_24_hour_time',
         'logo_path',
         'is_active',
     ];
@@ -24,6 +30,7 @@ class Church extends Model
     {
         return [
             'is_active' => 'boolean',
+            'uses_24_hour_time' => 'boolean',
         ];
     }
 

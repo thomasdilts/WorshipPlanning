@@ -1099,5 +1099,9 @@
     "Select at least one task that has not been accepted.": "Select at least one task that has not been accepted.",
     "Only “:type” teams. Messages to a team go to its leader(s).": "Only “:type” teams. Messages to a team go to its leader(s).",
     "Event messages sent to this team go to its leader(s).": "Event messages sent to this team go to its leader(s).",
-    ":name is unavailable during this event (:ranges).": ":name is unavailable during this event (:ranges)."
+    ":name is unavailable during this event (:ranges).": ":name is unavailable during this event (:ranges).",
+    "Date and time": "Date and time",
+    "Dates are written in each person's own language.": "Dates are written in each person's own language.",
+    "Use 24-hour time": "Use 24-hour time",
+    "On: 14:30. Off: 2:30 PM.": "On: 14:30. Off: 2:30 PM."
 }

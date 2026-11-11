@@ -14,6 +14,11 @@ class CreateEvent extends CreateRecord
     protected static string $resource = EventResource::class;
 
     /**
+     * How many services the last create made (a template can be copied to several weeks).
+     */
+    protected int $createdCount = 1;
+
+    /**
      * @param  array<string, mixed>  $data
      * @return array<string, mixed>
      */
@@ -32,7 +37,12 @@ class CreateEvent extends CreateRecord
     protected function handleRecordCreation(array $data): Model
     {
         $templateId = $data['service_template_id'] ?? null;
-        unset($data['service_template_id']);
+        $copyOptions = [
+            'weeks' => (int) ($data['weeks'] ?? 1),
+            'copy_people_and_teams' => (bool) ($data['copy_people_and_teams'] ?? true),
+            'copy_songs' => (bool) ($data['copy_songs'] ?? true),
+        ];
+        unset($data['service_template_id'], $data['weeks'], $data['copy_people_and_teams'], $data['copy_songs']);
 
         if (blank($templateId)) {
             return parent::handleRecordCreation($data);
@@ -42,12 +52,22 @@ class CreateEvent extends CreateRecord
 
         $template = Event::templates()->where('church_id', $data['church_id'])->findOrFail($templateId);
 
-        return app(EventCopier::class)->copy($template, [
+        $copies = app(EventCopier::class)->copy($template, [
             'name' => $data['name'],
             'description' => $data['description'] ?? null,
             'starts_at' => $data['starts_at'],
-            'copy_people_and_teams' => true,
-            'copy_songs' => true,
-        ])->sole();
+            ...$copyOptions,
+        ]);
+
+        $this->createdCount = $copies->count();
+
+        return $copies->first();
+    }
+
+    protected function getCreatedNotificationTitle(): ?string
+    {
+        return $this->createdCount > 1
+            ? __(':count events copied', ['count' => $this->createdCount])
+            : parent::getCreatedNotificationTitle();
     }
 }

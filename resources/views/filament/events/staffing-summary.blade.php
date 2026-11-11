@@ -35,7 +35,7 @@
     <div class="wp-staffing-summary-meta">
         @if ($summary['calculated_ends_at'])
             <span>
-                {{ __('Program ends :time', ['time' => $summary['calculated_ends_at']->format('H:i')]) }}
+                {{ __('Program ends :time', ['time' => \App\Support\DateTimeFormats::formatTime($summary['calculated_ends_at'])]) }}
             </span>
         @endif
         @if ($summary['ready'])

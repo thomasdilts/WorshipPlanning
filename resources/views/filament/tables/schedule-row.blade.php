@@ -14,11 +14,11 @@
         : null;
 @endphp
 
-<div class="wp-schedule-row" @if ($event?->starts_at) aria-label="{{ $event->starts_at->translatedFormat('l j F Y H:i').' — '.$task->displayName() }}" @endif>
+<div class="wp-schedule-row" @if ($event?->starts_at) aria-label="{{ $event->starts_at->translatedFormat(\App\Support\DateTimeFormats::longDate().' '.\App\Support\DateTimeFormats::time()).' — '.$task->displayName() }}" @endif>
     <div class="wp-schedule-when">
         <span class="wp-schedule-weekday">{{ $event?->starts_at?->translatedFormat('l') }}</span>
         <span class="wp-schedule-date">{{ $event?->starts_at?->translatedFormat('j M') }}</span>
-        <span class="wp-schedule-time">{{ $event?->starts_at?->translatedFormat('H:i') }}</span>
+        <span class="wp-schedule-time">{{ $event?->starts_at?->translatedFormat(\App\Support\DateTimeFormats::time()) }}</span>
     </div>
 
     <div class="wp-schedule-what">

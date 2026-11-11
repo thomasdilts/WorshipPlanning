@@ -52,7 +52,7 @@
         <h1>{{ $task->displayName() }}</h1>
         <div class="meta">
             <div>{{ $task->event?->name }}</div>
-            <div>{{ $task->event?->starts_at?->timezone($tz)->translatedFormat('l j M Y H:i') }}</div>
+            <div>{{ $task->event?->starts_at?->timezone($tz)->translatedFormat('l j M Y '.\App\Support\DateTimeFormats::time($task->event?->church)) }}</div>
             @if ($task->assignedTeam)
                 <div>{{ __('Team: :name', ['name' => $task->assignedTeam->name]) }}</div>
             @endif

@@ -52,12 +52,12 @@ class SongsTable
                     ->toggleable(),
                 TextColumn::make('last_used_at')
                     ->label(__('Last used'))
-                    ->dateTime('M j, Y')
+                    ->date()
                     ->placeholder('—')
                     ->sortable()
                     ->toggleable(),
                 TextColumn::make('updated_at')
-                    ->dateTime('M j, Y')
+                    ->date()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
             ])

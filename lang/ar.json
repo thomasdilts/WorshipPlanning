@@ -1099,5 +1099,9 @@
     "Select at least one task that has not been accepted.": "اختر مهمة واحدة على الأقل لم تتم الموافقة عليها.",
     "Only “:type” teams. Messages to a team go to its leader(s).": "تُعرض فقط الفرق من نوع «:type». تُرسل رسائل الفريق إلى قادته.",
     "Event messages sent to this team go to its leader(s).": "تُرسل رسائل المناسبة الموجّهة إلى هذا الفريق إلى قادته.",
-    ":name is unavailable during this event (:ranges).": ":name غير متاح أثناء هذه المناسبة (:ranges)."
+    ":name is unavailable during this event (:ranges).": ":name غير متاح أثناء هذه المناسبة (:ranges).",
+    "Date and time": "التاريخ والوقت",
+    "Dates are written in each person's own language.": "تُكتب التواريخ بلغة كل شخص.",
+    "Use 24-hour time": "استخدام نظام 24 ساعة",
+    "On: 14:30. Off: 2:30 PM.": "مفعّل: 14:30. غير مفعّل: 2:30 م."
 }

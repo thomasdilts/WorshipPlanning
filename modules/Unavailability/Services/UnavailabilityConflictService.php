@@ -10,6 +10,7 @@ use App\Models\Team;
 use App\Models\Unavailability;
 use App\Models\User;
 use App\Services\AssignmentRequiredWindow;
+use App\Support\DateTimeFormats;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Collection;
 
@@ -192,8 +193,8 @@ class UnavailabilityConflictService
                 'subject' => $name,
                 'a' => $overlap['tasks'][0],
                 'b' => $overlap['tasks'][1],
-                'from' => $overlap['from']->format('H:i'),
-                'to' => $overlap['to']->format('H:i'),
+                'from' => DateTimeFormats::formatTime($overlap['from'], $event->church),
+                'to' => DateTimeFormats::formatTime($overlap['to'], $event->church),
             ]);
         }
 

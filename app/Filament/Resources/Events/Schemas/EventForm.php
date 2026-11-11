@@ -3,11 +3,14 @@
 namespace App\Filament\Resources\Events\Schemas;
 
 use App\Models\Event;
+use App\Services\EventCopier;
 use Filament\Forms\Components\DateTimePicker;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\Toggle;
 use Filament\Forms\Components\ViewField;
+use Filament\Schemas\Components\Utilities\Get;
 use Filament\Schemas\Components\Utilities\Set;
 use Filament\Schemas\Schema;
 use Illuminate\Validation\Rules\Exists;
@@ -84,6 +87,35 @@ class EventForm
                     ->rules(['date_format:H:i'])
                     ->required()
                     ->visibleOn('create'),
+                TextInput::make('weeks')
+                    ->label(__('Number of weeks to copy to'))
+                    ->numeric()
+                    ->integer()
+                    ->minValue(1)
+                    ->maxValue(EventCopier::MAX_WEEKS)
+                    ->default(1)
+                    ->required()
+                    ->helperText(__('1 = one copy at the dates above. 3 = three copies, each one week later.'))
+                    ->visible(fn (string $operation, Get $get): bool => static::createsFromTemplate($operation, $get))
+                    ->columnSpanFull(),
+                Toggle::make('copy_people_and_teams')
+                    ->label(__('Copy persons and teams'))
+                    ->default(true)
+                    ->helperText(__('Keep assignees and teams on each task. Off = blank assignments.'))
+                    ->visible(fn (string $operation, Get $get): bool => static::createsFromTemplate($operation, $get)),
+                Toggle::make('copy_songs')
+                    ->label(__('Copy songs'))
+                    ->default(true)
+                    ->helperText(__('Keep song titles on each task. Off = clear songs.'))
+                    ->visible(fn (string $operation, Get $get): bool => static::createsFromTemplate($operation, $get)),
             ]);
+    }
+
+    /**
+     * The copy options only apply when a new service is made from a template.
+     */
+    protected static function createsFromTemplate(string $operation, Get $get): bool
+    {
+        return $operation === 'create' && filled($get('service_template_id'));
     }
 }

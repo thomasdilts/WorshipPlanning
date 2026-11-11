@@ -51,7 +51,7 @@ class PicturesTable
                     ->label(__('Used'))
                     ->toggleable(),
                 TextColumn::make('updated_at')
-                    ->dateTime('M j, Y')
+                    ->date()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
             ])

@@ -5,6 +5,7 @@ namespace Modules\Messaging\Support;
 use App\Models\Event;
 use App\Models\EventTask;
 use App\Models\User;
+use App\Support\DateTimeFormats;
 use Illuminate\Support\Collection;
 
 /**
@@ -68,8 +69,8 @@ class MessagePlaceholders
             'first_name' => (string) strtok($name, ' '),
             'task' => $tasks->map(fn (EventTask $task): string => $task->displayName())->unique()->implode(', '),
             'event' => (string) ($event?->name ?? ''),
-            'date' => (string) $startsAt?->translatedFormat('l j F Y'),
-            'time' => (string) $startsAt?->format('H:i'),
+            'date' => (string) $startsAt?->translatedFormat(DateTimeFormats::longDate()),
+            'time' => (string) DateTimeFormats::formatTime($startsAt, $church),
             'church' => (string) ($church?->name ?? ''),
         ];
     }

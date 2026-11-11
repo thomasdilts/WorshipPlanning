@@ -75,7 +75,7 @@ class MessagesRelationManager extends RelationManager
             ->columns([
                 TextColumn::make('created_at')
                     ->label(__('Sent'))
-                    ->dateTime('j M Y, H:i')
+                    ->dateTime()
                     ->sortable(),
                 TextColumn::make('from')
                     ->disabledClick()

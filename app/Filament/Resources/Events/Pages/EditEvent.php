@@ -4,6 +4,7 @@ namespace App\Filament\Resources\Events\Pages;
 
 use App\Filament\Resources\Events\Concerns\HasEventMessageActions;
 use App\Filament\Resources\Events\EventResource;
+use App\Support\DateTimeFormats;
 use Filament\Resources\Pages\EditRecord;
 use Filament\Schemas\Components\View as SchemaView;
 use Filament\Schemas\Schema;
@@ -39,8 +40,8 @@ class EditEvent extends EditRecord
     {
         $event = $this->getRecord();
         $bits = $event->is_template
-            ? [__('Service template'), $event->starts_at->timezone(config('app.timezone'))->translatedFormat('l H:i')]
-            : [$event->starts_at->timezone(config('app.timezone'))->translatedFormat('D j M Y H:i')];
+            ? [__('Service template'), $event->starts_at->timezone(config('app.timezone'))->translatedFormat('l '.DateTimeFormats::time())]
+            : [$event->starts_at->timezone(config('app.timezone'))->translatedFormat(DateTimeFormats::dateWithWeekdayTime())];
 
         if (filled($event->description)) {
             $bits[] = str($event->description)->limit(80);

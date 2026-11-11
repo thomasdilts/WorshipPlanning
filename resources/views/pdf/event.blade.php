@@ -6,7 +6,7 @@
             || (in_array('extra innehåll', $names, true) && blank($task->description));
     });
     $timedTasks = $printableTasks->filter(fn ($task) => ! $task->isGlobal() && (filled($task->starts_at) || filled($task->ends_at) || $task->duration > 0))->sortBy([['before_start', 'desc'], ['sort_order', 'asc'], ['id', 'asc']])->values();
-    $startTime = $event->starts_at->timezone(config('app.timezone'))->format('H:i');
+    $startTime = \App\Support\DateTimeFormats::formatTime($event->starts_at->timezone(config('app.timezone')), $event->church);
     $startMarkerAt = $timedTasks->filter(fn ($task) => $task->before_start)->count();
     $responsibilities = $printableTasks->reject(fn ($task) => $timedTasks->contains('id', $task->id));
     $dense = $timedTasks->count() > 18;
@@ -55,8 +55,8 @@
         @endif
         <h1>{{ $event->name }}</h1>
         <div class="meta">
-            {{ $event->starts_at->timezone(config('app.timezone'))->translatedFormat('D j M Y') }}
-            · {{ $event->starts_at->timezone(config('app.timezone'))->format('H:i') }}
+            {{ $event->starts_at->timezone(config('app.timezone'))->translatedFormat(\App\Support\DateTimeFormats::dateWithWeekday()) }}
+            · {{ $startTime }}
         </div>
     </div>
     <div class="order">
@@ -83,8 +83,8 @@
                             $showStatus = $state && ! in_array($state, [\App\Enums\AssignmentState::Draft, \App\Enums\AssignmentState::AssumedTeam, \App\Enums\AssignmentState::Vacant], true);
                         @endphp
                         <tr @class(['before-start' => $task->before_start])>
-                            <td class="col-time">{{ filled($task->starts_at) ? substr($task->starts_at, 0, 5) : '—' }}</td>
-                            <td class="col-time">{{ filled($task->ends_at) ? substr($task->ends_at, 0, 5) : '—' }}</td>
+                            <td class="col-time">{{ filled($task->starts_at) ? \App\Support\DateTimeFormats::formatTime($task->starts_at, $event->church) : '—' }}</td>
+                            <td class="col-time">{{ filled($task->ends_at) ? \App\Support\DateTimeFormats::formatTime($task->ends_at, $event->church) : '—' }}</td>
                             <td class="col-mins">{{ $task->duration ?: '—' }}</td>
                             <td class="col-task">{{ $task->displayName() }}</td>
                             <td class="col-status">{{ $showStatus ? $state->label() : '—' }}</td>

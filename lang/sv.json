@@ -1099,5 +1099,9 @@
     "Select at least one task that has not been accepted.": "Välj minst en uppgift som inte har accepterats.",
     "Only “:type” teams. Messages to a team go to its leader(s).": "Bara team av typen ”:type”. Meddelanden till ett team går till dess ledare.",
     "Event messages sent to this team go to its leader(s).": "Evenemangsmeddelanden till det här teamet går till dess ledare.",
-    ":name is unavailable during this event (:ranges).": ":name är inte tillgänglig under det här evenemanget (:ranges)."
+    ":name is unavailable during this event (:ranges).": ":name är inte tillgänglig under det här evenemanget (:ranges).",
+    "Date and time": "Datum och tid",
+    "Dates are written in each person's own language.": "Datum visas på varje persons eget språk.",
+    "Use 24-hour time": "Använd 24-timmarsformat",
+    "On: 14:30. Off: 2:30 PM.": "På: 14:30. Av: 2:30 PM."
 }

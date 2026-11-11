@@ -125,13 +125,13 @@ class ManageEventMessages extends ManageRelatedRecords
                     ->placeholder('—'),
                 TextColumn::make('sent_at')
                     ->label(__('Sent'))
-                    ->dateTime('j M Y, H:i')
+                    ->dateTime()
                     ->placeholder(__('Not sent yet'))
                     ->tooltip(__('Updated when the message is resent'))
                     ->sortable(),
                 TextColumn::make('created_at')
                     ->label(__('Created'))
-                    ->dateTime('j M Y, H:i')
+                    ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
             ])

@@ -7,6 +7,7 @@ use App\Filament\Resources\Events\EventResource;
 use App\Models\Event;
 use App\Models\User;
 use App\Services\EventCopier;
+use App\Support\DateTimeFormats;
 use Filament\Actions\Action;
 use Filament\Actions\DeleteAction;
 use Filament\Forms\Components\Select;
@@ -124,7 +125,7 @@ class ListServiceTemplates extends Page implements HasTable
             ->orderByDesc('starts_at')
             ->limit(50)
             ->get()
-            ->mapWithKeys(fn (Event $event): array => [$event->id => $event->name.' · '.$event->starts_at->translatedFormat('j M Y H:i')])
+            ->mapWithKeys(fn (Event $event): array => [$event->id => $event->name.' · '.$event->starts_at->translatedFormat(DateTimeFormats::dateTime())])
             ->all();
     }
 
@@ -161,7 +162,7 @@ class ListServiceTemplates extends Page implements HasTable
                     ->sortable(),
                 TextColumn::make('starts_at')
                     ->label(__('Day and time'))
-                    ->formatStateUsing(fn (Event $record): string => (string) $record->starts_at?->translatedFormat('l H:i')),
+                    ->formatStateUsing(fn (Event $record): string => (string) $record->starts_at?->translatedFormat('l '.DateTimeFormats::time())),
                 TextColumn::make('tasks_count')
                     ->label(__('Tasks'))
                     ->numeric(),

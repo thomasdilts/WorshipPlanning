@@ -116,5 +116,9 @@
     "Bible text could not be loaded (API unavailable). You can still save the reference.": "Աստվածաշնչի տեքստը չհաջողվեց բեռնել․ ծառայությունը հասանելի չէ։ Կարող եք պահպանել հատվածի հղումը։",
     "Book → chapter → verse(s). Verse text loads from the configured Bible API.": "Գիրք → գլուխ → համար(ներ)։ Համարների տեքստը բեռնվում է կարգավորված Աստվածաշնչի ծառայությունից։",
     "Select translation, book, chapter, and verse to preview the text.": "Տեքստը նախադիտելու համար ընտրեք թարգմանությունը, գիրքը, գլուխը և համարը։",
-    "Invalid passage selection.": "Հատվածի ընտրությունն անվավեր է։"
+    "Invalid passage selection.": "Հատվածի ընտրությունն անվավեր է։",
+    "Date and time": "Ամսաթիվ և ժամ",
+    "Dates are written in each person's own language.": "Ամսաթվերը գրվում են յուրաքանչյուր անձի լեզվով։",
+    "Use 24-hour time": "Օգտագործել 24-ժամյա ձևաչափ",
+    "On: 14:30. Off: 2:30 PM.": "Միացված՝ 14:30։ Անջատված՝ 2:30 PM։"
 }

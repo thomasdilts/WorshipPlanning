@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Models\EventTask;
 use App\Models\Team;
 use App\Models\User;
+use App\Support\DateTimeFormats;
 use App\Support\UserAvatar;
 use Illuminate\Support\Carbon;
 
@@ -44,7 +45,7 @@ class TeamWorkspaceSummary
 
         $next = $upcoming->take(5)->map(function (EventTask $task) use ($states): array {
             $when = $task->event?->starts_at instanceof Carbon
-                ? $task->event->starts_at->timezone(config('app.timezone'))->translatedFormat('D j M Y H:i')
+                ? $task->event->starts_at->timezone(config('app.timezone'))->translatedFormat(DateTimeFormats::dateWithWeekdayTime())
                 : '—';
 
             $state = $states[$task->id] ?? null;
