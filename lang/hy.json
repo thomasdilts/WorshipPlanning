@@ -25,6 +25,8 @@
     "Choose a template to fill in the name and time and copy its service order. You can change the details below.": "Ընտրեք ձևանմուշ՝ անունն ու ժամը լրացնելու և ծառայության ծրագիրը պատճենելու համար։ Ստորև կարող եք փոխել տվյալները։",
     "No one is assigned on this service yet.": "Այս ծառայությանը դեռ ոչ ոք նշանակված չէ։",
     "Select at least one person or team.": "Ընտրեք առնվազն մեկ անձ կամ թիմ։",
+    "This task is used in :count services and service templates. Deleting it also removes it, with its assignments and answers, from all of them — past services included. This cannot be undone.": "Այս հանձնարարությունն օգտագործվում է :count ծառայություններում և ծառայության ձևանմուշներում։ Այն ջնջելիս այն իր նշանակումներով և պատասխաններով կհեռացվի բոլորից՝ ներառյալ անցած ծառայությունները։ Սա հնարավոր չէ հետարկել։",
+    "These tasks are used in :count services and service templates. Deleting them also removes them, with their assignments and answers, from all of them — past services included. This cannot be undone.": "Այս հանձնարարություններն օգտագործվում են :count ծառայություններում և ծառայության ձևանմուշներում։ Դրանք ջնջելիս դրանք իրենց նշանակումներով և պատասխաններով կհեռացվեն բոլորից՝ ներառյալ անցած ծառայությունները։ Սա հնարավոր չէ հետարկել։",
     "Only “:type” teams. Messages to a team go to its leader(s).": "Միայն «:type» տեսակի խմբերն են։ Խմբին ուղղված հաղորդագրություններն ուղարկվում են դրա ղեկավարներին։",
     "Service messages sent to this team go to its leader(s).": "Այս խմբին ուղղված միջոցառման հաղորդագրություններն ուղարկվում են դրա ղեկավարներին։",
     "Edit task": "Խմբագրել հանձնարարությունը",

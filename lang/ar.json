@@ -1090,6 +1090,8 @@
     "Choose a template to fill in the name and time and copy its service order. You can change the details below.": "اختر قالبًا لتعبئة الاسم والوقت ونسخ برنامج الخدمة. يمكنك تعديل التفاصيل أدناه.",
     "No one is assigned on this service yet.": "لم يتم تعيين أي شخص لهذه الخدمة بعد.",
     "Select at least one person or team.": "اختر شخصًا واحدًا أو فريقًا واحدًا على الأقل.",
+    "This task is used in :count services and service templates. Deleting it also removes it, with its assignments and answers, from all of them — past services included. This cannot be undone.": "تُستخدم هذه المهمة في :count من الخدمات وقوالب الخدمات. حذفها يزيلها أيضًا، مع تعييناتها وردودها، منها جميعًا — بما في ذلك الخدمات السابقة. لا يمكن التراجع عن ذلك.",
+    "These tasks are used in :count services and service templates. Deleting them also removes them, with their assignments and answers, from all of them — past services included. This cannot be undone.": "تُستخدم هذه المهام في :count من الخدمات وقوالب الخدمات. حذفها يزيلها أيضًا، مع تعييناتها وردودها، منها جميعًا — بما في ذلك الخدمات السابقة. لا يمكن التراجع عن ذلك.",
     "Only “:type” teams. Messages to a team go to its leader(s).": "تُعرض فقط الفرق من نوع «:type». تُرسل رسائل الفريق إلى قادته.",
     "Service messages sent to this team go to its leader(s).": "تُرسل رسائل المناسبة الموجّهة إلى هذا الفريق إلى قادته.",
     ":name is unavailable during this service (:ranges).": ":name غير متاح أثناء هذه المناسبة (:ranges).",

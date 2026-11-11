@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Core\Tenancy\BelongsToChurch;
 use App\Enums\FieldUsage;
+use App\Services\EventTaskTimeline;
 use Database\Factories\TaskTemplateFactory;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -65,9 +66,44 @@ class TaskTemplate extends Model
         return $this->usage('person')->isUsed() || $this->usage('team')->isUsed();
     }
 
+    /**
+     * Deleting a template removes its task from every service and service template that uses it
+     * (answers, response links and attached pictures/files go with it), then re-times those plans.
+     */
+    protected static function booted(): void
+    {
+        static::deleting(function (TaskTemplate $template): void {
+            $tasks = EventTask::query()
+                ->withoutGlobalScope(EventTask::SERVICES_SCOPE)
+                ->where('task_template_id', $template->id);
+            $eventIds = (clone $tasks)->distinct()->pluck('event_id');
+
+            $tasks->delete();
+
+            Event::query()
+                ->withoutGlobalScope(Event::SERVICES_SCOPE)
+                ->whereKey($eventIds)
+                ->with('tasks.template')
+                ->get()
+                ->each(fn (Event $event) => app(EventTaskTimeline::class)->recalculate($event));
+        });
+    }
+
     public function eventTasks(): HasMany
     {
         return $this->hasMany(EventTask::class);
+    }
+
+    /**
+     * How many services and service templates have a task made from this template.
+     */
+    public function usedInEventsCount(): int
+    {
+        return EventTask::query()
+            ->withoutGlobalScope(EventTask::SERVICES_SCOPE)
+            ->where('task_template_id', $this->id)
+            ->distinct()
+            ->count('event_id');
     }
 
     /**

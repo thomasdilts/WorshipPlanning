@@ -1090,6 +1090,8 @@
     "Choose a template to fill in the name and time and copy its service order. You can change the details below.": "Choose a template to fill in the name and time and copy its service order. You can change the details below.",
     "No one is assigned on this service yet.": "No one is assigned on this service yet.",
     "Select at least one person or team.": "Select at least one person or team.",
+    "This task is used in :count services and service templates. Deleting it also removes it, with its assignments and answers, from all of them — past services included. This cannot be undone.": "This task is used in :count services and service templates. Deleting it also removes it, with its assignments and answers, from all of them — past services included. This cannot be undone.",
+    "These tasks are used in :count services and service templates. Deleting them also removes them, with their assignments and answers, from all of them — past services included. This cannot be undone.": "These tasks are used in :count services and service templates. Deleting them also removes them, with their assignments and answers, from all of them — past services included. This cannot be undone.",
     "Only “:type” teams. Messages to a team go to its leader(s).": "Only “:type” teams. Messages to a team go to its leader(s).",
     "Service messages sent to this team go to its leader(s).": "Service messages sent to this team go to its leader(s).",
     ":name is unavailable during this service (:ranges).": ":name is unavailable during this service (:ranges).",

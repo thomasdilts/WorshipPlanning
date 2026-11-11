@@ -4,6 +4,7 @@ namespace App\Filament\Resources\TaskTemplates\Tables;
 
 use App\Core\Modules\ChurchModuleManager;
 use App\Enums\FieldUsage;
+use App\Models\EventTask;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
@@ -11,6 +12,7 @@ use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\TernaryFilter;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Collection;
 
 class TaskTemplatesTable
 {
@@ -124,7 +126,18 @@ class TaskTemplatesTable
             ])
             ->toolbarActions([
                 BulkActionGroup::make([
-                    DeleteBulkAction::make(),
+                    DeleteBulkAction::make()
+                        ->modalDescription(function (Collection $records): string {
+                            $count = EventTask::query()
+                                ->withoutGlobalScope(EventTask::SERVICES_SCOPE)
+                                ->whereIn('task_template_id', $records->modelKeys())
+                                ->distinct()
+                                ->count('event_id');
+
+                            return $count === 0
+                                ? __('filament-actions::modal.confirmation')
+                                : __('These tasks are used in :count services and service templates. Deleting it also removes them, with its assignments and answers, from all of them — past services included. This cannot be undone.', ['count' => $count]);
+                        }),
                 ]),
             ]);
     }
