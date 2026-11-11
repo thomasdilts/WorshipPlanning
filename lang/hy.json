@@ -25,6 +25,8 @@
     "Choose a template to fill in the name and time and copy its service order. You can change the details below.": "Ընտրեք ձևանմուշ՝ անունն ու ժամը լրացնելու և ծառայության ծրագիրը պատճենելու համար։ Ստորև կարող եք փոխել տվյալները։",
     "No one is assigned on this service yet.": "Այս ծառայությանը դեռ ոչ ոք նշանակված չէ։",
     "Select at least one person or team.": "Ընտրեք առնվազն մեկ անձ կամ թիմ։",
+    "Order on the service’s people and teams tab. When not 0, also the column order in Tasks by service.": "Կարգը ծառայության մարդկանց և խմբերի ներդիրում։ Երբ 0 չէ, որոշում է նաև սյունակների կարգը «Հանձնարարություններն ըստ ծառայության» էջում։",
+    "Starting position on the timeline. When not 0, also the column order in Tasks by service.": "Սկզբնական դիրքը ժամանակացույցում։ Երբ 0 չէ, որոշում է նաև սյունակների կարգը «Հանձնարարություններն ըստ ծառայության» էջում։",
     "Name typed in": "Գրված անուն",
     "Allow a typed name for the person": "Թույլատրել անձի գրված անուն",
     "For someone who is not in WorshipPlanning. A typed name fills the task, but cannot be sent messages.": "Մեկի համար, ով չկա WorshipPlanning-ում։ Գրված անունը լրացնում է հանձնարարությունը, բայց նրան հաղորդագրություններ չեն ուղարկվի։",

@@ -29,10 +29,7 @@ class TaskTemplatesTable
                 TextColumn::make('default_order')
                     ->label(__('#'))
                     ->sortable()
-                    ->width('4rem')
-                    ->state(fn ($record) => $record->use_globally
-                        ? $record->default_global_order
-                        : $record->default_order),
+                    ->width('4rem'),
                 TextColumn::make('name')
                     ->label(__('Name'))
                     ->searchable()

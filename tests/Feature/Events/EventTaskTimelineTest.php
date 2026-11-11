@@ -128,7 +128,7 @@ class EventTaskTimelineTest extends TestCase
         $global = TaskTemplate::factory()->create([
             'church_id' => $church->id,
             'use_globally' => true,
-            'default_global_order' => 1,
+            'default_order' => 1,
         ]);
         $timed = TaskTemplate::factory()->create([
             'church_id' => $church->id,

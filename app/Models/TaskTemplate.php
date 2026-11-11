@@ -76,6 +76,11 @@ class TaskTemplate extends Model
      */
     protected static function booted(): void
     {
+        // One "Default order" for every template; the older global order column follows it for exports and imports.
+        static::saving(function (TaskTemplate $template): void {
+            $template->default_global_order = (int) $template->default_order;
+        });
+
         static::deleting(function (TaskTemplate $template): void {
             $tasks = EventTask::query()
                 ->withoutGlobalScope(EventTask::SERVICES_SCOPE)

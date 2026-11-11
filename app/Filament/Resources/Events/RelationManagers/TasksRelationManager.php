@@ -252,7 +252,7 @@ class TasksRelationManager extends RelationManager
         if (static::$globalOnly === true) {
             $query
                 ->whereHas('template', fn (Builder $q) => $q->where('use_globally', true))
-                ->orderByRaw('(SELECT default_global_order FROM task_templates WHERE task_templates.id = event_tasks.task_template_id)')
+                ->orderByRaw('(SELECT default_order FROM task_templates WHERE task_templates.id = event_tasks.task_template_id)')
                 ->orderBy('event_tasks.id');
         } elseif (static::$globalOnly === false) {
             $query
@@ -267,7 +267,7 @@ class TasksRelationManager extends RelationManager
             $query
                 ->orderByRaw('(SELECT COALESCE(use_globally, 0) FROM task_templates WHERE task_templates.id = event_tasks.task_template_id) DESC')
                 ->orderByDesc('event_tasks.before_start')
-                ->orderByRaw('CASE WHEN (SELECT COALESCE(use_globally, 0) FROM task_templates WHERE task_templates.id = event_tasks.task_template_id) = 1 THEN (SELECT default_global_order FROM task_templates WHERE task_templates.id = event_tasks.task_template_id) ELSE event_tasks.sort_order END')
+                ->orderByRaw('CASE WHEN (SELECT COALESCE(use_globally, 0) FROM task_templates WHERE task_templates.id = event_tasks.task_template_id) = 1 THEN (SELECT default_order FROM task_templates WHERE task_templates.id = event_tasks.task_template_id) ELSE event_tasks.sort_order END')
                 ->orderBy('event_tasks.id');
         }
 

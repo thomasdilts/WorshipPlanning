@@ -38,14 +38,14 @@ class GlobalTaskOrderingTest extends TestCase
             'church_id' => $church->id,
             'name' => 'Sound check',
             'use_globally' => true,
-            'default_global_order' => 20,
+            'default_order' => 20,
         ]);
 
         $globalEarly = TaskTemplate::factory()->create([
             'church_id' => $church->id,
             'name' => 'Setup chairs',
             'use_globally' => true,
-            'default_global_order' => 5,
+            'default_order' => 5,
         ]);
 
         EventTask::factory()->create([

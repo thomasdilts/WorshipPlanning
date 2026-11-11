@@ -68,9 +68,10 @@ class TaskSpreadsheetBuilder
         $templates = TaskTemplate::query()
             ->where('church_id', $church->id)
             ->whereIn('id', $usedTemplateIds)
-            ->orderByRaw('CASE WHEN use_globally = 1 THEN 0 ELSE 1 END')
-            ->orderBy('default_global_order')
+            // A template's default order places its column; templates left at 0 follow, global ones first.
+            ->orderByRaw('CASE WHEN default_order = 0 THEN 1 ELSE 0 END')
             ->orderBy('default_order')
+            ->orderByRaw('CASE WHEN use_globally = 1 THEN 0 ELSE 1 END')
             ->orderBy('name')
             ->get()
             ->keyBy('id');

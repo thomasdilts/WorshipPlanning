@@ -51,6 +51,37 @@ class TaskSpreadsheetTest extends TestCase
         app(PermissionRegistrar::class)->setPermissionsTeamId($this->church->id);
     }
 
+    public function test_columns_follow_the_default_order_and_unordered_templates_come_last(): void
+    {
+        $event = Event::factory()->create(['church_id' => $this->church->id, 'starts_at' => now()->addDay()]);
+        $columns = [
+            ['Zero global', true, 0],
+            ['Zero timed', false, 0],
+            ['Late global', true, 9],
+            ['Early timed', false, 2],
+            ['Middle global', true, 5],
+        ];
+
+        foreach ($columns as [$name, $global, $order]) {
+            $template = TaskTemplate::factory()->create([
+                'church_id' => $this->church->id,
+                'name' => $name,
+                'use_globally' => $global,
+                'default_order' => $order,
+                'person_usage' => FieldUsage::Required,
+                'team_usage' => FieldUsage::NotUsed,
+            ]);
+            EventTask::factory()->create(['event_id' => $event->id, 'task_template_id' => $template->id]);
+        }
+
+        $matrix = app(TaskSpreadsheetBuilder::class)->build($this->church);
+
+        $this->assertSame(
+            ['Early timed', 'Middle global', 'Late global', 'Zero global', 'Zero timed'],
+            array_column($matrix['staffing_columns'], 'name'),
+        );
+    }
+
     public function test_builder_columns_and_unavailability(): void
     {
         $personTemplate = TaskTemplate::factory()->create([

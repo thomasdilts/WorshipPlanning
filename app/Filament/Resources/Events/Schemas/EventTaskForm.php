@@ -89,7 +89,7 @@ class EventTaskForm
                         $set('starts_at', null);
                         $set('ends_at', null);
                         $set('duration', null);
-                        $set('sort_order', $template->default_global_order);
+                        $set('sort_order', $template->default_order);
                     } else {
                         $set('duration', $template->default_duration ?: 5);
                         $set('sort_order', $template->default_order);
@@ -642,7 +642,7 @@ class EventTaskForm
             $data['starts_at'] = null;
             $data['ends_at'] = null;
             $data['duration'] = null;
-            $data['sort_order'] = $template->default_global_order;
+            $data['sort_order'] = $template->default_order;
             $data['before_start'] = false;
         } else {
             $data['duration'] = max(1, (int) ($data['duration'] ?? $template->default_duration ?? 5));

@@ -48,20 +48,16 @@ class TaskTemplateForm
                             $set('default_duration', 5);
                         }
                     }),
-                TextInput::make('default_global_order')
-                    ->label(__('Default global order'))
-                    ->numeric()
-                    ->default(0)
-                    ->required()
-                    ->visible(fn (Get $get): bool => (bool) $get('use_globally'))
-                    ->helperText(__('Sort order among global tasks at the top of each service.')),
                 TextInput::make('default_order')
                     ->label(__('Default order'))
                     ->numeric()
+                    ->integer()
+                    ->minValue(0)
                     ->default(0)
                     ->required()
-                    ->visible(fn (Get $get): bool => ! (bool) $get('use_globally'))
-                    ->helperText(__('Starting sort position on the timed timeline.')),
+                    ->helperText(fn (Get $get): string => (bool) $get('use_globally')
+                        ? __('Order on the service’s people and teams tab. When not 0, also the column order in Tasks by service.')
+                        : __('Starting position on the timeline. When not 0, also the column order in Tasks by service.')),
                 TextInput::make('default_duration')
                     ->label(__('Default duration'))
                     ->numeric()
