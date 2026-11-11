@@ -45,22 +45,4 @@ class MessageTemplatesSeederTest extends TestCase
         $this->assertCount(7, $templates);
         $this->assertSame('Edited', $templates->firstWhere('key', 'krava-svar')->text_body);
     }
-
-    public function test_password_template_migration_adds_swedish_templates_to_swedish_churches_only(): void
-    {
-        $swedish = Church::factory()->create(['locale' => 'sv']);
-        $english = Church::factory()->create(['locale' => 'en']);
-        MessageTemplate::query()->create(['church_id' => $english->id, 'name' => 'Own reset', 'key' => 'reset_password', 'body' => 'Mine', 'is_active' => true]);
-
-        (require database_path('migrations/2026_11_01_083619_add_password_message_templates.php'))->up();
-
-        $this->assertSame(
-            ['reset_password' => 'Återställ lösenord', 'set_password' => 'Sätt lösenord'],
-            MessageTemplate::query()->withoutGlobalScope('church')->where('church_id', $swedish->id)->orderBy('key')->pluck('name', 'key')->all(),
-        );
-        $this->assertSame(
-            ['reset_password' => 'Own reset', 'set_password' => 'Set password'],
-            MessageTemplate::query()->withoutGlobalScope('church')->where('church_id', $english->id)->orderBy('key')->pluck('name', 'key')->all(),
-        );
-    }
 }

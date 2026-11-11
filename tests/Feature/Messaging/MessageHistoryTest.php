@@ -10,13 +10,11 @@ use App\Models\Church;
 use App\Models\Event;
 use App\Models\EventMessage;
 use App\Models\OutboundMessage;
-use App\Models\Role;
 use App\Models\Team;
 use App\Models\User;
 use Database\Seeders\RolesAndPermissionsSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Livewire\Livewire;
-use Spatie\Permission\Models\Permission;
 use Spatie\Permission\PermissionRegistrar;
 use Tests\TestCase;
 
@@ -124,22 +122,6 @@ class MessageHistoryTest extends TestCase
         $this->assertTrue($author->can('delete', $message));
         $this->assertFalse($this->person('Event Planner')->can('delete', $message));
         $this->assertTrue($this->person('Church Admin')->can('delete', $message));
-    }
-
-    public function test_view_all_messages_is_removed_from_default_non_admin_roles(): void
-    {
-        $viewAll = Permission::findOrCreate('messaging.view', 'web');
-
-        foreach (['Member', 'Event Planner', 'Church Admin'] as $name) {
-            Role::findByName($name, 'web')->givePermissionTo($viewAll);
-        }
-
-        (require base_path('database/migrations/2026_11_01_054114_limit_view_all_messages_to_admins.php'))->up();
-        app(PermissionRegistrar::class)->forgetCachedPermissions();
-
-        $this->assertFalse(Role::findByName('Member', 'web')->hasPermissionTo('messaging.view'));
-        $this->assertFalse(Role::findByName('Event Planner', 'web')->hasPermissionTo('messaging.view'));
-        $this->assertTrue(Role::findByName('Church Admin', 'web')->hasPermissionTo('messaging.view'));
     }
 
     protected function person(string $role): User

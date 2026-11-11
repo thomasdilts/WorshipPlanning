@@ -57,19 +57,26 @@ fi
 npm run build
 
 echo "==> Migrate"
-# One-time: the 44 original migrations were squashed into 0001_01_01_000000_create_initial_schema.
-# A database that already ran the last original migration has that exact schema, so record the
-# squashed migration as run instead of letting it try to recreate existing tables. No-op afterwards.
+# One-time: the migrations up to 2026_11_10_212423_make_users_email_globally_unique were squashed
+# into 0001_01_01_000000_create_initial_schema. A database that already ran them all has that exact
+# schema, so keep only the squashed migration's record. A database that ran only some of them stops
+# here, because the squashed file would not add what it is missing. No-op afterwards.
 $PHP_BIN artisan tinker --execute '
     $squashed = "0001_01_01_000000_create_initial_schema";
-    $lastOriginal = "2026_10_28_193651_add_whatsapp_template_to_message_templates_table";
-    $migrations = DB::table("migrations");
-    if (Schema::hasTable("migrations") && $migrations->clone()->where("migration", $lastOriginal)->exists() && ! $migrations->clone()->where("migration", $squashed)->exists()) {
-        DB::transaction(function () use ($squashed) {
-            DB::table("migrations")->delete();
-            DB::table("migrations")->insert(["migration" => $squashed, "batch" => 1]);
-        });
-        echo "Adopted squashed initial schema migration.\n";
+    $lastFolded = "2026_11_10_212423_make_users_email_globally_unique";
+    if (Schema::hasTable("migrations")) {
+        $folded = DB::table("migrations")->where("migration", ">", $squashed)->where("migration", "<=", $lastFolded);
+        if ($folded->clone()->exists()) {
+            if (! DB::table("migrations")->where("migration", $lastFolded)->exists()) {
+                fwrite(STDERR, "ERROR: run the old migrations up to {$lastFolded} before adopting the squashed schema.\n");
+                exit(1);
+            }
+            DB::transaction(function () use ($squashed) {
+                DB::table("migrations")->delete();
+                DB::table("migrations")->insert(["migration" => $squashed, "batch" => 1]);
+            });
+            echo "Adopted squashed initial schema migration.\n";
+        }
     }
 '
 $PHP_BIN artisan migrate --force

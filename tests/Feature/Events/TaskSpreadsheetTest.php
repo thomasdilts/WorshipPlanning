@@ -24,7 +24,6 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Carbon;
 use Livewire\Livewire;
 use PHPUnit\Framework\Attributes\DataProvider;
-use Spatie\Permission\Models\Permission;
 use Spatie\Permission\PermissionRegistrar;
 use Tests\TestCase;
 
@@ -728,21 +727,5 @@ class TaskSpreadsheetTest extends TestCase
         $this->actingAs($this->admin)
             ->get(EventResource::getUrl('task-spreadsheet'))
             ->assertOk();
-    }
-
-    public function test_existing_roles_that_edit_events_keep_tasks_by_event(): void
-    {
-        Permission::query()->where('name', 'events.tasks_by_event')->delete();
-        app(PermissionRegistrar::class)->forgetCachedPermissions();
-
-        $editorRole = Role::findOrCreate('Sunday Wizard', 'web');
-        $editorRole->givePermissionTo(['events.view', 'events.update']);
-
-        (require base_path('database/migrations/2026_11_01_062412_add_tasks_by_event_permission.php'))->up();
-        app(PermissionRegistrar::class)->forgetCachedPermissions();
-
-        $this->assertTrue($editorRole->fresh()->hasPermissionTo('events.tasks_by_event'));
-        $this->assertTrue(Role::findByName('Church Admin', 'web')->hasPermissionTo('events.tasks_by_event'));
-        $this->assertFalse(Role::findByName('Member', 'web')->hasPermissionTo('events.tasks_by_event'));
     }
 }

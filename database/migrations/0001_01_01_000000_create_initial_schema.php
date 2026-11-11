@@ -14,6 +14,7 @@ return new class extends Migration
         $this->createTeamTables();
         $this->createPlanningTables();
         $this->createMessagingTables();
+        $this->createAutomaticMessageTables();
         $this->createMediaTables();
     }
 
@@ -22,6 +23,8 @@ return new class extends Migration
         Schema::disableForeignKeyConstraints();
 
         foreach ([
+            'automatic_message_deliveries',
+            'automatic_messages',
             'assignment_response_tokens',
             'event_task_responses',
             'event_task_shared_file',
@@ -149,6 +152,9 @@ return new class extends Migration
             $table->string('avatar_path')->nullable();
             $table->string('email');
             $table->string('phone', 32)->nullable();
+            $table->string('ntfy_topic', 64)->nullable();
+            $table->string('telegram_chat_id', 32)->nullable();
+            $table->string('telegram_username', 64)->nullable();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
             $table->boolean('is_platform_admin')->default(false);
@@ -160,6 +166,7 @@ return new class extends Migration
             $table->timestamps();
 
             $table->unique(['church_id', 'email']);
+            $table->unique('email');
         });
 
         Schema::create('password_reset_tokens', function (Blueprint $table) {
@@ -410,13 +417,14 @@ return new class extends Migration
             $table->foreignId('church_id')->constrained()->cascadeOnDelete();
             $table->string('name');
             $table->text('description')->nullable();
+            $table->boolean('is_template')->default(false);
             $table->dateTime('starts_at');
-            $table->dateTime('ends_at');
             $table->timestamp('shared_at')->nullable();
             $table->timestamp('plan_changed_at')->nullable();
             $table->timestamps();
 
             $table->index(['church_id', 'starts_at']);
+            $table->index(['church_id', 'is_template']);
         });
 
         Schema::create('event_tasks', function (Blueprint $table) {
@@ -440,6 +448,7 @@ return new class extends Migration
             $table->time('starts_at')->nullable();
             $table->time('ends_at')->nullable();
             $table->unsignedInteger('sort_order')->default(0);
+            $table->boolean('before_start')->default(false);
             $table->timestamps();
 
             $table->index(['event_id', 'sort_order']);
@@ -485,6 +494,7 @@ return new class extends Migration
             $table->foreignId('church_id')->constrained()->cascadeOnDelete();
             $table->string('name');
             $table->string('key')->nullable();
+            $table->string('purpose', 20)->default('service');
             $table->string('subject')->nullable();
             $table->text('body')->nullable();
             $table->text('text_body')->nullable();
@@ -506,6 +516,7 @@ return new class extends Migration
             $table->string('subject')->nullable();
             $table->text('body')->nullable();
             $table->text('text_body')->nullable();
+            $table->text('custom_message')->nullable();
             $table->string('status', 20)->default('draft');
             $table->timestamp('sent_at')->nullable();
             $table->timestamps();
@@ -540,6 +551,33 @@ return new class extends Migration
             $table->timestamps();
 
             $table->index(['church_id', 'created_at']);
+        });
+    }
+
+    protected function createAutomaticMessageTables(): void
+    {
+        Schema::create('automatic_messages', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('church_id')->constrained()->cascadeOnDelete();
+            $table->string('name');
+            $table->foreignId('message_template_id')->nullable()->constrained()->nullOnDelete();
+            $table->unsignedInteger('hours_before');
+            $table->text('custom_message')->nullable();
+            $table->boolean('is_active')->default(true);
+            $table->foreignId('created_by_user_id')->nullable()->constrained('users')->nullOnDelete();
+            $table->timestamps();
+
+            $table->index(['church_id', 'is_active']);
+        });
+
+        Schema::create('automatic_message_deliveries', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('automatic_message_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('event_id')->constrained()->cascadeOnDelete();
+            $table->unsignedInteger('message_count')->default(0);
+            $table->timestamps();
+
+            $table->unique(['automatic_message_id', 'event_id'], 'automatic_message_deliveries_unique');
         });
     }
 
