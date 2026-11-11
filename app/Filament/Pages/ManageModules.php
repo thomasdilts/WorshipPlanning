@@ -102,7 +102,7 @@ class ManageModules extends Page
                         ->label(match (true) {
                             $definition->required => __('Always on'),
                             $isLocked => __('Locked in demo'),
-                            default => __('On for this church'),
+                            default => __('Enable for this church'),
                         })
                         ->disabled($definition->required || $isLocked)
                         ->dehydrated(true),

@@ -411,6 +411,7 @@
     "Number of weeks to copy to": "عدد الأسابيع للنسخ إليها",
     "Off = save as draft; you can send later from the list.": "إيقاف = حفظ كمسودة؛ يمكنك الإرسال لاحقًا من القائمة.",
     "On for this church": "مفعّل لهذه الكنيسة",
+    "Enable for this church": "تفعيل الميزة لهذه الكنيسة",
     "One service is enough to try the planner.": "خدمة واحدة تكفي لتجربة المخطّط.",
     "Only teams of this type can be assigned on the service order.": "يمكن تعيين فرق من هذا النوع فقط في ترتيب الخدمة.",
     "Only templates with Person set to Optional or Required are listed.": "تُعرض فقط القوالب التي يكون فيها الشخص اختياريًا أو مطلوبًا.",

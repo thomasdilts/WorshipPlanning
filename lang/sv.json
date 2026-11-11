@@ -411,6 +411,7 @@
     "Number of weeks to copy to": "Antal veckor att kopiera till",
     "Off = save as draft; you can send later from the list.": "Av = spara som utkast; du kan skicka senare från listan.",
     "On for this church": "På för denna församling",
+    "Enable for this church": "Aktivera för denna församling",
     "One service is enough to try the planner.": "En gudstjänst räcker för att testa planeraren.",
     "Only teams of this type can be assigned on the service order.": "Endast team av denna typ kan tilldelas i gudstjänstordningen.",
     "Only templates with Person set to Optional or Required are listed.": "Endast mallar där Person är Valfri eller Obligatorisk visas.",
