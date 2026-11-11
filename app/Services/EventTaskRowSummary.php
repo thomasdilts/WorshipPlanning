@@ -86,6 +86,10 @@ class EventTaskRowSummary
                 : $task->assignedUser->displayName();
         }
 
+        if ($task->typedPersonName() !== null && ($template?->usage('person')->isUsed() ?? true)) {
+            $bits[] = $task->typedPersonName();
+        }
+
         if (
             $this->moduleEnabled($event, 'teams')
             && $task->assignedTeam !== null
@@ -94,6 +98,14 @@ class EventTaskRowSummary
             $bits[] = $withAvatarHtml && $task->assignedUser === null
                 ? new HtmlString(e(__('Team: ').$task->assignedTeam->name).$this->statusHtml($task))
                 : __('Team: ').$task->assignedTeam->name;
+        }
+
+        if (
+            $this->moduleEnabled($event, 'teams')
+            && $task->typedTeamName() !== null
+            && ($template?->usage('team')->isUsed() ?? true)
+        ) {
+            $bits[] = __('Team: ').$task->typedTeamName();
         }
 
         if (
@@ -115,7 +127,7 @@ class EventTaskRowSummary
     {
         $state = $this->states->for($task);
 
-        if (in_array($state, [AssignmentState::Vacant, AssignmentState::AssumedTeam], true)) {
+        if (in_array($state, [AssignmentState::Vacant, AssignmentState::AssumedTeam, AssignmentState::Named], true)) {
             return '';
         }
 
@@ -277,7 +289,8 @@ class EventTaskRowSummary
 
         return $template !== null
             && $template->usage('person')->isRequired()
-            && $task->assigned_user_id === null;
+            && $task->assigned_user_id === null
+            && $task->typedPersonName() === null;
     }
 
     protected function missingRequiredTeam(EventTask $task, Event $event): bool
@@ -287,7 +300,8 @@ class EventTaskRowSummary
         return $template !== null
             && $this->moduleEnabled($event, 'teams')
             && $template->usage('team')->isRequired()
-            && $task->assigned_team_id === null;
+            && $task->assigned_team_id === null
+            && $task->typedTeamName() === null;
     }
 
     protected function assignedUserUnavailable(EventTask $task, Event $event): bool

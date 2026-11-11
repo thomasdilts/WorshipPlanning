@@ -42,7 +42,7 @@ class AssignmentStateResolver
         $isTeam = ! $isPerson && filled($task->assigned_team_id);
 
         if (! $isPerson && ! $isTeam) {
-            return AssignmentState::Vacant;
+            return $task->hasOnlyTypedNames() ? AssignmentState::Named : AssignmentState::Vacant;
         }
 
         if ($task->isAcceptedVerbally()) {

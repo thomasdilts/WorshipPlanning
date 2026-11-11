@@ -79,7 +79,18 @@ class TaskTemplateForm
                             ->options(FieldUsage::options())
                             ->default(FieldUsage::Optional->value)
                             ->required()
-                            ->native(false),
+                            ->native(false)
+                            ->live()
+                            ->afterStateUpdated(function (?string $state, callable $set): void {
+                                if (! (FieldUsage::tryFrom((string) $state)?->isUsed() ?? false)) {
+                                    $set('allow_person_text', false);
+                                }
+                            }),
+                        Toggle::make('allow_person_text')
+                            ->label(__('Allow a typed name for the person'))
+                            ->default(false)
+                            ->visible(fn (Get $get): bool => FieldUsage::tryFrom((string) $get('person_usage'))?->isUsed() ?? false)
+                            ->helperText(__('For someone who is not in WorshipPlanning. A typed name fills the task, but cannot be sent messages.')),
                         Select::make('team_usage')
                             ->label(__('Team'))
                             ->options(FieldUsage::options())
@@ -91,11 +102,17 @@ class TaskTemplateForm
                             ->afterStateUpdated(function (?string $state, callable $set): void {
                                 if ($state === FieldUsage::NotUsed->value || $state === null) {
                                     $set('team_type_id', null);
+                                    $set('allow_team_text', false);
                                 }
                             })
                             ->helperText($teamsEnabled
                                 ? 'Requires the Teams module. Event messages to a team go to its leaders.'
                                 : null),
+                        Toggle::make('allow_team_text')
+                            ->label(__('Allow a typed name for the team'))
+                            ->default(false)
+                            ->visible(fn (Get $get): bool => $teamsEnabled && (FieldUsage::tryFrom((string) $get('team_usage'))?->isUsed() ?? false))
+                            ->helperText(__('For a team that is not in WorshipPlanning. A typed team name fills the task, but cannot be sent messages.')),
                         Select::make('team_type_id')
                             ->label(__('Team type'))
                             ->options(fn (): array => TeamType::query()

@@ -18,6 +18,7 @@ enum AssignmentState: string
     case Declined = 'declined';
     case Cancelled = 'cancelled';
     case AssumedTeam = 'assumed_team';
+    case Named = 'named';
     case Unknown = 'unknown';
 
     public function label(): string
@@ -32,6 +33,7 @@ enum AssignmentState: string
             self::Declined => __('Declined'),
             self::Cancelled => __('Cancelled'),
             self::AssumedTeam => __('Team assumed'),
+            self::Named => __('Name typed in'),
             self::Unknown => __('Unknown'),
         };
     }

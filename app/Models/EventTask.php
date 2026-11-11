@@ -26,6 +26,8 @@ class EventTask extends Model
         'task_template_id',
         'assigned_user_id',
         'assigned_team_id',
+        'person_text',
+        'team_text',
         'accepted_verbally_at',
         'accepted_verbally_by_user_id',
         'name',
@@ -73,6 +75,32 @@ class EventTask extends Model
                 $task->accepted_verbally_by_user_id = null;
             }
         });
+    }
+
+    /**
+     * A name typed in for someone who is not in the app; only used while no person is picked.
+     */
+    public function typedPersonName(): ?string
+    {
+        return blank($this->assigned_user_id) && filled($this->person_text) ? (string) $this->person_text : null;
+    }
+
+    /**
+     * A team name typed in for a team that is not in the app; only used while no team is picked.
+     */
+    public function typedTeamName(): ?string
+    {
+        return blank($this->assigned_team_id) && filled($this->team_text) ? (string) $this->team_text : null;
+    }
+
+    /**
+     * Only a typed name fills this task: there is nobody in the app to invite or message.
+     */
+    public function hasOnlyTypedNames(): bool
+    {
+        return blank($this->assigned_user_id)
+            && blank($this->assigned_team_id)
+            && ($this->typedPersonName() !== null || $this->typedTeamName() !== null);
     }
 
     public function isAcceptedVerbally(): bool

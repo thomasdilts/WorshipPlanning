@@ -117,6 +117,8 @@ class DemoSnapshotBuilder
                 'special_needs' => null,
                 'legacy_person_text' => null,
                 'legacy_team_text' => null,
+                'person_text' => null,
+                'team_text' => null,
             ], $this->rows($tasks, texts: ['name', 'description'])),
             'event_task_responses' => array_map(fn (array $response): array => [
                 ...$response, 'note' => null, 'legacy_source' => null, 'legacy_id' => null,

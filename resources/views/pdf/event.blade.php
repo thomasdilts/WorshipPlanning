@@ -80,7 +80,7 @@
                         @endif
                         @php
                             $state = ($states ?? [])[$task->id] ?? null;
-                            $showStatus = $state && ! in_array($state, [\App\Enums\AssignmentState::Draft, \App\Enums\AssignmentState::AssumedTeam, \App\Enums\AssignmentState::Vacant], true);
+                            $showStatus = $state && ! in_array($state, [\App\Enums\AssignmentState::Draft, \App\Enums\AssignmentState::AssumedTeam, \App\Enums\AssignmentState::Named, \App\Enums\AssignmentState::Vacant], true);
                         @endphp
                         <tr @class(['before-start' => $task->before_start])>
                             <td class="col-time">{{ filled($task->starts_at) ? \App\Support\DateTimeFormats::formatTime($task->starts_at, $event->church) : '—' }}</td>

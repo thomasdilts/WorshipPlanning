@@ -219,8 +219,16 @@ class TaskSpreadsheetBuilder
                     $bits[] = UserAvatar::html($task->assignedUser, size: 'sm')->toHtml();
                 }
 
+                if ($task->typedPersonName() !== null) {
+                    $bits[] = e($task->typedPersonName());
+                }
+
                 if ($task->assignedTeam) {
                     $bits[] = e($task->assignedTeam->name);
+                }
+
+                if ($task->typedTeamName() !== null) {
+                    $bits[] = e($task->typedTeamName());
                 }
 
                 $assignee = implode(' / ', array_filter($bits));

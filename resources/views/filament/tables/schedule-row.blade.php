@@ -6,7 +6,7 @@
     $task = $getRecord();
     $event = $task->event;
     $state = app(AssignmentStateResolver::class)->for($task);
-    $showState = ! in_array($state, [AssignmentState::Draft, AssignmentState::AssumedTeam, AssignmentState::Vacant], true);
+    $showState = ! in_array($state, [AssignmentState::Draft, AssignmentState::AssumedTeam, AssignmentState::Named, AssignmentState::Vacant], true);
     $taskTime = filled($task->starts_at) && ! $task->isGlobal() ? substr((string) $task->starts_at, 0, 5) : null;
     $canOpen = $event !== null && (auth()->user()?->can('view', $event) ?? false);
     $eventUrl = $canOpen

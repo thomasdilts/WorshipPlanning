@@ -71,6 +71,8 @@ class EventCopier
                         'task_template_id' => $task->task_template_id,
                         'assigned_user_id' => $copyPeopleAndTeams ? $task->assigned_user_id : null,
                         'assigned_team_id' => $copyPeopleAndTeams ? $task->assigned_team_id : null,
+                        'person_text' => $copyPeopleAndTeams ? $task->person_text : null,
+                        'team_text' => $copyPeopleAndTeams ? $task->team_text : null,
                         'name' => $task->name,
                         'description' => $task->description,
                         'song' => $copySongs ? $task->song : null,

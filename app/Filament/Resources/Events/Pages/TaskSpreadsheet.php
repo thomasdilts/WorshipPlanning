@@ -231,8 +231,8 @@ class TaskSpreadsheet extends Page implements HasTable
                     ->mapWithKeys(function (EventTask $task): array {
                         $bits = array_filter([
                             $task->displayName(),
-                            $task->assignedUser?->displayName(),
-                            $task->assignedTeam?->name,
+                            $task->assignedUser?->displayName() ?? $task->typedPersonName(),
+                            $task->assignedTeam?->name ?? $task->typedTeamName(),
                         ]);
 
                         return [$task->id => implode(' — ', $bits) ?: ('#'.$task->id)];

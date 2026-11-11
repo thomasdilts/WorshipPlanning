@@ -49,7 +49,7 @@ class EventStaffingSummary
                 AssignmentState::Vacant => $vacant++,
                 AssignmentState::Invited, AssignmentState::Informed => $awaiting++,
                 AssignmentState::Declined, AssignmentState::Cancelled => $declined++,
-                AssignmentState::Confirmed, AssignmentState::ConfirmedVerbally, AssignmentState::AssumedTeam => $confirmed++,
+                AssignmentState::Confirmed, AssignmentState::ConfirmedVerbally, AssignmentState::AssumedTeam, AssignmentState::Named => $confirmed++,
                 default => null,
             };
 

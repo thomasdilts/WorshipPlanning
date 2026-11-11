@@ -113,7 +113,12 @@ class EventTaskForm
                         $set('assigned_user_id', null);
                     }
 
+                    if (! $template->usage('person')->isUsed() || ! $template->allow_person_text) {
+                        $set('person_text', null);
+                    }
+
                     $set('assigned_team_id', null);
+                    $set('team_text', null);
 
                     if (! $template->usage('song')->isUsed()) {
                         $set('song', null);
@@ -475,6 +480,14 @@ class EventTaskForm
                         .'</strong>'
                     );
                 }),
+            TextInput::make('person_text')
+                ->label(__('Or type a name'))
+                ->maxLength(255)
+                ->live(onBlur: true)
+                ->visible(fn (Get $get): bool => static::templateUsage($get, 'person')->isUsed()
+                    && static::templateAllowsTypedName($get, 'person')
+                    && blank($get('assigned_user_id')))
+                ->helperText(__('For someone who is not in WorshipPlanning. They will not get messages.')),
             Select::make('assigned_team_id')
                 ->label(__('Team'))
                 ->options(function (Get $get) use ($event): array {
@@ -515,6 +528,15 @@ class EventTaskForm
                         ? __('Only “:type” teams. Messages to a team go to its leader(s).', ['type' => $typeName])
                         : __('Service messages sent to this team go to its leader(s).');
                 }),
+            TextInput::make('team_text')
+                ->label(__('Or type a team name'))
+                ->maxLength(255)
+                ->live(onBlur: true)
+                ->visible(fn (Get $get): bool => $teamsEnabled
+                    && static::templateUsage($get, 'team')->isUsed()
+                    && static::templateAllowsTypedName($get, 'team')
+                    && blank($get('assigned_team_id')))
+                ->helperText(__('For a team that is not in WorshipPlanning. It will not get messages.')),
             Toggle::make('accepted_verbally')
                 ->label(__('Accepted verbally'))
                 ->inline()
@@ -584,6 +606,8 @@ class EventTaskForm
                 $data['assigned_team_id'] = null;
             }
         }
+
+        $data = static::normalizeTypedNames($data, $template);
 
         if (! $template->usage('description')->isUsed()) {
             $data['description'] = null;
@@ -925,6 +949,38 @@ class EventTaskForm
     protected static function templateUsage(Get $get, string $field): FieldUsage
     {
         return static::resolveTemplate($get)?->usage($field) ?? FieldUsage::NotUsed;
+    }
+
+    protected static function templateAllowsTypedName(Get $get, string $field): bool
+    {
+        $template = static::resolveTemplate($get);
+
+        return (bool) ($field === 'person' ? $template?->allow_person_text : $template?->allow_team_text);
+    }
+
+    /**
+     * A typed name is kept only when the template allows it and nobody is picked from the list.
+     *
+     * @param  array<string, mixed>  $data
+     * @return array<string, mixed>
+     */
+    protected static function normalizeTypedNames(array $data, TaskTemplate $template): array
+    {
+        foreach (['person' => 'assigned_user_id', 'team' => 'assigned_team_id'] as $field => $pickedKey) {
+            $textKey = $field.'_text';
+
+            if (! array_key_exists($textKey, $data) && ! array_key_exists($pickedKey, $data)) {
+                continue;
+            }
+
+            $allowed = $template->usage($field)->isUsed()
+                && ($field === 'person' ? $template->allow_person_text : $template->allow_team_text);
+            $text = trim((string) ($data[$textKey] ?? ''));
+
+            $data[$textKey] = $allowed && $text !== '' && blank($data[$pickedKey] ?? null) ? $text : null;
+        }
+
+        return $data;
     }
 
     protected static function templateAllowsManualSong(Get $get): bool
