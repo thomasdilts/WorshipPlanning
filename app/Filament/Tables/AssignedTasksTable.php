@@ -14,8 +14,8 @@ use App\Support\DateTimeFormats;
 use App\Support\UserAvatar;
 use Filament\Actions\Action;
 use Filament\Forms\Components\DatePicker;
-use Filament\Forms\Components\Textarea;
 use Filament\Notifications\Notification;
+use Filament\Support\Enums\Size;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Columns\Layout\Stack;
 use Filament\Tables\Columns\TextColumn;
@@ -155,6 +155,8 @@ class AssignedTasksTable
                     ->icon(Heroicon::OutlinedCheckCircle)
                     ->color('success')
                     ->button()
+                    ->size(Size::Small)
+                    ->extraAttributes(['class' => 'wp-schedule-response-btn'])
                     ->visible(fn (EventTask $record): bool => $asSchedule && self::canOfferResponse($record))
                     ->action(function (EventTask $record): void {
                         /** @var User $user */
@@ -168,16 +170,12 @@ class AssignedTasksTable
                     ->color('danger')
                     ->button()
                     ->visible(fn (EventTask $record): bool => $asSchedule && self::canOfferResponse($record))
-                    ->schema([
-                        Textarea::make('note')
-                            ->label(__('Optional reason'))
-                            ->rows(3),
-                    ])
-                    ->modalSubmitActionLabel(__("I can't make it"))
-                    ->action(function (EventTask $record, array $data): void {
+                    ->size(Size::Small)
+                    ->extraAttributes(['class' => 'wp-schedule-response-btn'])
+                    ->action(function (EventTask $record): void {
                         /** @var User $user */
                         $user = auth()->user();
-                        app(AssignmentResponder::class)->decline($record, $user, $data['note'] ?? null);
+                        app(AssignmentResponder::class)->decline($record, $user);
                         Notification::make()->success()->title(__('Response recorded'))->send();
                     }),
                 ViewEventTaskAction::makeTableAction()

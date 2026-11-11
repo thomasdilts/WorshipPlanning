@@ -151,6 +151,29 @@ class AssignmentResponderTest extends TestCase
         $this->assertSame(AssignmentState::Confirmed, app(AssignmentStateResolver::class)->for($task->fresh()));
     }
 
+    public function test_my_schedule_decline_action_declines_without_asking_for_a_reason(): void
+    {
+        $person = User::factory()->create(['church_id' => $this->church->id]);
+        RolesAndPermissionsSeeder::assignDefaultRoles($person, 'Member');
+        $task = $this->staffedTask($person);
+
+        EventTaskResponse::factory()->create([
+            'church_id' => $this->church->id,
+            'event_task_id' => $task->id,
+            'assignee_user_id' => $person->id,
+            'status' => AssignmentResponseStatus::Invited,
+            'occurred_at' => now(),
+        ]);
+
+        $this->actingAs($person);
+
+        Livewire::test(MyTasks::class)
+            ->mountTableAction('iCantMakeIt', $task)
+            ->assertHasNoTableActionErrors();
+
+        $this->assertSame(AssignmentState::Declined, app(AssignmentStateResolver::class)->for($task->fresh()));
+    }
+
     public function test_duplicate_confirm_is_idempotent_and_does_not_renotify(): void
     {
         Notification::fake();
