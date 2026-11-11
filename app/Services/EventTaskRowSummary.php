@@ -148,11 +148,15 @@ class EventTaskRowSummary
             return $problems;
         }
 
-        if ($this->missingRequiredPerson($task, $event)) {
+        if ($task->isMissingGuestName() && $template->usage('person')->isUsed()) {
+            $problems[] = __('Missing: Guest name');
+        } elseif ($this->missingRequiredPerson($task, $event)) {
             $problems[] = __('Missing: Person');
         }
 
-        if ($this->missingRequiredTeam($task, $event)) {
+        if ($this->moduleEnabled($event, 'teams') && $task->isMissingGuestTeamName() && $template->usage('team')->isUsed()) {
+            $problems[] = __('Missing: Guest team name');
+        } elseif ($this->missingRequiredTeam($task, $event)) {
             $problems[] = __('Missing: Team');
         }
 
@@ -219,6 +223,8 @@ class EventTaskRowSummary
 
         $staffing = $this->missingRequiredPerson($task, $event)
             || $this->missingRequiredTeam($task, $event)
+            || ($task->isMissingGuestName() && $template->usage('person')->isUsed())
+            || ($this->moduleEnabled($event, 'teams') && $task->isMissingGuestTeamName() && $template->usage('team')->isUsed())
             || $this->assignedUserUnavailable($task, $event)
             || $this->assignedTeamUnavailable($task, $event);
 

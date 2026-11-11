@@ -37,6 +37,11 @@ use Modules\Unavailability\Services\UnavailabilityConflictService;
  */
 class EventTaskForm
 {
+    /**
+     * The person or team choice for someone who is not in the app; their name is typed in.
+     */
+    public const GUEST = 'guest';
+
     public static function configure(Schema $schema, Event $event): Schema
     {
         return $schema
@@ -113,7 +118,7 @@ class EventTaskForm
                         $set('assigned_user_id', null);
                     }
 
-                    if (! $template->usage('person')->isUsed() || ! $template->allow_person_text) {
+                    if (! $template->usage('person')->isUsed()) {
                         $set('person_text', null);
                     }
 
@@ -431,11 +436,12 @@ class EventTaskForm
                     $templateId = filled($get('task_template_id'))
                         ? (int) $get('task_template_id')
                         : null;
-                    $keepUserId = filled($get('assigned_user_id'))
+                    $keepUserId = filled($get('assigned_user_id')) && $get('assigned_user_id') !== self::GUEST
                         ? (int) $get('assigned_user_id')
                         : null;
 
-                    return app(UserAbilities::class)->assignablePersonOptions(
+                    // `+` keeps the user ids as keys (spreading would renumber them).
+                    return [self::GUEST => e(__('Guest'))] + app(UserAbilities::class)->assignablePersonOptions(
                         $event->church,
                         $templateId,
                         $keepUserId,
@@ -449,12 +455,12 @@ class EventTaskForm
                 ->afterStateUpdated(fn (Set $set) => $set('accepted_verbally', false))
                 ->visible(fn (Get $get): bool => static::templateUsage($get, 'person')->isUsed())
                 ->markAsRequired(fn (Get $get): bool => static::templateUsage($get, 'person')->isRequired())
-                ->helperText(function (?int $state, Get $get) use ($event, $abilitiesEnabled): ?HtmlString {
+                ->helperText(function (mixed $state, Get $get) use ($event, $abilitiesEnabled): ?HtmlString {
                     if ($abilitiesEnabled && blank($get('task_template_id'))) {
                         return new HtmlString(e(__('Select a task template first to see eligible people.')));
                     }
 
-                    if (! $state) {
+                    if (blank($state) || $state === self::GUEST) {
                         return null;
                     }
 
@@ -481,13 +487,12 @@ class EventTaskForm
                     );
                 }),
             TextInput::make('person_text')
-                ->label(__('Or type a name'))
+                ->label(__('Guest name'))
                 ->maxLength(255)
                 ->live(onBlur: true)
                 ->visible(fn (Get $get): bool => static::templateUsage($get, 'person')->isUsed()
-                    && static::templateAllowsTypedName($get, 'person')
-                    && blank($get('assigned_user_id')))
-                ->helperText(__('For someone who is not in WorshipPlanning. They will not get messages.')),
+                    && $get('assigned_user_id') === self::GUEST)
+                ->helperText(__('Someone who is not in WorshipPlanning. Guests do not get messages.')),
             Select::make('assigned_team_id')
                 ->label(__('Team'))
                 ->options(function (Get $get) use ($event): array {
@@ -500,7 +505,7 @@ class EventTaskForm
                         $query->where('team_type_id', $template->team_type_id);
                     }
 
-                    return $query->pluck('name', 'id')->all();
+                    return [self::GUEST => __('Guest')] + $query->pluck('name', 'id')->all();
                 })
                 ->searchable()
                 ->preload()
@@ -529,20 +534,20 @@ class EventTaskForm
                         : __('Service messages sent to this team go to its leader(s).');
                 }),
             TextInput::make('team_text')
-                ->label(__('Or type a team name'))
+                ->label(__('Guest team name'))
                 ->maxLength(255)
                 ->live(onBlur: true)
                 ->visible(fn (Get $get): bool => $teamsEnabled
                     && static::templateUsage($get, 'team')->isUsed()
-                    && static::templateAllowsTypedName($get, 'team')
-                    && blank($get('assigned_team_id')))
-                ->helperText(__('For a team that is not in WorshipPlanning. It will not get messages.')),
+                    && $get('assigned_team_id') === self::GUEST)
+                ->helperText(__('A team that is not in WorshipPlanning. Guest teams do not get messages.')),
             Toggle::make('accepted_verbally')
                 ->label(__('Accepted verbally'))
                 ->inline()
                 ->extraFieldWrapperAttributes(['class' => 'wp-task-option'])
                 ->helperText(__('They said yes in person or by phone. This overrides any reply to messages, and is cleared if the person or team changes.'))
-                ->visible(fn (Get $get): bool => filled($get('assigned_user_id')) || filled($get('assigned_team_id'))),
+                ->visible(fn (Get $get): bool => (filled($get('assigned_user_id')) && $get('assigned_user_id') !== self::GUEST)
+                    || (filled($get('assigned_team_id')) && $get('assigned_team_id') !== self::GUEST)),
             TextInput::make('sort_order')
                 ->label(__('Sort order'))
                 ->numeric()
@@ -563,6 +568,14 @@ class EventTaskForm
         $data['shared_file_ids'] = $task->sharedFiles()->pluck('shared_files.id')->all();
         $data['bible_passages'] = static::expandBiblePassagesForForm($task->bible_passages ?? []);
         $data['accepted_verbally'] = $task->isAcceptedVerbally();
+
+        if ($task->hasGuestPerson()) {
+            $data['assigned_user_id'] = self::GUEST;
+        }
+
+        if ($task->hasGuestTeam()) {
+            $data['assigned_team_id'] = self::GUEST;
+        }
         $data['announcement_points'] = AnnouncementPoints::fromDescription($task->description) ?: [['text' => '']];
 
         return $data;
@@ -590,6 +603,8 @@ class EventTaskForm
 
         unset($data['announcement_points']);
 
+        $data = static::normalizeGuests($data, $template);
+
         if (! $template->usage('person')->isUsed()) {
             $data['assigned_user_id'] = null;
         }
@@ -606,8 +621,6 @@ class EventTaskForm
                 $data['assigned_team_id'] = null;
             }
         }
-
-        $data = static::normalizeTypedNames($data, $template);
 
         if (! $template->usage('description')->isUsed()) {
             $data['description'] = null;
@@ -951,33 +964,29 @@ class EventTaskForm
         return static::resolveTemplate($get)?->usage($field) ?? FieldUsage::NotUsed;
     }
 
-    protected static function templateAllowsTypedName(Get $get, string $field): bool
-    {
-        $template = static::resolveTemplate($get);
-
-        return (bool) ($field === 'person' ? $template?->allow_person_text : $template?->allow_team_text);
-    }
-
     /**
-     * A typed name is kept only when the template allows it and nobody is picked from the list.
+     * "Guest" in the person or team list becomes the guest flag with the typed name (which may still be
+     * missing); picking someone from the list, or nobody, clears the guest.
      *
      * @param  array<string, mixed>  $data
      * @return array<string, mixed>
      */
-    protected static function normalizeTypedNames(array $data, TaskTemplate $template): array
+    protected static function normalizeGuests(array $data, TaskTemplate $template): array
     {
         foreach (['person' => 'assigned_user_id', 'team' => 'assigned_team_id'] as $field => $pickedKey) {
-            $textKey = $field.'_text';
-
-            if (! array_key_exists($textKey, $data) && ! array_key_exists($pickedKey, $data)) {
+            if (! array_key_exists($pickedKey, $data)) {
                 continue;
             }
 
-            $allowed = $template->usage($field)->isUsed()
-                && ($field === 'person' ? $template->allow_person_text : $template->allow_team_text);
-            $text = trim((string) ($data[$textKey] ?? ''));
+            $isGuest = $data[$pickedKey] === self::GUEST && $template->usage($field)->isUsed();
+            $text = trim((string) ($data[$field.'_text'] ?? ''));
 
-            $data[$textKey] = $allowed && $text !== '' && blank($data[$pickedKey] ?? null) ? $text : null;
+            if ($data[$pickedKey] === self::GUEST) {
+                $data[$pickedKey] = null;
+            }
+
+            $data['guest_'.$field] = $isGuest;
+            $data[$field.'_text'] = $isGuest && $text !== '' ? $text : null;
         }
 
         return $data;

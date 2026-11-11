@@ -22,11 +22,6 @@ class CreateTaskTemplate extends CreateRecord
 
         if ($usage === null || ! $usage->isUsed()) {
             $data['team_type_id'] = null;
-            $data['allow_team_text'] = false;
-        }
-
-        if (! (FieldUsage::tryFrom((string) ($data['person_usage'] ?? ''))?->isUsed() ?? false)) {
-            $data['allow_person_text'] = false;
         }
 
         return $data;

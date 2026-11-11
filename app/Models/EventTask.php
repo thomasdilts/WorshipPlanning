@@ -28,6 +28,8 @@ class EventTask extends Model
         'assigned_team_id',
         'person_text',
         'team_text',
+        'guest_person',
+        'guest_team',
         'accepted_verbally_at',
         'accepted_verbally_by_user_id',
         'name',
@@ -49,6 +51,8 @@ class EventTask extends Model
             'duration' => 'integer',
             'sort_order' => 'integer',
             'before_start' => 'boolean',
+            'guest_person' => 'boolean',
+            'guest_team' => 'boolean',
             'bible_passages' => 'array',
             'accepted_verbally_at' => 'datetime',
         ];
@@ -78,19 +82,45 @@ class EventTask extends Model
     }
 
     /**
-     * A name typed in for someone who is not in the app; only used while no person is picked.
+     * The name of a guest picked as the person: someone who is not in the app.
      */
     public function typedPersonName(): ?string
     {
-        return blank($this->assigned_user_id) && filled($this->person_text) ? (string) $this->person_text : null;
+        return $this->hasGuestPerson() && filled($this->person_text) ? (string) $this->person_text : null;
     }
 
     /**
-     * A team name typed in for a team that is not in the app; only used while no team is picked.
+     * The name of a guest team picked as the team: a team that is not in the app.
      */
     public function typedTeamName(): ?string
     {
-        return blank($this->assigned_team_id) && filled($this->team_text) ? (string) $this->team_text : null;
+        return $this->hasGuestTeam() && filled($this->team_text) ? (string) $this->team_text : null;
+    }
+
+    public function hasGuestPerson(): bool
+    {
+        return $this->guest_person && blank($this->assigned_user_id);
+    }
+
+    public function hasGuestTeam(): bool
+    {
+        return $this->guest_team && blank($this->assigned_team_id);
+    }
+
+    /**
+     * "Guest" was picked as the person but the guest's name is still missing.
+     */
+    public function isMissingGuestName(): bool
+    {
+        return $this->hasGuestPerson() && blank($this->person_text);
+    }
+
+    /**
+     * "Guest" was picked as the team but the guest team's name is still missing.
+     */
+    public function isMissingGuestTeamName(): bool
+    {
+        return $this->hasGuestTeam() && blank($this->team_text);
     }
 
     /**

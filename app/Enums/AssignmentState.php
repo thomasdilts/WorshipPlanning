@@ -33,7 +33,7 @@ enum AssignmentState: string
             self::Declined => __('Declined'),
             self::Cancelled => __('Cancelled'),
             self::AssumedTeam => __('Team assumed'),
-            self::Named => __('Name typed in'),
+            self::Named => __('Guest'),
             self::Unknown => __('Unknown'),
         };
     }
