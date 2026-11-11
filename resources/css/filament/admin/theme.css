@@ -25,6 +25,7 @@
     --wp-nav-selected-bg: #e8f4f1;
     --wp-nav-selected-text: #115e59;
     --wp-focus: #0f766e;
+    --wp-logo-plate: color-mix(in srgb, var(--wp-primary) 45%, white);
 
     --wp-confirmed-bg: #dcfce7;
     --wp-confirmed-text: #166534;
@@ -446,10 +447,19 @@
 
 .dark img.fi-logo {
     /* Light teal plate so the logo reads on dark chrome */
-    background-color: color-mix(in srgb, var(--wp-primary) 45%, white);
+    background-color: var(--wp-logo-plate);
     padding: 0.35rem 0.55rem;
     border-radius: 0.5rem;
     box-sizing: border-box;
+}
+
+/* The logo upload previews the logo on the background it gets in the top bar, not FilePond's black. */
+.wp-logo-upload .filepond--image-preview {
+    background: #ffffff;
+}
+
+.dark .wp-logo-upload .filepond--image-preview {
+    background: var(--wp-logo-plate);
 }
 
 /* ---------- Page heading helpers ---------- */

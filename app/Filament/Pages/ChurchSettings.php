@@ -112,6 +112,7 @@ class ChurchSettings extends Page
                             ->imageResizeTargetHeight(160)
                             ->maxSize(2048)
                             ->acceptedFileTypes(['image/png', 'image/jpeg', 'image/webp', 'image/gif'])
+                            ->extraAttributes(['class' => 'wp-logo-upload'])
                             // The page has no record, so name the one existing path that may be kept.
                             ->preventFilePathTampering(allowFilePathUsing: fn (string $file): bool => $file === $this->church()?->logo_path)
                             ->helperText(__('Transparent PNG preferred. Dark mode sits the mark on a soft plate so it stays readable.')),
