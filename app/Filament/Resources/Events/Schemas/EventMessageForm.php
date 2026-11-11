@@ -2,15 +2,12 @@
 
 namespace App\Filament\Resources\Events\Schemas;
 
-use App\Enums\AssignmentState;
 use App\Enums\MessageTemplatePurpose;
 use App\Filament\Forms\MessageTemplateFields;
 use App\Models\Event;
 use App\Models\EventMessage;
-use App\Models\EventTask;
 use App\Models\MessageTemplate;
 use App\Models\User;
-use App\Services\AssignmentStateResolver;
 use App\Services\InvitationDeliveryPreview;
 use Filament\Forms\Components\CheckboxList;
 use Filament\Forms\Components\Placeholder;
@@ -31,15 +28,14 @@ class EventMessageForm
      */
     public static function components(Event $event): array
     {
-        $taskIds = static::unacceptedTaskIds($event);
-        $participants = $event->personTaskOptions()->only($taskIds);
-        $teams = $event->teamTaskOptions()->only($taskIds);
+        $participants = $event->personTaskOptions();
+        $teams = $event->teamTaskOptions();
 
         return [
             ...MessageTemplateFields::components(MessageTemplatePurpose::Service, singlePreview: true),
-            Placeholder::make('no_unaccepted_tasks')
+            Placeholder::make('no_assigned_tasks')
                 ->hiddenLabel()
-                ->content(__('No assignments awaiting acceptance.'))
+                ->content(__('No one is assigned on this service yet.'))
                 ->visible($participants->isEmpty() && $teams->isEmpty()),
             CheckboxList::make('recipient_task_ids')
                 ->label(__('People'))
@@ -48,7 +44,7 @@ class EventMessageForm
                 ->live()
                 ->helperText($participants->isEmpty()
                     ? __('No people assigned on this service yet.')
-                    : __('Only tasks that have not been accepted are shown. One message is sent for each selected task.'))
+                    : __('One line per task. Someone with several tasks gets a separate message for each task you tick.'))
                 ->visible($participants->isNotEmpty())
                 ->bulkToggleable(),
             CheckboxList::make('team_task_ids')
@@ -90,7 +86,7 @@ class EventMessageForm
 
         if ($taskIds === []) {
             throw ValidationException::withMessages([
-                'recipient_task_ids' => __('Select at least one task that has not been accepted.'),
+                'recipient_task_ids' => __('Select at least one person or team.'),
             ]);
         }
 
@@ -118,23 +114,23 @@ class EventMessageForm
     }
 
     /**
+     * Tasks on this service that have a person or a team to message, whether or not they have answered,
+     * so a reminder or follow-up can go to the same person as often as needed.
+     *
      * @return list<int>
      */
-    public static function unacceptedTaskIds(Event $event): array
+    public static function assignedTaskIds(Event $event): array
     {
-        $tasks = $event->tasks()->with('responses')->get();
-        $states = app(AssignmentStateResolver::class)->forMany($tasks);
-
-        return $tasks
-            ->reject(fn (EventTask $task): bool => in_array($states[$task->id], [
-                AssignmentState::Vacant,
-                AssignmentState::Confirmed,
-                AssignmentState::ConfirmedVerbally,
-            ], true))
-            ->modelKeys();
+        return $event->tasks()
+            ->where(fn ($query) => $query->whereNotNull('assigned_user_id')->orWhereNotNull('assigned_team_id'))
+            ->pluck('id')
+            ->map(fn (mixed $id): int => (int) $id)
+            ->all();
     }
 
     /**
+     * The submitted task ids, kept only when they belong to this service.
+     *
      * @param  array<int, int|string>|null  $personTaskIds
      * @param  array<int, int|string>|null  $teamTaskIds
      * @return list<int>
@@ -143,7 +139,7 @@ class EventMessageForm
     {
         return array_values(array_intersect(
             static::selectedTaskIds($personTaskIds, $teamTaskIds),
-            static::unacceptedTaskIds($event),
+            static::assignedTaskIds($event),
         ));
     }
 

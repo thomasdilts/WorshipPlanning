@@ -34,11 +34,11 @@ class SendTaskMessageAction
             ->modalWidth('3xl')
             ->modalSubmitActionLabel(__('Send'))
             ->modalSubmitAction(fn (Action $action, array $arguments): Action => $action
-                ->disabled(EventMessageForm::unacceptedTaskIds(static::resolveTask($arguments)->event) === []))
+                ->disabled(EventMessageForm::assignedTaskIds(static::resolveTask($arguments)->event) === []))
             ->schema(fn (array $arguments): array => EventMessageForm::components(static::resolveTask($arguments)->event))
             ->fillForm(function (array $arguments): array {
                 $task = static::resolveTask($arguments);
-                $canSelectTask = in_array($task->id, EventMessageForm::unacceptedTaskIds($task->event), true);
+                $canSelectTask = in_array($task->id, EventMessageForm::assignedTaskIds($task->event), true);
 
                 return [
                     'message_template_id' => ($arguments['requireResponse'] ?? false)
