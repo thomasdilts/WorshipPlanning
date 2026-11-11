@@ -4,7 +4,8 @@
     "type": "module",
     "scripts": {
         "build": "vite build",
-        "dev": "vite"
+        "dev": "vite",
+        "test:dropdown-scrollbars": "node --test tests/Unit/dropdown-scrollbar.test.js"
     },
     "devDependencies": {
         "@tailwindcss/vite": "^4.0.0",

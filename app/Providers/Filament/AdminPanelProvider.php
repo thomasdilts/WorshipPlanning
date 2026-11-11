@@ -102,10 +102,10 @@ class AdminPanelProvider extends PanelProvider
                 fn (array $data) => view('filament.tables.mobile-pagination', $data),
                 scopes: [ListEvents::class, MyTasks::class],
             )
+            ->renderHook(PanelsRenderHook::BODY_END, fn (): string => view('filament.select-scrollbar-script')->render())
             ->renderHook(PanelsRenderHook::BODY_END, fn (): string => auth()->check()
                 ? view('filament.navigation.mobile-tabs', ['tabs' => app(PanelNavigation::class)->mobileTabs()])->render()
                     .view('filament.events.order-drag-script')->render()
-                    .view('filament.select-scrollbar-script')->render()
                     .view('filament.users.profile-preview-host')->render()
                 : '')
             ->navigation(fn (NavigationBuilder $builder): NavigationBuilder => app(PanelNavigation::class)->build($builder))
