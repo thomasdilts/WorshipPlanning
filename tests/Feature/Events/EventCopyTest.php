@@ -162,4 +162,15 @@ class EventCopyTest extends TestCase
             'starts_at' => '2026-11-19 19:00:00',
         ]);
     }
+
+    public function test_copy_creates_at_most_a_year_of_weekly_copies(): void
+    {
+        $church = Church::factory()->create();
+        app(CurrentChurch::class)->set($church);
+        $source = Event::factory()->create(['church_id' => $church->id, 'starts_at' => '2026-11-01 10:00:00']);
+
+        $copies = app(EventCopier::class)->copy($source, ['starts_at' => '2026-11-08 10:00:00', 'weeks' => 500]);
+
+        $this->assertCount(EventCopier::MAX_WEEKS, $copies);
+    }
 }

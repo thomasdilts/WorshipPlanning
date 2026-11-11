@@ -4,6 +4,7 @@ namespace Modules\BibleVerses\Services;
 
 use App\Core\Modules\ChurchModuleManager;
 use App\Models\Church;
+use App\Support\OutboundUrlGuard;
 use Illuminate\Http\Client\PendingRequest;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Http;
@@ -128,13 +129,15 @@ class ZamarBibleClient
         $baseUrl = (string) ($stored['base_url'] ?? '');
         $defaultBible = (string) ($stored['default_bible'] ?? '');
 
+        // Empty church values must fall through to .env — enabling the module
+        // snapshots blank defaults into church_modules.settings.
+        $effectiveBaseUrl = $baseUrl !== '' ? self::normalizeBaseUrl($baseUrl) : $defaults['base_url'];
+
         return [
-            // Empty church values must fall through to .env — enabling the module
-            // snapshots blank defaults into church_modules.settings.
-            'base_url' => $baseUrl !== ''
-                ? self::normalizeBaseUrl($baseUrl)
-                : $defaults['base_url'],
-            'api_key' => $apiKey !== '' ? $apiKey : $defaults['api_key'],
+            'base_url' => $effectiveBaseUrl,
+            // The platform key only ever goes to the platform's own Bible API. A church that points
+            // at another server must bring its own key.
+            'api_key' => $apiKey !== '' ? $apiKey : ($effectiveBaseUrl === $defaults['base_url'] ? $defaults['api_key'] : ''),
             'default_bible' => $defaultBible !== '' ? $defaultBible : $defaults['default_bible'],
         ];
     }
@@ -172,7 +175,11 @@ class ZamarBibleClient
             throw new RuntimeException('Bible API is not configured. Set base URL and API key in Bible settings.');
         }
 
-        return Http::baseUrl($baseUrl)
+        // The platform's own address from .env is trusted; an address a church typed in must be public.
+        $platformBaseUrl = self::normalizeBaseUrl((string) config('services.zamar_bible.base_url', ''));
+        $request = $baseUrl === $platformBaseUrl ? Http::withOptions([]) : app(OutboundUrlGuard::class)->http($baseUrl);
+
+        return $request->baseUrl($baseUrl)
             ->withToken($apiKey)
             ->acceptJson()
             ->connectTimeout(3)

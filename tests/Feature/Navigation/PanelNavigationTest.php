@@ -164,7 +164,8 @@ class PanelNavigationTest extends TestCase
 
         $navigation = $this->navigationFor($admin);
 
-        $this->assertSame(['My schedule', 'Churches'], $navigation['top']);
+        // Languages are shared by every church, so only the platform admin manages them.
+        $this->assertSame(['My schedule', 'Churches', 'Languages'], $navigation['top']);
         $this->assertSame([], $navigation['groups']);
     }
 

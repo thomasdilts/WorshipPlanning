@@ -123,6 +123,7 @@ class ChurchTransferTest extends TestCase
     public function test_import_creates_a_separate_church_with_all_rows_relations_and_files(): void
     {
         app(ChurchExporter::class)->export($this->church, $this->zipPath, includeSecrets: false);
+        $this->freeEmailsAsIfImportingOnAnotherServer();
         $imported = app(ChurchImporter::class)->import($this->zipPath)['church'];
 
         $this->assertNotSame($this->church->id, $imported->id);
@@ -163,6 +164,7 @@ class ChurchTransferTest extends TestCase
             $this->assertStringNotContainsString($secret, $contents);
         }
 
+        $this->freeEmailsAsIfImportingOnAnotherServer();
         $imported = app(ChurchImporter::class)->import($this->zipPath)['church'];
         $settings = app(ChurchModuleManager::class)->settings($imported, 'messaging');
         $this->assertSame('smtp.grace.test', $settings['email']['host']);
@@ -174,6 +176,7 @@ class ChurchTransferTest extends TestCase
         app(ChurchExporter::class)->export($this->church, $this->zipPath, includeSecrets: true);
         $this->assertStringContainsString('bot-secret', $this->zipContents(), 'the export carries plain text, not this server\'s encryption');
 
+        $this->freeEmailsAsIfImportingOnAnotherServer();
         $imported = app(ChurchImporter::class)->import($this->zipPath)['church'];
         $modules = app(ChurchModuleManager::class);
         $telegram = $modules->settings($imported, 'messaging_telegram');
@@ -192,6 +195,7 @@ class ChurchTransferTest extends TestCase
         $this->admin->forceFill(['is_platform_admin' => true])->save();
 
         app(ChurchExporter::class)->export($this->church, $this->zipPath, includeSecrets: false);
+        $this->freeEmailsAsIfImportingOnAnotherServer();
         $imported = app(ChurchImporter::class)->import($this->zipPath)['church'];
 
         $this->assertFalse(User::query()->where('church_id', $imported->id)->firstOrFail()->is_platform_admin);
@@ -213,6 +217,35 @@ class ChurchTransferTest extends TestCase
         $this->assertSame($churches, Church::query()->count());
     }
 
+    public function test_import_refuses_people_whose_email_already_has_an_account(): void
+    {
+        app(ChurchExporter::class)->export($this->church, $this->zipPath, includeSecrets: false);
+        $churches = Church::query()->count();
+
+        try {
+            app(ChurchImporter::class)->import($this->zipPath);
+            $this->fail('An email that already has an account on this server must stop the import.');
+        } catch (RuntimeException $exception) {
+            $this->assertStringContainsString('anna@grace.test', $exception->getMessage());
+        }
+
+        $this->assertSame($churches, Church::query()->count());
+    }
+
+    public function test_imported_rows_always_belong_to_the_new_church(): void
+    {
+        app(ChurchExporter::class)->export($this->church, $this->zipPath, includeSecrets: false);
+        $this->editZipTable('roles', fn (array $rows): array => [...$rows, ['id' => 99999, 'church_id' => null, 'name' => 'Everywhere Helper', 'guard_name' => 'web']]);
+        $this->editZipTable('model_has_roles', fn (array $rows): array => [...$rows, [...$rows[0], 'model_type' => 'App\\Models\\Church']]);
+
+        $this->freeEmailsAsIfImportingOnAnotherServer();
+        $imported = app(ChurchImporter::class)->import($this->zipPath)['church'];
+
+        $this->assertSame(0, DB::table('roles')->whereNull('church_id')->count(), 'no role may be shared by every church');
+        $this->assertSame($imported->id, (int) DB::table('roles')->where('name', 'Everywhere Helper')->value('church_id'));
+        $this->assertSame(0, DB::table('model_has_roles')->where('model_type', '!=', User::class)->count());
+    }
+
     public function test_import_ignores_file_paths_that_point_outside_the_church_folder(): void
     {
         DB::table('users')->where('id', $this->admin->id)->update(['avatar_path' => '../../.env']);
@@ -223,6 +256,7 @@ class ChurchTransferTest extends TestCase
         $zip->addFromString('files/../../.env', 'APP_KEY=stolen');
         $zip->close();
 
+        $this->freeEmailsAsIfImportingOnAnotherServer();
         $imported = app(ChurchImporter::class)->import($this->zipPath)['church'];
 
         $this->assertNull(User::query()->where('church_id', $imported->id)->value('avatar_path'));
@@ -241,6 +275,7 @@ class ChurchTransferTest extends TestCase
     public function test_commands_export_and_import_a_church(): void
     {
         $this->artisan('church:export', ['church' => 'grace-church', 'path' => $this->zipPath])->assertSuccessful();
+        $this->freeEmailsAsIfImportingOnAnotherServer();
         $this->artisan('church:import', ['path' => $this->zipPath, '--force' => true])->assertSuccessful();
 
         $this->assertSame(2, Church::query()->where('slug', 'like', 'grace-church%')->count());
@@ -312,6 +347,7 @@ class ChurchTransferTest extends TestCase
     {
         app(ChurchExporter::class)->export($this->church, $this->zipPath, includeSecrets: false);
         $upload = UploadedFile::fake()->createWithContent('grace.zip', (string) file_get_contents($this->zipPath));
+        $this->freeEmailsAsIfImportingOnAnotherServer();
         $this->actingAs(User::factory()->platformAdmin()->create());
 
         Livewire::test(ManageChurches::class)
@@ -328,6 +364,17 @@ class ChurchTransferTest extends TestCase
         $this->actingAs(User::factory()->platformAdmin()->create());
 
         Livewire::test(ManageChurches::class)->assertActionHidden('import');
+    }
+
+    /**
+     * Emails are unique on a server. A real move imports on another server, so give the source
+     * church's people other emails before importing their export into the same test database.
+     */
+    private function freeEmailsAsIfImportingOnAnotherServer(): void
+    {
+        User::query()->where('church_id', $this->church->id)->each(
+            fn (User $user) => $user->forceFill(['email' => 'source-'.$user->email])->saveQuietly()
+        );
     }
 
     private function actAsChurchUser(User $user): void
@@ -361,6 +408,18 @@ class ChurchTransferTest extends TestCase
         $zip->open($this->zipPath);
         $manifest = json_decode((string) $zip->getFromName('manifest.json'), true);
         $zip->addFromString('manifest.json', json_encode([...$manifest, ...$changes]));
+        $zip->close();
+    }
+
+    /**
+     * @param  callable(array<int, array<string, mixed>>): array<int, array<string, mixed>>  $change
+     */
+    private function editZipTable(string $table, callable $change): void
+    {
+        $zip = new ZipArchive;
+        $zip->open($this->zipPath);
+        $rows = json_decode((string) $zip->getFromName("data/{$table}.json"), true) ?: [];
+        $zip->addFromString("data/{$table}.json", json_encode($change($rows)));
         $zip->close();
     }
 }

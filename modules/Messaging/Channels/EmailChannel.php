@@ -57,7 +57,10 @@ class EmailChannel implements MessageChannel
 
             return SendResult::ok($this->key());
         } catch (\Throwable $e) {
-            return SendResult::fail($this->key(), $e->getMessage());
+            // Not the raw error: it can quote whatever the configured server answered.
+            report($e);
+
+            return SendResult::fail($this->key(), 'The church SMTP server could not be reached or refused the message.');
         }
     }
 }

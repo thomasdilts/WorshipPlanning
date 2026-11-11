@@ -5,7 +5,7 @@ namespace Modules\Messaging\Channels;
 use App\Core\Modules\ChurchModuleManager;
 use App\Models\Church;
 use App\Models\User;
-use Illuminate\Support\Facades\Http;
+use App\Support\OutboundUrlGuard;
 use Modules\Messaging\Contracts\MessageChannel;
 use Modules\Messaging\Data\OutboundMessageData;
 use Modules\Messaging\Data\SendResult;
@@ -89,7 +89,7 @@ class NtfyChannel implements MessageChannel
         }
 
         try {
-            $request = Http::acceptJson()->asJson()->timeout(30);
+            $request = app(OutboundUrlGuard::class)->http($server)->acceptJson()->asJson()->timeout(30);
 
             if (filled($token)) {
                 $request = $request->withToken((string) $token);
@@ -100,13 +100,15 @@ class NtfyChannel implements MessageChannel
             if (! $response->successful()) {
                 return SendResult::fail(
                     $this->key(),
-                    'ntfy failed ('.$response->status().'): '.($response->json('error') ?? $response->body()),
+                    'ntfy failed ('.$response->status().').',
                 );
             }
 
             return SendResult::ok($this->key(), $response->json('id'));
         } catch (\Throwable $e) {
-            return SendResult::fail($this->key(), $e->getMessage());
+            report($e);
+
+            return SendResult::fail($this->key(), 'The ntfy server could not be reached.');
         }
     }
 }

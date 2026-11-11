@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\SharedFiles\Schemas;
 
 use App\Models\Team;
+use App\Support\SharedFileUploadRule;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
@@ -31,6 +32,7 @@ class SharedFileForm
                     ->visibility('public')
                     ->required()
                     ->storeFileNamesIn('original_name')
+                    ->rule(fn (): \Closure => SharedFileUploadRule::make())
                     ->columnSpanFull()
                     ->helperText(__('PDF, Office docs, audio, images — whatever your team needs to share.')),
                 Select::make('team_ids')

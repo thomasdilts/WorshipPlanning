@@ -21,6 +21,9 @@ class SendTaskMessageAction
     public static function make(): Action
     {
         return Action::make('sendTaskMessage')
+            // Mountable from any page that registers it, so check the send permission here and
+            // not only on the button that opens it.
+            ->authorize(fn (array $arguments): bool => static::isAvailableFor(static::resolveTask($arguments)->event))
             ->label(__('Send message'))
             ->icon(Heroicon::OutlinedPaperAirplane)
             ->modalHeading(fn (array $arguments): string => __('Send message — :task', [
@@ -39,6 +42,7 @@ class SendTaskMessageAction
             })
             ->action(function (array $data, array $arguments): void {
                 $task = static::resolveTask($arguments);
+                abort_unless(static::isAvailableFor($task->event), 403);
 
                 try {
                     EventMessageForm::create($task->event, $data);
@@ -94,7 +98,7 @@ class SendTaskMessageAction
 
         $task = EventTask::query()
             ->with(['event.church', 'template'])
-            ->when($churchId, fn ($query) => $query->whereHas('event', fn ($q) => $q->where('church_id', $churchId)))
+            ->whereHas('event', fn ($query) => $query->where('church_id', $churchId ?? 0))
             ->find($taskId);
 
         if ($task === null) {

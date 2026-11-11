@@ -13,6 +13,9 @@ use Illuminate\Support\Facades\DB;
  */
 class EventCopier
 {
+    /** One copy per week for a year at most: one request must not create unbounded rows. */
+    public const MAX_WEEKS = 52;
+
     /**
      * @param  array{
      *     name?: string|null,
@@ -28,7 +31,7 @@ class EventCopier
     public function copy(Event $source, array $options): Collection
     {
         $startsAt = Carbon::parse($options['starts_at']);
-        $weeks = max(1, (int) ($options['weeks'] ?? 1));
+        $weeks = min(self::MAX_WEEKS, max(1, (int) ($options['weeks'] ?? 1)));
         $name = array_key_exists('name', $options)
             ? (string) $options['name']
             : $source->name;

@@ -6,6 +6,7 @@ use App\Core\Modules\ChurchModuleManager;
 use App\Core\Tenancy\CurrentChurch;
 use App\Enums\PasswordLinkKind;
 use App\Models\User;
+use App\Support\OutboundUrlGuard;
 use BackedEnum;
 use Filament\Actions\Action;
 use Filament\Forms\Components\Select;
@@ -103,6 +104,7 @@ class NtfyMessagingSettings extends Page
                             ->label(__('Server URL'))
                             ->url()
                             ->required()
+                            ->rule(fn (): \Closure => app(OutboundUrlGuard::class)->urlRule())
                             ->default(NtfyChannel::DEFAULT_SERVER),
                         TextInput::make('access_token')
                             ->label(__('Access token (optional)'))

@@ -126,9 +126,7 @@ class EditEventTaskAction
         $query = EventTask::query()
             ->with(['event.church', 'template', 'pictures', 'sharedFiles', 'assignedUser', 'assignedTeam']);
 
-        if ($churchId) {
-            $query->whereHas('event', fn ($q) => $q->where('church_id', $churchId));
-        }
+        $query->whereHas('event', fn ($q) => $q->where('church_id', $churchId ?? 0));
 
         $task = $query->find($taskId);
 

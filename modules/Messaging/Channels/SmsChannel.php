@@ -5,7 +5,7 @@ namespace Modules\Messaging\Channels;
 use App\Core\Modules\ChurchModuleManager;
 use App\Models\Church;
 use App\Models\User;
-use Illuminate\Support\Facades\Http;
+use App\Support\OutboundUrlGuard;
 use Modules\Messaging\Contracts\MessageChannel;
 use Modules\Messaging\Data\OutboundMessageData;
 use Modules\Messaging\Data\SendResult;
@@ -78,7 +78,7 @@ class SmsChannel implements MessageChannel
         }
 
         try {
-            $response = Http::withToken((string) $token)
+            $response = app(OutboundUrlGuard::class)->http($base)->withToken((string) $token)
                 ->acceptJson()
                 ->asJson()
                 ->timeout(30)
@@ -93,13 +93,15 @@ class SmsChannel implements MessageChannel
             if (! $response->successful()) {
                 return SendResult::fail(
                     $this->key(),
-                    'iP.1 SMS failed ('.$response->status().'): '.$response->body(),
+                    'iP.1 SMS failed ('.$response->status().').',
                 );
             }
 
             return SendResult::ok($this->key());
         } catch (\Throwable $e) {
-            return SendResult::fail($this->key(), $e->getMessage());
+            report($e);
+
+            return SendResult::fail($this->key(), 'The SMS service could not be reached.');
         }
     }
 }

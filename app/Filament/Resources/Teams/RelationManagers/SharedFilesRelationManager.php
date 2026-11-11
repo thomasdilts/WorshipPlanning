@@ -6,6 +6,7 @@ use App\Core\Modules\ChurchModuleManager;
 use App\Models\SharedFile;
 use App\Models\Team;
 use App\Policies\SharedFilePolicy;
+use App\Support\SharedFileUploadRule;
 use App\Support\UserAvatar;
 use Filament\Actions\Action;
 use Filament\Actions\DetachAction;
@@ -113,7 +114,8 @@ class SharedFilesRelationManager extends RelationManager
                             ->directory('churches/'.$churchId.'/files')
                             ->visibility('public')
                             ->required()
-                            ->storeFileNamesIn('original_name'),
+                            ->storeFileNamesIn('original_name')
+                            ->rule(fn (): \Closure => SharedFileUploadRule::make()),
                     ])
                     ->action(function (array $data) use ($team): void {
                         $user = auth()->user();
@@ -169,7 +171,8 @@ class SharedFilesRelationManager extends RelationManager
                             ->directory('churches/'.$churchId.'/files')
                             ->visibility('public')
                             ->required()
-                            ->storeFileNamesIn('original_name'),
+                            ->storeFileNamesIn('original_name')
+                            ->rule(fn (): \Closure => SharedFileUploadRule::make()),
                     ])
                     ->action(function (array $data) use ($team): void {
                         $user = auth()->user();

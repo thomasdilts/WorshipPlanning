@@ -73,6 +73,8 @@ class EventMessageForm
      */
     public static function create(Event $event, array $data): EventMessage
     {
+        abort_unless(static::canSend(), 403);
+
         $template = MessageTemplate::query()->findOrFail($data['message_template_id'] ?? null);
 
         return app(EventMessageService::class)->create(

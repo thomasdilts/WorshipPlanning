@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\Users\Pages;
 
+use App\Filament\Resources\Users\Schemas\UserForm;
 use App\Filament\Resources\Users\UserResource;
 use App\Services\UserInviter;
 use Filament\Actions\Action;
@@ -17,8 +18,8 @@ class EditUser extends EditRecord
 {
     protected static string $resource = UserResource::class;
 
-    /** @var list<string> */
-    protected array $pendingRoles = [];
+    /** @var list<string>|null null keeps the person's current roles */
+    protected ?array $pendingRoles = null;
 
     /** @var list<int>|null */
     protected ?array $pendingAbilityTemplateIds = null;
@@ -74,7 +75,10 @@ class EditUser extends EditRecord
      */
     protected function mutateFormDataBeforeSave(array $data): array
     {
-        $this->pendingRoles = array_values($data['roles'] ?? []);
+        /* Without roles.manage the roles stay as they are, whatever the request contains. */
+        $this->pendingRoles = UserForm::canAssignRoles()
+            ? array_values($data['roles'] ?? [])
+            : null;
         unset($data['roles']);
 
         if (array_key_exists('ability_template_ids', $data) && AbilitiesForm::canEditAbilities($this->record)) {
@@ -89,7 +93,7 @@ class EditUser extends EditRecord
     protected function afterSave(): void
     {
         app(PermissionRegistrar::class)->setPermissionsTeamId($this->record->church_id);
-        if (! $this->record->isDemoLogin()) {
+        if ($this->pendingRoles !== null && ! $this->record->isDemoLogin()) {
             $this->record->syncRoles($this->pendingRoles);
         }
 

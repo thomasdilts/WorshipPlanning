@@ -5,7 +5,9 @@ namespace Tests\Feature\Tenancy;
 use App\Core\Tenancy\CurrentChurch;
 use App\Models\Church;
 use App\Models\User;
+use Illuminate\Database\UniqueConstraintViolationException;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Spatie\Permission\PermissionRegistrar;
 use Tests\TestCase;
 
 class CurrentChurchTest extends TestCase
@@ -23,20 +25,18 @@ class CurrentChurchTest extends TestCase
         $this->assertSame($church->id, $current->id());
         $this->assertSame(
             $church->id,
-            app(\Spatie\Permission\PermissionRegistrar::class)->getPermissionsTeamId()
+            app(PermissionRegistrar::class)->getPermissionsTeamId()
         );
     }
 
-    public function test_users_belong_to_separate_churches(): void
+    public function test_an_email_can_belong_to_only_one_account_across_churches(): void
     {
         $churchA = Church::factory()->create();
         $churchB = Church::factory()->create();
+        User::factory()->create(['church_id' => $churchA->id, 'email' => 'a@test.com']);
 
-        $userA = User::factory()->create(['church_id' => $churchA->id, 'email' => 'a@test.com']);
-        $userB = User::factory()->create(['church_id' => $churchB->id, 'email' => 'a@test.com']);
+        $this->expectException(UniqueConstraintViolationException::class);
 
-        $this->assertNotSame($userA->church_id, $userB->church_id);
-        $this->assertSame('a@test.com', $userA->email);
-        $this->assertSame('a@test.com', $userB->email);
+        User::factory()->create(['church_id' => $churchB->id, 'email' => 'a@test.com']);
     }
 }

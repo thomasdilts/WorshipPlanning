@@ -4,6 +4,7 @@ namespace App\Filament\Resources\Users\Pages;
 
 use App\Filament\Resources\Users\Schemas\UserForm;
 use App\Filament\Resources\Users\UserResource;
+use App\Models\Role;
 use App\Services\UserInviter;
 use Filament\Notifications\Notification;
 use Filament\Resources\Pages\CreateRecord;
@@ -30,7 +31,10 @@ class CreateUser extends CreateRecord
      */
     protected function mutateFormDataBeforeCreate(array $data): array
     {
-        $this->pendingRoles = array_values($data['roles'] ?? []);
+        /* Without roles.manage a new person can only start as a Member. */
+        $this->pendingRoles = UserForm::canAssignRoles()
+            ? array_values($data['roles'] ?? [])
+            : Role::query()->forCurrentChurch()->where('name', 'Member')->pluck('name')->all();
         unset($data['roles']);
 
         if (array_key_exists('ability_template_ids', $data) && AbilitiesForm::canEditAbilities(null)) {

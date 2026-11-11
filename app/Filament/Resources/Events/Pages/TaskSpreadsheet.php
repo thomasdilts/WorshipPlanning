@@ -218,8 +218,12 @@ class TaskSpreadsheet extends Page implements HasTable
                     ->filter()
                     ->values();
 
+                $churchId = app(CurrentChurch::class)->id() ?? auth()->user()?->church_id;
+
+                /* The ids come from the browser: only list this church's tasks. */
                 $options = EventTask::query()
                     ->whereIn('id', $ids)
+                    ->whereHas('event', fn ($query) => $query->where('church_id', $churchId ?? 0))
                     ->with(['assignedUser', 'assignedTeam', 'template'])
                     ->orderBy('sort_order')
                     ->orderBy('id')

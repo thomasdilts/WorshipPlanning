@@ -12,30 +12,35 @@ class LanguagePolicy
 
     public function viewAny(User $user): bool
     {
-        return $this->canManageLanguages($user);
+        return $user->isPlatformAdmin() || $this->isChurchAdmin($user);
     }
 
     public function view(User $user, Language $language): bool
     {
-        return $this->canManageLanguages($user);
+        return $this->viewAny($user);
     }
+
+    /*
+     * Languages are shared by every church on the server, so only the platform admin may change
+     * them. A church admin changing a row would change it for all other churches too.
+     */
 
     public function create(User $user): bool
     {
-        return $this->canManageLanguages($user);
+        return $user->isPlatformAdmin();
     }
 
     public function update(User $user, Language $language): bool
     {
-        return $this->canManageLanguages($user);
+        return $user->isPlatformAdmin();
     }
 
     public function delete(User $user, Language $language): bool
     {
-        return $this->canManageLanguages($user);
+        return $user->isPlatformAdmin();
     }
 
-    protected function canManageLanguages(User $user): bool
+    protected function isChurchAdmin(User $user): bool
     {
         if ($user->church_id === null) {
             return false;

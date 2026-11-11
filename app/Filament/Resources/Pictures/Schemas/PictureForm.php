@@ -25,6 +25,7 @@ class PictureForm
                 FileUpload::make('path')
                     ->label(__('Image'))
                     ->image()
+                    ->acceptedFileTypes(['image/png', 'image/jpeg', 'image/webp', 'image/gif'])
                     ->disk('public')
                     ->directory('churches/'.($churchId ?? '0').'/pictures')
                     ->visibility('public')

@@ -5,6 +5,7 @@ namespace App\Filament\Pages;
 use App\Core\Modules\ChurchModuleManager;
 use App\Core\Tenancy\CurrentChurch;
 use App\Models\User;
+use App\Support\OutboundUrlGuard;
 use BackedEnum;
 use Filament\Actions\Action;
 use Filament\Forms\Components\TextInput;
@@ -17,6 +18,7 @@ use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Illuminate\Contracts\Support\Htmlable;
+use Illuminate\Http\Client\RequestException;
 use Modules\BibleVerses\Services\ZamarBibleClient;
 use Spatie\Permission\PermissionRegistrar;
 use UnitEnum;
@@ -96,7 +98,8 @@ class BibleSettings extends Page
                             ->label(__('Base URL'))
                             ->url()
                             ->required()
-                            ->placeholder('http://127.0.0.1:8000')
+                            ->rule(fn (): \Closure => app(OutboundUrlGuard::class)->urlRule())
+                            ->placeholder('https://bible.zamarapp.com')
                             ->helperText(__('Host only (trailing /api is stripped). e.g. https://bible.zamarapp.com')),
                         TextInput::make('api_key')
                             ->label(__('API key'))
@@ -176,9 +179,14 @@ class BibleSettings extends Page
                 ->{$count > 0 ? 'success' : 'warning'}()
                 ->send();
         } catch (\Throwable $e) {
+            // The far server's reply is not shown: the address is typed in by the church.
+            report($e);
+
             Notification::make()
                 ->title(__('Connection failed'))
-                ->body($e->getMessage())
+                ->body($e instanceof RequestException
+                    ? __('The Bible API answered with status :status. Check the address and API key.', ['status' => $e->response->status()])
+                    : __('The Bible API could not be reached. Check the address and API key.'))
                 ->danger()
                 ->send();
         }

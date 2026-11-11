@@ -45,14 +45,7 @@ class UserForm
                     ->email()
                     ->required()
                     ->maxLength(255)
-                    ->rule(function (?User $record) {
-                        return Rule::unique('users', 'email')
-                            ->where(fn ($query) => $query->where(
-                                'church_id',
-                                $record?->church_id ?? auth()->user()?->church_id
-                            ))
-                            ->ignore($record?->getKey());
-                    })
+                    ->rule(fn (?User $record) => Rule::unique('users', 'email')->ignore($record?->getKey()))
                     ->disabled(fn (?User $record): bool => (bool) $record?->isDemoAccount())
                     ->helperText(fn (?User $record): ?string => $record?->isDemoAccount() ? __('Locked in demo') : null),
                 Toggle::make('send_invite')
@@ -126,6 +119,7 @@ class UserForm
                 ...NtfyTopicField::components(),
                 ...TelegramConnectField::components(person: fn (?User $record): ?User => $record, canConnect: false),
                 Section::make(__('Roles'))
+                    ->visible(fn (): bool => static::canAssignRoles())
                     ->description(__('Choose one or more roles. Permissions for each role are configured under Administration → Roles.'))
                     ->schema([
                         Select::make('roles')
@@ -146,6 +140,15 @@ class UserForm
                     ]),
                 AbilitiesForm::adminSection(),
             ]);
+    }
+
+    /**
+     * Choosing roles hands out every permission those roles carry, including admin ones, so it needs
+     * "Manage roles & permissions". Editing or creating people alone must not let anyone raise roles.
+     */
+    public static function canAssignRoles(): bool
+    {
+        return (bool) auth()->user()?->can('roles.manage');
     }
 
     /**

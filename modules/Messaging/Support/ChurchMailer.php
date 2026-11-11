@@ -4,6 +4,7 @@ namespace Modules\Messaging\Support;
 
 use App\Core\Modules\ChurchModuleManager;
 use App\Models\Church;
+use App\Support\OutboundUrlGuard;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Mail;
@@ -49,6 +50,12 @@ class ChurchMailer
         $encryption = $settings['encryption'] ?? 'tls';
         $name = 'church_smtp_'.$church->id;
 
+        /* The host is typed in by the church: never let it reach this server's own network. */
+        if (! in_array((int) ($settings['port'] ?? 587), OutboundUrlGuard::SMTP_PORTS, true)
+            || app(OutboundUrlGuard::class)->problemWithHost((string) $settings['host']) !== null) {
+            throw new LogicException('The church SMTP server address is not allowed.');
+        }
+
         Config::set('mail.mailers.'.$name, [
             'transport' => 'smtp',
             'scheme' => $encryption === 'ssl' ? 'smtps' : null,
@@ -57,7 +64,7 @@ class ChurchMailer
             'port' => (int) ($settings['port'] ?? 587),
             'username' => ($settings['username'] ?? null) ?: null,
             'password' => $this->modules->decryptSecret($settings['password'] ?? null) ?: null,
-            'timeout' => null,
+            'timeout' => 15,
         ]);
 
         Mail::purge($name);

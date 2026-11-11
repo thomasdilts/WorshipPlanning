@@ -4,7 +4,9 @@ namespace App\Providers;
 
 use App\Http\Middleware\SetCurrentChurch;
 use App\Notifications\ChurchResetPasswordNotification;
+use Filament\Actions\DeleteBulkAction;
 use Filament\Auth\Notifications\ResetPassword;
+use Filament\Forms\Components\FileUpload;
 use Illuminate\Support\ServiceProvider;
 use Livewire\Livewire;
 
@@ -22,6 +24,19 @@ class AppServiceProvider extends ServiceProvider
         Livewire::addPersistentMiddleware([
             SetCurrentChurch::class,
         ]);
+
+        // An upload field's existing path comes from the browser. Accept only the path already stored
+        // on the record (or a fresh upload), so nobody can point a record at another church's file
+        // and have it rewritten or deleted.
+        FileUpload::configureUsing(function (FileUpload $component): void {
+            $component->preventFilePathTampering();
+        });
+
+        // Filament authorizes bulk delete through deleteAny(), which no policy defines and which
+        // therefore allows everyone who can see the list. Check each record's delete() instead.
+        DeleteBulkAction::configureUsing(function (DeleteBulkAction $action): void {
+            $action->authorizeIndividualRecords();
+        });
 
         // The public demo must never send real email to testers, whatever MAIL_* says.
         // Mail only for the operators uses demo.operator_mailer instead.

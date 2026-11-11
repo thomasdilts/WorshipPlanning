@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\Events\Actions;
 
+use App\Core\Tenancy\CurrentChurch;
 use App\Filament\Resources\Events\Schemas\EventTaskForm;
 use App\Models\Event;
 use App\Models\EventTask;
@@ -61,9 +62,11 @@ class ViewEventTaskAction
     protected static function resolveTask(array $arguments): EventTask
     {
         $taskId = (int) ($arguments['taskId'] ?? 0);
+        $churchId = app(CurrentChurch::class)->id() ?? auth()->user()?->church_id;
 
         return EventTask::query()
             ->with(['event.church', 'template', 'pictures', 'sharedFiles', 'assignedUser', 'assignedTeam'])
+            ->whereHas('event', fn ($query) => $query->where('church_id', $churchId ?? 0))
             ->findOrFail($taskId);
     }
 

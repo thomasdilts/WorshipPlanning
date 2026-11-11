@@ -177,9 +177,7 @@ class EditProfile extends BaseEditProfile
             ->email()
             ->required()
             ->maxLength(255)
-            ->rule(Rule::unique('users', 'email')
-                ->where(fn ($query) => $query->where('church_id', $user->church_id))
-                ->ignore($user->getKey()))
+            ->rule(Rule::unique('users', 'email')->ignore($user->getKey()))
             ->disabled($user->isDemoAccount())
             ->helperText($user->isDemoAccount() ? __('Locked in demo') : null)
             ->live(debounce: 500);

@@ -6,6 +6,7 @@ use App\Core\Modules\ChurchModuleManager;
 use App\Core\Tenancy\CurrentChurch;
 use App\Enums\PasswordLinkKind;
 use App\Models\User;
+use App\Support\OutboundUrlGuard;
 use BackedEnum;
 use Filament\Actions\Action;
 use Filament\Forms\Components\Select;
@@ -101,7 +102,9 @@ class SmsMessagingSettings extends Page
                     ->schema([
                         TextInput::make('api_base')
                             ->label(__('API base URL'))
+                            ->url()
                             ->required()
+                            ->rule(fn (): \Closure => app(OutboundUrlGuard::class)->urlRule())
                             ->default('https://api.ip1sms.com/v2'),
                         TextInput::make('api_token')
                             ->label(__('API token'))

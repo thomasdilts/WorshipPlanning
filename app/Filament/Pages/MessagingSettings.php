@@ -6,6 +6,7 @@ use App\Core\Modules\ChurchModuleManager;
 use App\Core\Tenancy\CurrentChurch;
 use App\Enums\PasswordLinkKind;
 use App\Models\User;
+use App\Support\OutboundUrlGuard;
 use BackedEnum;
 use Filament\Actions\Action;
 use Filament\Forms\Components\Select;
@@ -102,8 +103,11 @@ class MessagingSettings extends Page
                 Section::make(__('Email (SMTP)'))
                     ->description(__('How WorshipPlanning sends emails for this church.'))
                     ->schema([
-                        TextInput::make('host')->label(__('SMTP host'))->required(),
-                        TextInput::make('port')->numeric()->default(587)->required(),
+                        TextInput::make('host')->label(__('SMTP host'))->required()
+                            ->rule(fn (): \Closure => app(OutboundUrlGuard::class)->hostRule()),
+                        TextInput::make('port')->numeric()->default(587)->required()
+                            ->in(OutboundUrlGuard::SMTP_PORTS)
+                            ->validationMessages(['in' => __('Use an SMTP port: 25, 465, 587 or 2525.')]),
                         Select::make('encryption')
                             ->options([
                                 'tls' => 'TLS',

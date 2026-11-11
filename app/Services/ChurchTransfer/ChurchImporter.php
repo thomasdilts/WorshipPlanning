@@ -4,6 +4,7 @@ namespace App\Services\ChurchTransfer;
 
 use App\Core\Modules\ChurchModuleManager;
 use App\Models\Church;
+use App\Models\User;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
@@ -59,6 +60,14 @@ class ChurchImporter
     {
         $zip = $this->open($zipPath);
         $manifest = $this->manifest($zip);
+
+        try {
+            $this->ensureEmailsAreFree($zip);
+        } catch (Throwable $exception) {
+            $zip->close();
+
+            throw $exception;
+        }
 
         $this->idMap = [
             'permissions' => $this->sharedIds('permissions', $manifest['permissions'] ?? [], fn (object $row): string => "{$row->guard_name}:{$row->name}"),
@@ -132,6 +141,38 @@ class ChurchImporter
     }
 
     /**
+     * Emails are unique on the whole server, and an imported person must never share one with an
+     * existing account: sign-in and password reset find people by email alone.
+     */
+    protected function ensureEmailsAreFree(ZipArchive $zip): void
+    {
+        $json = $zip->getFromName('data/users.json');
+        $rows = $json === false ? [] : json_decode($json, true, flags: JSON_THROW_ON_ERROR);
+        $emails = collect($rows)
+            ->pluck('email')
+            ->filter(fn (mixed $email): bool => is_string($email) && $email !== '')
+            ->map(fn (string $email): string => Str::lower($email));
+
+        $duplicatedInFile = $emails->duplicates()->unique()->values();
+
+        if ($duplicatedInFile->isNotEmpty()) {
+            throw new RuntimeException(__('This export lists the same email for more than one person: :emails', [
+                'emails' => $duplicatedInFile->implode(', '),
+            ]));
+        }
+
+        $taken = $emails->isEmpty() ? collect() : DB::table('users')
+            ->whereIn(DB::raw('LOWER(email)'), $emails->all())
+            ->pluck('email');
+
+        if ($taken->isNotEmpty()) {
+            throw new RuntimeException(__('These people already have an account on this server, and an email can only belong to one account: :emails', [
+                'emails' => $taken->implode(', '),
+            ]));
+        }
+    }
+
+    /**
      * Permissions and languages exist on every server; match them by name instead of id.
      *
      * @param  array<int|string, string>  $exported  old id => key
@@ -180,6 +221,19 @@ class ChurchImporter
                 }
 
                 $row[$column] = $newId;
+            }
+
+            /* Every church-scoped row belongs to the new church, whatever the file says; a missing
+               church id would otherwise create rows (such as roles) that every church shares. */
+            if ($definition['scope'] === 'church_id') {
+                $row['church_id'] = $this->newChurchId;
+            }
+
+            if (in_array($table, ['model_has_roles', 'model_has_permissions'], true)
+                && ($row['model_type'] ?? null) !== User::class) {
+                $skipped++;
+
+                continue;
             }
 
             $files = array_intersect_key($row, array_flip($definition['files'] ?? []));

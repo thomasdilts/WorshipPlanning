@@ -52,6 +52,7 @@ class CopyEventAction
                     ->numeric()
                     ->integer()
                     ->minValue(1)
+                    ->maxValue(EventCopier::MAX_WEEKS)
                     ->default(1)
                     ->required()
                     ->helperText(__('1 = one copy at the dates above. 3 = three copies, each one week later.')),

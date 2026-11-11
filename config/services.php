@@ -42,6 +42,15 @@ return [
     ],
 
     /*
+     * Addresses that church admins type in (Bible API, ntfy, SMS, SMTP) must point at the public
+     * internet, so nobody can make this server call its own private network. Turn on only for local
+     * development against a service on 127.0.0.1 or the LAN.
+     */
+    'outbound' => [
+        'allow_private_hosts' => (bool) env('OUTBOUND_ALLOW_PRIVATE_HOSTS', false),
+    ],
+
+    /*
      * Cloudflare Turnstile on the login page. Off until both keys are set. Pick the
      * "Non-interactive" widget mode for the site key in the Cloudflare dashboard.
      */
