@@ -6,7 +6,6 @@ use App\Core\Modules\ChurchModuleManager;
 use App\Core\Tenancy\CurrentChurch;
 use App\Filament\Navigation\LandingDestination;
 use App\Filament\Navigation\PanelNavigation;
-use App\Filament\Pages\ManageModules;
 use App\Filament\Pages\MyTasks;
 use App\Models\Church;
 use App\Models\User;
@@ -109,34 +108,27 @@ class PanelNavigationTest extends TestCase
         $this->assertContains('Export church data', $navigation['groups']['Settings']);
     }
 
-    public function test_module_settings_sit_in_a_modules_sub_menu(): void
+    public function test_module_settings_have_their_own_menu(): void
     {
         foreach ([MessagingAvailability::MODULE_EMAIL, MessagingAvailability::MODULE_SMS, MessagingAvailability::MODULE_NTFY, MessagingAvailability::MODULE_WHATSAPP, MessagingAvailability::MODULE_TELEGRAM, 'bible_verses'] as $module) {
             app(ChurchModuleManager::class)->enable($this->church, $module);
         }
 
-        $this->actingAs($this->userWithRole('Church Admin'));
-        app(PermissionRegistrar::class)->forgetCachedPermissions();
-        $settings = collect(app(PanelNavigation::class)->build(new NavigationBuilder)->getNavigation())
-            ->first(fn ($group): bool => $group->getLabel() === 'Settings');
-        $modules = collect($settings->getItems())->first(fn (NavigationItem $item): bool => $item->getLabel() === 'Modules');
+        $navigation = $this->navigationFor($this->userWithRole('Church Admin'));
 
         $this->assertSame(
             ['Module selection', 'Email settings', 'SMS settings', 'ntfy settings', 'WhatsApp settings', 'Telegram settings', 'Bible settings'],
-            collect($modules->getChildItems())->map(fn (NavigationItem $item): string => (string) $item->getLabel())->all(),
+            $navigation['groups']['Modules'],
         );
-        $this->assertSame(ManageModules::getUrl(), $modules->getUrl());
-        $this->assertNotContains('Email settings', $this->navigationFor($this->userWithRole('Church Admin'))['groups']['Settings']);
+        $this->assertNotContains('Email settings', $navigation['groups']['Settings']);
     }
 
-    public function test_modules_sub_menu_lists_only_enabled_module_settings(): void
+    public function test_modules_menu_with_no_module_settings_is_a_single_modules_entry(): void
     {
-        $this->actingAs($this->userWithRole('Church Admin'));
-        $settings = collect(app(PanelNavigation::class)->build(new NavigationBuilder)->getNavigation())
-            ->first(fn ($group): bool => $group->getLabel() === 'Settings');
-        $modules = collect($settings->getItems())->first(fn (NavigationItem $item): bool => $item->getLabel() === 'Modules');
+        $navigation = $this->navigationFor($this->userWithRole('Church Admin'));
 
-        $this->assertSame(['Module selection'], collect($modules->getChildItems())->map(fn (NavigationItem $item): string => (string) $item->getLabel())->all());
+        $this->assertArrayNotHasKey('Modules', $navigation['groups']);
+        $this->assertContains('Modules', $navigation['top']);
     }
 
     public function test_tasks_by_event_follows_its_own_permission_not_role_names(): void

@@ -71,15 +71,6 @@ class PanelNavigation
                 $this->forClass(ChurchStarter::class, __('Getting started'), Heroicon::OutlinedRocketLaunch)
                     ->visible(fn (): bool => ChurchStarter::shouldRegisterNavigation()),
                 $this->forClass(ChurchSettings::class, __('Church')),
-                $this->subMenu(__('Modules'), Heroicon::OutlinedPuzzlePiece, [
-                    $this->forClass(ManageModules::class, __('Module selection')),
-                    $this->forClass(MessagingSettings::class),
-                    $this->forClass(SmsMessagingSettings::class),
-                    $this->forClass(NtfyMessagingSettings::class),
-                    $this->forClass(WhatsAppMessagingSettings::class),
-                    $this->forClass(TelegramMessagingSettings::class),
-                    $this->forClass(BibleSettings::class, __('Bible settings')),
-                ]),
                 $this->forClass(RoleResource::class, __('Roles')),
                 $this->forClass(TaskTemplateResource::class, __('Activity templates')),
                 $this->forClass(MessageTemplateResource::class, __('Message templates')),
@@ -87,13 +78,23 @@ class PanelNavigation
                 $this->forClass(LanguageResource::class),
                 $this->forClass(ExportChurchData::class, __('Export church data')),
             ]),
+            $this->group(__('Modules'), [
+                $this->forClass(ManageModules::class, __('Module selection')),
+                $this->forClass(MessagingSettings::class),
+                $this->forClass(SmsMessagingSettings::class),
+                $this->forClass(NtfyMessagingSettings::class),
+                $this->forClass(WhatsAppMessagingSettings::class),
+                $this->forClass(TelegramMessagingSettings::class),
+                $this->forClass(BibleSettings::class, __('Bible settings')),
+            ], collapsedLabel: __('Modules')),
         ];
 
-        foreach ($groups as $group) {
+        foreach ($groups as ['group' => $group, 'collapsedLabel' => $collapsedLabel]) {
             $visible = array_values(array_filter($group->getItems(), fn (NavigationItem $item): bool => $item->isVisible()));
 
             if (count($visible) === 1) {
-                $builder->item($visible[0]->group(null));
+                $item = $visible[0]->group(null);
+                $builder->item($collapsedLabel === null ? $item : $item->label($collapsedLabel));
 
                 continue;
             }
@@ -171,28 +172,12 @@ class PanelNavigation
     }
 
     /**
-     * A menu entry that opens its first visible child and shows its children only while one of them
-     * is open, which keeps the surrounding group short.
-     *
-     * @param  list<NavigationItem>  $children
-     */
-    private function subMenu(string $label, mixed $icon, array $children): NavigationItem
-    {
-        $visible = array_values(array_filter($children, fn (NavigationItem $item): bool => $item->isVisible()));
-
-        return NavigationItem::make($label)
-            ->icon($icon)
-            ->url(fn (): ?string => ($visible[0] ?? null)?->getUrl())
-            ->childItems($visible)
-            ->isActiveWhen(fn (): bool => collect($visible)->contains(fn (NavigationItem $item): bool => $item->isActive()))
-            ->visible(fn (): bool => $visible !== []);
-    }
-
-    /**
      * @param  list<NavigationItem>  $items
+     * @param  string|null  $collapsedLabel  Label for the plain item the group becomes when only one destination is visible.
+     * @return array{group: NavigationGroup, collapsedLabel: string|null}
      */
-    private function group(string $label, array $items): NavigationGroup
+    private function group(string $label, array $items, ?string $collapsedLabel = null): array
     {
-        return NavigationGroup::make($label)->items($items);
+        return ['group' => NavigationGroup::make($label)->items($items), 'collapsedLabel' => $collapsedLabel];
     }
 }
