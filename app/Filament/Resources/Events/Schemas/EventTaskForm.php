@@ -136,7 +136,7 @@ class EventTaskForm
                         $set('bible_passages', []);
                     }
                 })
-                ->helperText(__('Templates are managed by church admins. You pick one and can override details for this event.')),
+                ->helperText(__('Templates are managed by church admins. You pick one and can override details for this service.')),
             TextInput::make('name')
                 ->label(__('Title override'))
                 ->live(onBlur: true)
@@ -417,7 +417,7 @@ class EventTaskForm
                 ->label(__('Before the start time'))
                 ->inline()
                 ->extraFieldWrapperAttributes(['class' => 'wp-task-option'])
-                ->helperText(__('Done before the event starts. These activities are timed backwards from the start time.'))
+                ->helperText(__('Done before the service starts. These tasks are timed backwards from the start time.'))
                 ->default(false)
                 ->visible(fn (Get $get): bool => ! static::templateIsGlobal($get)),
             Select::make('assigned_user_id')
@@ -471,7 +471,7 @@ class EventTaskForm
 
                     return new HtmlString(
                         '<strong class="text-danger-600 dark:text-danger-400">'
-                        .e(__(':name is unavailable during this event (:ranges).', ['name' => $user->displayName(), 'ranges' => $ranges]))
+                        .e(__(':name is unavailable during this service (:ranges).', ['name' => $user->displayName(), 'ranges' => $ranges]))
                         .'</strong>'
                     );
                 }),
@@ -513,7 +513,7 @@ class EventTaskForm
 
                     return $typeName
                         ? __('Only “:type” teams. Messages to a team go to its leader(s).', ['type' => $typeName])
-                        : __('Event messages sent to this team go to its leader(s).');
+                        : __('Service messages sent to this team go to its leader(s).');
                 }),
             Toggle::make('accepted_verbally')
                 ->label(__('Accepted verbally'))

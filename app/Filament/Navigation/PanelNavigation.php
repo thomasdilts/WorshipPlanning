@@ -78,7 +78,7 @@ class PanelNavigation
                     ->url(fn (): string => EventResource::getUrl('templates'))
                     ->isActiveWhen(fn (): bool => original_request()->routeIs(ListServiceTemplates::getRouteName()))
                     ->visible(fn (): bool => ListServiceTemplates::canAccess()),
-                $this->forClass(TaskTemplateResource::class, __('Activity templates')),
+                $this->forClass(TaskTemplateResource::class, __('Task templates')),
                 $this->forClass(MessageTemplateResource::class, __('Message templates')),
                 $this->forClass(AutomaticMessageResource::class, __('Automatic messages')),
                 $this->forClass(LanguageResource::class),
@@ -116,7 +116,7 @@ class PanelNavigation
      */
     private function primaryItems(): array
     {
-        $tasksByEvent = NavigationItem::make(__('Tasks by event'))
+        $tasksByEvent = NavigationItem::make(__('Tasks by service'))
             ->icon(Heroicon::OutlinedTableCells)
             ->url(fn (): string => EventResource::getUrl('task-spreadsheet'))
             ->isActiveWhen(fn (): bool => original_request()->routeIs(TaskSpreadsheet::getRouteName()))

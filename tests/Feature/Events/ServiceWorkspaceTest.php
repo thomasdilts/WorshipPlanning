@@ -63,7 +63,7 @@ class ServiceWorkspaceTest extends TestCase
 
         Livewire::test(EditEvent::class, ['record' => $event->getRouteKey()])
             ->assertSuccessful()
-            ->assertDontSee('Tasks by event')
+            ->assertDontSee('Tasks by service')
             ->assertSee('Print PDF')
             ->assertSee('More')
             ->assertSee('Order')
@@ -83,7 +83,7 @@ class ServiceWorkspaceTest extends TestCase
             'return' => 'tasks-by-event',
         ])
             ->assertSuccessful()
-            ->assertDontSee('Tasks by event');
+            ->assertDontSee('Tasks by service');
     }
 
     public function test_view_page_hides_reorder_controls_and_offers_edit(): void

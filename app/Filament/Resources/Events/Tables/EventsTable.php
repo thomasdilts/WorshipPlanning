@@ -43,7 +43,7 @@ class EventsTable
             ->recordClasses(fn (Event $record, ListEvents $livewire): array => [
                 'wp-ss-tone-'.((int) array_search($record->name, array_values($livewire->eventNameOptions()), true) % 3),
             ])
-            ->emptyStateHeading(__('No upcoming events'))
+            ->emptyStateHeading(__('No upcoming services'))
             ->emptyStateDescription(__('Create a service to start building its order of worship.'))
             ->modifyQueryUsing(fn (Builder $query): Builder => $query->with([
                 'church',
@@ -67,7 +67,7 @@ class EventsTable
                     ->label(__('Time'))
                     ->state(fn (Event $record): ?string => DateTimeFormats::formatTime($record->starts_at)),
                 TextColumn::make('name')
-                    ->label(__('Event'))
+                    ->label(__('Service'))
                     ->weight('medium')
                     ->searchable()
                     ->sortable(),
@@ -128,7 +128,7 @@ class EventsTable
                     ])
                     ->schema([
                         DatePicker::make('date')
-                            ->label(__('Show events from'))
+                            ->label(__('Show services from'))
                             ->default(fn (): string => now()->toDateString()),
                         DatePicker::make('until')
                             ->label(__('Until')),

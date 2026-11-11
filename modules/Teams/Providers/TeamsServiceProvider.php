@@ -22,7 +22,7 @@ class TeamsServiceProvider extends ServiceProvider
         $modules->register(new ModuleDefinition(
             key: 'teams',
             name: 'Teams',
-            description: 'Group people into teams and assign a team to an activity. Small churches can skip this and assign a person instead.',
+            description: 'Group people into teams and assign a team to a task. Small churches can skip this and assign a person instead.',
             required: false,
         ));
 

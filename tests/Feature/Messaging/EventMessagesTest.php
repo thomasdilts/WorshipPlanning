@@ -92,7 +92,7 @@ class EventMessagesTest extends TestCase
 
         $component = Livewire::test(OrderTasksRelationManager::class, ['ownerRecord' => $this->event, 'pageClass' => EditEvent::class]);
 
-        $component->assertSuccessful()->assertSee('Event messages');
+        $component->assertSuccessful()->assertSee('Service messages');
 
         $headerActions = $this->flattenHeaderActions($component->instance()->getTable()->getHeaderActions());
 

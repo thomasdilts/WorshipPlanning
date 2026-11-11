@@ -23,7 +23,7 @@ class EventForm
             ->components([
                 Select::make('service_template_id')
                     ->label(__('Service template'))
-                    ->placeholder(__('No template — create a blank event'))
+                    ->placeholder(__('No template — create a blank service'))
                     ->helperText(__('Choose a template to fill in the name and time and copy its service order. You can change the details below.'))
                     ->options(fn (): array => auth()->user()?->can('useTemplates', Event::class)
                         ? Event::templates()->where('church_id', auth()->user()->church_id)->orderBy('name')->pluck('name', 'id')->all()

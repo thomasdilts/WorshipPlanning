@@ -20,7 +20,7 @@ class PicturesTable
             ->defaultSort('name')
             ->persistSearchInSession()
             ->emptyStateHeading(__('No pictures yet'))
-            ->emptyStateDescription(__('Upload images here, then attach them on a service activity.'))
+            ->emptyStateDescription(__('Upload images here, then attach them on a service task.'))
             ->emptyStateActions([
                 CreateAction::make()
                     ->label(__('Add picture'))

@@ -26,10 +26,10 @@ class CopyEventAction
             ->icon(Heroicon::OutlinedDocumentDuplicate)
             ->iconButton()
             ->color('gray')
-            ->tooltip(fn (Event $record): string => $record->is_template ? __('Create a service from this template') : __('Copy event'))
+            ->tooltip(fn (Event $record): string => $record->is_template ? __('Create a service from this template') : __('Copy service'))
             ->authorize(fn (Event $record): bool => auth()->user()?->can($record->is_template ? 'useTemplates' : 'create', Event::class) ?? false)
             ->modalHeading(fn (Event $record): string => __('Copy “:name”', ['name' => $record->name]))
-            ->modalSubmitActionLabel(__('Copy event'))
+            ->modalSubmitActionLabel(__('Copy service'))
             ->form(fn (Event $record): array => [
                 TextInput::make('name')
                     ->label(__('Name'))
@@ -78,7 +78,7 @@ class CopyEventAction
                 $count = $copies->count();
 
                 Notification::make()
-                    ->title($count === 1 ? __('Event copied') : __(':count events copied', ['count' => $count]))
+                    ->title($count === 1 ? __('Service copied') : __(':count services copied', ['count' => $count]))
                     ->success()
                     ->send();
 

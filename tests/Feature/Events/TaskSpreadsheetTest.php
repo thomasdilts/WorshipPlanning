@@ -143,8 +143,8 @@ class TaskSpreadsheetTest extends TestCase
 
         Livewire::test(ListEvents::class)
             ->assertSuccessful()
-            ->assertSee('Create event')
-            ->assertDontSee('Tasks by event');
+            ->assertSee('Create service')
+            ->assertDontSee('Tasks by service');
 
         Livewire::test(TaskSpreadsheet::class)
             ->assertSuccessful()
@@ -202,7 +202,7 @@ class TaskSpreadsheetTest extends TestCase
                     'names' => [],
                 ],
             ])
-            ->assertSee('No upcoming events')
+            ->assertSee('No upcoming services')
             ->assertCanNotSeeTableRecords(['event:'.$morning->id, 'event:'.$evening->id]);
     }
 
@@ -651,7 +651,7 @@ class TaskSpreadsheetTest extends TestCase
     public static function spreadsheetLocales(): array
     {
         return [
-            'English' => ['en', 'Search events or people', 'Week 43', 'Sunday'],
+            'English' => ['en', 'Search services or people', 'Week 43', 'Sunday'],
             'Swedish' => ['sv', 'Sök evenemang eller personer', 'Vecka 43', 'söndag'],
             'Arabic' => ['ar', 'ابحث عن فعاليات أو أشخاص', 'الأسبوع 43', 'الأحد'],
         ];

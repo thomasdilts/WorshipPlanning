@@ -99,7 +99,7 @@ class ExportChurchData extends Page
                         UnorderedList::make([
                             Text::make(__('Everyone in the church with their contact details, roles, teams, abilities, language and profile picture.')),
                             Text::make(__('People’s passwords in scrambled form, so they can sign in with the same password after a move. Nobody, including you, can read them.')),
-                            Text::make(__('All events and service orders, past and future, with who was assigned, every answer and the invitations that were sent.')),
+                            Text::make(__('All services and service orders, past and future, with who was assigned, every answer and the invitations that were sent.')),
                             Text::make(__('Teams, task templates, songs, message templates and unavailability.')),
                             Text::make(__('Uploaded files: pictures, shared files, profile pictures and the church logo.')),
                             Text::make(__('Which modules are turned on, with their settings.')),

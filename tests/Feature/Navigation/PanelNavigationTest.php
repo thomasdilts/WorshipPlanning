@@ -82,7 +82,7 @@ class PanelNavigationTest extends TestCase
     {
         $navigation = $this->navigationFor($this->userWithRole('Event Planner'));
 
-        $this->assertContains('Tasks by event', $navigation['top']);
+        $this->assertContains('Tasks by service', $navigation['top']);
         $this->assertContains('Services', $navigation['top']);
         $this->assertContains('My schedule', $navigation['top']);
         $this->assertContains('Availability', $navigation['top']);
@@ -95,7 +95,7 @@ class PanelNavigationTest extends TestCase
 
         $this->assertContains('My schedule', $navigation['top']);
         $this->assertContains('Availability', $navigation['top']);
-        $this->assertNotContains('Tasks by event', $navigation['top']);
+        $this->assertNotContains('Tasks by service', $navigation['top']);
         $this->assertArrayNotHasKey('Settings', $navigation['groups']);
     }
 
@@ -105,7 +105,7 @@ class PanelNavigationTest extends TestCase
 
         $this->assertArrayHasKey('Settings', $navigation['groups']);
         $this->assertContains('Roles', $navigation['groups']['Settings']);
-        $this->assertContains('Activity templates', $navigation['groups']['Settings']);
+        $this->assertContains('Task templates', $navigation['groups']['Settings']);
         $this->assertContains('Service templates', $navigation['groups']['Settings']);
         $this->assertContains('Export church data', $navigation['groups']['Settings']);
     }
@@ -142,24 +142,24 @@ class PanelNavigationTest extends TestCase
         $user = User::factory()->create(['church_id' => $this->church->id]);
         $user->assignRole('Sunday Wizard');
 
-        $this->assertNotContains('Tasks by event', $this->navigationFor($user)['top']);
+        $this->assertNotContains('Tasks by service', $this->navigationFor($user)['top']);
 
         $role->givePermissionTo('events.tasks_by_event');
         app(PermissionRegistrar::class)->forgetCachedPermissions();
 
-        $this->assertContains('Tasks by event', $this->navigationFor($user->fresh())['top']);
+        $this->assertContains('Tasks by service', $this->navigationFor($user->fresh())['top']);
     }
 
     public function test_volunteer_role_with_the_permission_sees_tasks_by_event(): void
     {
         $member = $this->userWithRole('Member');
-        $this->assertNotContains('Tasks by event', $this->navigationFor($member)['top']);
+        $this->assertNotContains('Tasks by service', $this->navigationFor($member)['top']);
 
         app(PermissionRegistrar::class)->setPermissionsTeamId($this->church->id);
         Role::findByName('Member', 'web')->givePermissionTo('events.tasks_by_event');
         app(PermissionRegistrar::class)->forgetCachedPermissions();
 
-        $this->assertContains('Tasks by event', $this->navigationFor($member->fresh())['top']);
+        $this->assertContains('Tasks by service', $this->navigationFor($member->fresh())['top']);
     }
 
     public function test_a_disabled_module_removes_its_destinations(): void

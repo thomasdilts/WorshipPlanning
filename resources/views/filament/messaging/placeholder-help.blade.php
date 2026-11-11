@@ -22,10 +22,10 @@
     $descriptions = [
         'name' => [__('Recipient’s name'), 'Anna Svensson'],
         'first_name' => [__('Recipient’s first name'), 'Anna'],
-        'task' => [__('Their task(s) on the event'), __('Sound, Projection')],
-        'event' => [__('Event name'), __('Sunday Service')],
-        'date' => [__('Event date'), __('Sunday 7 September 2026')],
-        'time' => [__('Event start time'), '10:00'],
+        'task' => [__('Their task(s) on the service'), __('Sound, Projection')],
+        'event' => [__('Service name'), __('Sunday Service')],
+        'date' => [__('Service date'), __('Sunday 7 September 2026')],
+        'time' => [__('Service start time'), '10:00'],
         'church' => [__('Church name'), __('Your church')],
         'message_sender' => [__('Name of the person sending the message, or who changed the preferred messaging'), 'Erik Lund'],
         'team' => [__('Team name — only in messages sent to a team; elsewhere it is left as written'), __('Worship team')],
@@ -63,7 +63,7 @@
 
     <div>
         <div class="font-medium text-gray-950 dark:text-white">{{ __('Accept and decline links') }}</div>
-        <p class="mt-1">{{ __('Recipients answer straight from the message — no login needed. Someone with several tasks on the event gets one message per task, each with links for that task.') }}</p>
+        <p class="mt-1">{{ __('Recipients answer straight from the message — no login needed. Someone with several tasks on the service gets one message per task, each with links for that task.') }}</p>
         <div class="mt-2 overflow-x-auto">
             <table class="w-full text-start">
                 <tbody class="divide-y divide-gray-100 dark:divide-white/5">

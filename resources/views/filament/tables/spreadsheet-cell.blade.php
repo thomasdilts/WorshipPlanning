@@ -29,7 +29,7 @@
         @if ($focus !== '') data-wp-cell="{{ $focus }}" @endif
         @if ($multiple)
             wire:click="mountAction('chooseEventTask', { taskIds: @js($taskIds), focusCell: @js($focusCell) })"
-            aria-label="{{ __('Edit activities') }}"
+            aria-label="{{ __('Edit tasks') }}"
         @else
             wire:click="mountAction('editEventTask', { taskId: {{ (int) $taskIds[0] }}, focusCell: @js($focusCell) })"
             aria-label="{{ $vacant ? __('Assign person or team') : __('Edit assignment') }}"
@@ -49,8 +49,8 @@
         @if ($multiple || $conflict || $state?->showsOnGrid())
             <span class="wp-ss-cell-statuses">
                 @if ($multiple)
-                    <span class="wp-status wp-status-neutral" title="{{ __(':count activities', ['count' => count($taskIds)]) }}">
-                        <span class="wp-status-label">{{ __(':count activities', ['count' => count($taskIds)]) }}</span>
+                    <span class="wp-status wp-status-neutral" title="{{ __(':count tasks', ['count' => count($taskIds)]) }}">
+                        <span class="wp-status-label">{{ __(':count tasks', ['count' => count($taskIds)]) }}</span>
                     </span>
                 @endif
                 @if ($conflict)

@@ -116,7 +116,7 @@ class ManageChurches extends ManageRecords
             ->color('gray')
             ->visible(fn (): bool => ! config('demo.enabled') && ChurchResource::canCreate())
             ->modalHeading(__('Import a church'))
-            ->modalDescription(__('Creates a new, separate church from an export file, with all its people, events and files. Existing churches are never changed. Only import files from someone you trust: everyone in the file can sign in to this server with their old password.'))
+            ->modalDescription(__('Creates a new, separate church from an export file, with all its people, services and files. Existing churches are never changed. Only import files from someone you trust: everyone in the file can sign in to this server with their old password.'))
             ->modalSubmitActionLabel(__('Import church'))
             ->schema([
                 FileUpload::make('export')

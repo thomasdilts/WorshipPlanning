@@ -53,7 +53,7 @@ class TeamWorkspaceSummary
             return [
                 'task_id' => (int) $task->id,
                 'role' => $task->displayName(),
-                'event' => $task->event?->name ?? __('Event'),
+                'event' => $task->event?->name ?? __('Service'),
                 'when' => $when,
                 'state' => $state?->label() ?? '—',
             ];

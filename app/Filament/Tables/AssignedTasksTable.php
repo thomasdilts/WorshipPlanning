@@ -44,11 +44,11 @@ class AssignedTasksTable
                 : 'event.starts_at')
             ->columns($asSchedule ? self::scheduleColumns() : [
                 TextColumn::make('event.starts_at')
-                    ->label(__('Event date'))
+                    ->label(__('Service date'))
                     ->date(DateTimeFormats::dateWithWeekday())
                     ->sortable(),
                 TextColumn::make('event.name')
-                    ->label(__('Event'))
+                    ->label(__('Service'))
                     ->searchable()
                     ->wrap(),
                 TextColumn::make('task')
@@ -109,7 +109,7 @@ class AssignedTasksTable
                             ->label(__('Show tasks from'))
                             ->native(false)
                             ->default(fn (): string => now()->toDateString())
-                            ->helperText(__('Default is today onwards. Clear to include past events.')),
+                            ->helperText(__('Default is today onwards. Clear to include past services.')),
                     ])
                     ->query(function (Builder $query, array $data): Builder {
                         if (blank($data['date'] ?? null)) {
@@ -184,7 +184,7 @@ class AssignedTasksTable
                     ->visible(fn (EventTask $record): bool => $record->event !== null
                         && (auth()->user()?->can('view', $record->event) ?? false)),
                 Action::make('openEvent')
-                    ->label(__('Open event'))
+                    ->label(__('Open service'))
                     ->icon(Heroicon::OutlinedArrowTopRightOnSquare)
                     ->url(function (EventTask $record): string {
                         $event = $record->event;

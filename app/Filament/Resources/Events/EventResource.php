@@ -52,12 +52,12 @@ class EventResource extends Resource
 
     public static function getModelLabel(): string
     {
-        return __('event');
+        return __('service');
     }
 
     public static function getPluralModelLabel(): string
     {
-        return __('events');
+        return __('services');
     }
 
     public static function form(Schema $schema): Schema

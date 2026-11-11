@@ -19,11 +19,11 @@
             <x-filament::icon icon="heroicon-m-adjustments-horizontal" aria-hidden="true" />
             {{ __('filament-tables::table.filters.heading') }}
         </x-slot>
-        <div class="wp-ss-toolbar" aria-label="{{ __('Tasks by event tools') }}">
+        <div class="wp-ss-toolbar" aria-label="{{ __('Tasks by service tools') }}">
             <label class="wp-ss-search">
                 <x-filament::icon icon="heroicon-m-magnifying-glass" aria-hidden="true" />
                 <span class="sr-only">{{ __('Search') }}</span>
-                <input type="search" wire:model.live.debounce.300ms="tableSearch" placeholder="{{ __('Search events or people') }}" />
+                <input type="search" wire:model.live.debounce.300ms="tableSearch" placeholder="{{ __('Search services or people') }}" />
             </label>
 
             <x-event-type-filter :event-names="$eventNames" :selected-names="$selectedNames" />

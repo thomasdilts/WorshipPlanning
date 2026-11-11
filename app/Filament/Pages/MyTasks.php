@@ -105,7 +105,7 @@ class MyTasks extends Page implements HasTable
             $table
                 ->query($this->tasksQuery())
                 ->emptyStateHeading(__('Nothing on your list yet'))
-                ->emptyStateDescription(__('When a planner assigns you to a line in the service order, it appears here with the event date.')),
+                ->emptyStateDescription(__('When a planner assigns you to a line in the service order, it appears here with the service date.')),
             ['schedule' => true],
         )
             ->filters([DatePeriodFilter::make('starts_at', 'event')], layout: FiltersLayout::AboveContent)

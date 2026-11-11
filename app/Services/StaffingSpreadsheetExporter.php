@@ -55,7 +55,7 @@ class StaffingSpreadsheetExporter
         $headers = [
             __('Date'),
             __('Time'),
-            __('Event'),
+            __('Service'),
             ...collect($matrix['staffing_columns'])->pluck('name')->all(),
             ...collect($matrix['extra_columns'])->pluck('name')->all(),
             __('Unavailable'),

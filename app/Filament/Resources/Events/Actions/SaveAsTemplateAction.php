@@ -26,7 +26,7 @@ class SaveAsTemplateAction
             ->tooltip(__('Save as service template'))
             ->authorize(fn (Event $record): bool => auth()->user()?->can('saveAsTemplate', $record) ?? false)
             ->modalHeading(fn (Event $record): string => __('Save “:name” as a service template', ['name' => $record->name]))
-            ->modalDescription(__('The template keeps every activity, person, team and song of this service. Messages are not copied.'))
+            ->modalDescription(__('The template keeps every task, person, team and song of this service. Messages are not copied.'))
             ->modalSubmitActionLabel(__('Save template'))
             ->form(fn (Event $record): array => [
                 TextInput::make('name')

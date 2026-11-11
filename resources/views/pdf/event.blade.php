@@ -62,14 +62,14 @@
     <div class="order">
         <h2>{{ __('Service order') }}</h2>
         @if ($timedTasks->isEmpty())
-            <p class="empty">{{ __('No tasks on this event yet.') }}</p>
+            <p class="empty">{{ __('No tasks on this service yet.') }}</p>
         @else
             <table>
                 <thead><tr>
                     <th class="col-time">{{ __('Start') }}</th>
                     <th class="col-time">{{ __('End') }}</th>
                     <th class="col-mins">{{ __('Mins') }}</th>
-                    <th class="col-task">{{ __('Activity') }}</th>
+                    <th class="col-task">{{ __('Task') }}</th>
                     <th class="col-status">{{ __('Status') }}</th>
                     <th>{{ __('Details') }}</th>
                 </tr></thead>

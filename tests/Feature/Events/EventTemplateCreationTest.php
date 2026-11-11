@@ -105,7 +105,7 @@ class EventTemplateCreationTest extends TestCase
             ->fillForm(['starts_at' => '2026-12-06', 'weeks' => 3, 'copy_people_and_teams' => false, 'copy_songs' => false])
             ->call('create')
             ->assertHasNoFormErrors()
-            ->assertNotified(__(':count events copied', ['count' => 3]));
+            ->assertNotified(__(':count services copied', ['count' => 3]));
 
         $events = Event::query()->orderBy('starts_at')->get();
         $this->assertSame(

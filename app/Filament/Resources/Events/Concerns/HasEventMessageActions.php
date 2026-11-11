@@ -17,11 +17,11 @@ trait HasEventMessageActions
         $event ??= $this->getRecord();
 
         return Action::make('eventMessages')
-            ->label(__('Event messages'))
+            ->label(__('Service messages'))
             ->icon(Heroicon::OutlinedEnvelope)
             ->button()
             ->color('gray')
-            ->tooltip(__('Event messages'))
+            ->tooltip(__('Service messages'))
             ->url(fn (): string => EventResource::getUrl('messages', ['record' => $event]))
             ->badge(fn (): ?string => ($count = $event->messages()->count()) > 0 ? (string) $count : null)
             ->visible(fn (): bool => ! $event->is_template && $this->canSeeEventMessages());

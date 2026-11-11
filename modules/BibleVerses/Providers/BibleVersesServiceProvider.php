@@ -20,7 +20,7 @@ class BibleVersesServiceProvider extends ServiceProvider
         $modules->register(new ModuleDefinition(
             key: 'bible_verses',
             name: 'Bible verses',
-            description: 'Attach Bible passages to activities and load the verse text automatically.',
+            description: 'Attach Bible passages to tasks and load the verse text automatically.',
             required: false,
         ));
 

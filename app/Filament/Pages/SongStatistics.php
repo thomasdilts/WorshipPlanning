@@ -152,7 +152,7 @@ class SongStatistics extends Page implements HasTable
                     ->sortable()
                     ->toggleable(),
                 TextColumn::make('event_count')
-                    ->label(__('Events'))
+                    ->label(__('Services'))
                     ->numeric()
                     ->sortable()
                     ->toggleable(),
@@ -201,11 +201,11 @@ class SongStatistics extends Page implements HasTable
                 Filter::make('event_count')
                     ->schema([
                         TextInput::make('min')
-                            ->label(__('Events ≥'))
+                            ->label(__('Services ≥'))
                             ->numeric()
                             ->minValue(0),
                         TextInput::make('max')
-                            ->label(__('Events ≤'))
+                            ->label(__('Services ≤'))
                             ->numeric()
                             ->minValue(0),
                     ])

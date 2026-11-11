@@ -43,7 +43,7 @@ class AssignmentResponseReceivedNotification extends Notification
                 'person' => $this->responder->displayName(),
                 'state' => $this->state->label(),
                 'task' => $task->displayName(),
-                'event' => $task->event?->name ?? __('event'),
+                'event' => $task->event?->name ?? __('service'),
             ]),
         ];
     }

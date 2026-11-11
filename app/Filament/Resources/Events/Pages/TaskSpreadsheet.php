@@ -73,7 +73,7 @@ class TaskSpreadsheet extends Page implements HasTable
 
     public function getTitle(): string|Htmlable
     {
-        return __('Tasks by event');
+        return __('Tasks by service');
     }
 
     public function getHeading(): string|Htmlable
@@ -170,7 +170,7 @@ class TaskSpreadsheet extends Page implements HasTable
     public function createEventAction(): Action
     {
         return Action::make('createEvent')
-            ->label(__('Create event'))
+            ->label(__('Create service'))
             ->icon(Heroicon::OutlinedPlus)
             ->url(EventResource::getUrl('create'))
             ->visible(fn (): bool => EventResource::canCreate());
@@ -208,9 +208,9 @@ class TaskSpreadsheet extends Page implements HasTable
     public function chooseEventTaskAction(): Action
     {
         return Action::make('chooseEventTask')
-            ->label(__('Choose activity'))
-            ->modalHeading(__('Several activities share this column'))
-            ->modalDescription(__('Pick which activity you want to edit. Saving still updates only that activity.'))
+            ->label(__('Choose task'))
+            ->modalHeading(__('Several tasks share this column'))
+            ->modalDescription(__('Pick which task you want to edit. Saving still updates only that task.'))
             ->modalSubmitActionLabel(__('Edit selected'))
             ->schema(function (array $arguments): array {
                 $ids = collect($arguments['taskIds'] ?? [])
@@ -241,7 +241,7 @@ class TaskSpreadsheet extends Page implements HasTable
 
                 return [
                     Select::make('taskId')
-                        ->label(__('Activity'))
+                        ->label(__('Task'))
                         ->required()
                         ->native(false)
                         ->options($options),
@@ -452,7 +452,7 @@ class TaskSpreadsheet extends Page implements HasTable
                 ->extraHeaderAttributes(['class' => 'wp-ss-pin wp-ss-pin-week'])
                 ->extraCellAttributes(['class' => 'wp-ss-pin wp-ss-pin-week']),
             TextColumn::make('event_name')
-                ->label(__('Event'))
+                ->label(__('Service'))
                 ->wrap()
                 ->sortable()
                 ->url(fn (array $record): string => EventResource::getUrl('edit', [
@@ -615,8 +615,8 @@ class TaskSpreadsheet extends Page implements HasTable
             ->deferColumnManager(false)
             ->persistColumnsInSession()
             ->paginated([25, 50, 100, 'all'])
-            ->emptyStateHeading(__('No upcoming events'))
-            ->emptyStateDescription(__('Events from today onward appear here once they have person/team tasks.'));
+            ->emptyStateHeading(__('No upcoming services'))
+            ->emptyStateDescription(__('Services from today onward appear here once they have person/team tasks.'));
     }
 
     public function updatedTableFilters(): void

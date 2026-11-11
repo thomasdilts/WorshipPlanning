@@ -11,8 +11,8 @@ class UiTranslationTest extends TestCase
     {
         App::setLocale('sv');
 
-        $this->assertSame('Evenemang', __('Events'));
-        $this->assertSame('Gudstjänstordning', __('Service order'));
+        $this->assertSame('Evenemang', __('Services'));
+        $this->assertSame('Evenemangsordning', __('Service order'));
         $this->assertSame('Användare', __('Users'));
         $this->assertSame('Moduler', __('Modules'));
         $this->assertSame('Mitt schema', __('My schedule'));
@@ -29,7 +29,7 @@ class UiTranslationTest extends TestCase
     {
         App::setLocale('ar');
 
-        $this->assertSame('الأحداث', __('Events'));
+        $this->assertSame('الخدمات', __('Services'));
         $this->assertSame('ترتيب الخدمة', __('Service order'));
         $this->assertSame('المستخدمون', __('Users'));
         $this->assertSame('جدولي', __('My schedule'));
@@ -44,7 +44,7 @@ class UiTranslationTest extends TestCase
     {
         App::setLocale('en');
 
-        $this->assertSame('Events', __('Events'));
+        $this->assertSame('Services', __('Services'));
         $this->assertSame('Service order', __('Service order'));
     }
 

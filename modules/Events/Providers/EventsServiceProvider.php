@@ -14,7 +14,7 @@ class EventsServiceProvider extends ServiceProvider
         $modules->register(new ModuleDefinition(
             key: 'events',
             name: 'Events',
-            description: 'Plan services and their order of activities. Always on.',
+            description: 'Plan services and their order of tasks. Always on.',
             required: true,
         ));
 

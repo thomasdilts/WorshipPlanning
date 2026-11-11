@@ -82,7 +82,7 @@ class TasksRelationManager extends RelationManager
             ->paginated(false)
             ->emptyStateHeading($isOrder ? __('Empty service order') : __('No whole-service responsibilities'))
             ->emptyStateDescription($isOrder
-                ? __('Add timed activities to build the run-of-show.')
+                ? __('Add timed tasks to build the run-of-show.')
                 : __('Whole-service roles (people and teams for the entire service) appear here.'))
             ->modifyQueryUsing(fn (Builder $query): Builder => $this->scopeTasksQuery($query))
             ->columns([
@@ -116,7 +116,7 @@ class TasksRelationManager extends RelationManager
                         return $state ? (string) $state : '—';
                     }),
                 TextColumn::make('displayName')
-                    ->label($isOrder ? __('Activity') : __('Responsibility'))
+                    ->label($isOrder ? __('Task') : __('Responsibility'))
                     ->action($this->isReadOnly() ? ViewEventTaskAction::makeTableAction($event) : null)
                     ->state(fn (EventTask $record): string => $record->displayName())
                     ->description(function (EventTask $record) use ($isOrder): ?string {
@@ -127,7 +127,7 @@ class TasksRelationManager extends RelationManager
                         }
 
                         if ($record->template?->name !== $record->displayName()) {
-                            return __('Activity type:').' '.$record->template?->name;
+                            return __('Task type:').' '.$record->template?->name;
                         }
 
                         return null;
@@ -150,7 +150,7 @@ class TasksRelationManager extends RelationManager
                 $this->eventMessagesAction($event),
                 ActionGroup::make([
                     Action::make('editDetails')
-                        ->label(__('Edit event details'))
+                        ->label(__('Edit service details'))
                         ->icon(Heroicon::OutlinedPencilSquare)
                         ->url(fn (): string => EventResource::getUrl('edit-details', ['record' => $event])),
                     Action::make('viewReadonly')
@@ -158,7 +158,7 @@ class TasksRelationManager extends RelationManager
                         ->icon(Heroicon::OutlinedEye)
                         ->url(fn (): string => EventResource::getUrl('view', ['record' => $event])),
                     DeleteAction::make('deleteEvent')
-                        ->label($event->is_template ? __('Delete template') : __('Delete event'))
+                        ->label($event->is_template ? __('Delete template') : __('Delete service'))
                         ->model(Event::class)
                         ->record($event)
                         ->authorize(fn (): bool => auth()->user()?->can('delete', $event) ?? false)
@@ -177,7 +177,7 @@ class TasksRelationManager extends RelationManager
                     ->url(fn (): string => EventResource::getUrl('edit', ['record' => $event]))
                     ->visible($canUpdate && $this->isReadOnly()),
                 CreateAction::make()
-                    ->label($isOrder ? __('Add activity') : __('Add responsibility'))
+                    ->label($isOrder ? __('Add task') : __('Add responsibility'))
                     ->visible(fn (): bool => $canUpdate && ! $this->isReadOnly())
                     ->createAnother(false)
                     ->extraModalFooterActions(fn (CreateAction $action): array => [

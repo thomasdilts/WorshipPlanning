@@ -14,7 +14,7 @@ class PicturesServiceProvider extends ServiceProvider
         $modules->register(new ModuleDefinition(
             key: 'pictures',
             name: 'Pictures',
-            description: 'Upload pictures and attach them to activities in a service. Only turn this on if you will keep the library up to date.',
+            description: 'Upload pictures and attach them to tasks in a service. Only turn this on if you will keep the library up to date.',
             required: false,
         ));
 

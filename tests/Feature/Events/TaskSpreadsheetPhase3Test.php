@@ -162,7 +162,7 @@ class TaskSpreadsheetPhase3Test extends TestCase
 
         Livewire::test(TaskSpreadsheet::class)
             ->assertSuccessful()
-            ->assertSee('2 activities')
+            ->assertSee('2 tasks')
             ->assertSeeHtml("mountAction('chooseEventTask'")
             ->mountAction('chooseEventTask', arguments: [
                 'taskIds' => [$first->id, $second->id],

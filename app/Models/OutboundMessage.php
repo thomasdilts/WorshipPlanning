@@ -81,7 +81,7 @@ class OutboundMessage extends Model
     public static function kindOptions(): array
     {
         return [
-            self::KIND_EVENT => __('Event'),
+            self::KIND_EVENT => __('Service'),
             self::KIND_TEAM => __('Team'),
             self::KIND_SYSTEM => __('System'),
         ];

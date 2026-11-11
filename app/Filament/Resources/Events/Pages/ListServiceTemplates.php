@@ -58,7 +58,7 @@ class ListServiceTemplates extends Page implements HasTable
 
     public function getSubheading(): string|Htmlable|null
     {
-        return __('Use templates when creating events. Church admins can add a template from any existing service.');
+        return __('Use templates when creating services. Church admins can add a template from any existing service.');
     }
 
     protected function getHeaderActions(): array
@@ -69,7 +69,7 @@ class ListServiceTemplates extends Page implements HasTable
                 ->icon(Heroicon::OutlinedPlus)
                 ->authorize(fn (): bool => auth()->user()?->can('service_templates.manage') ?? false)
                 ->modalHeading(__('Add service template'))
-                ->modalDescription(__('Choose an existing service to copy its activities, people, teams and songs into a reusable template.'))
+                ->modalDescription(__('Choose an existing service to copy its tasks, people, teams and songs into a reusable template.'))
                 ->modalSubmitActionLabel(__('Save template'))
                 ->schema([
                     Select::make('source_event_id')

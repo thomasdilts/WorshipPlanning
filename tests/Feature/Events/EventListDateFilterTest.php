@@ -185,8 +185,8 @@ class EventListDateFilterTest extends TestCase
     public static function toolbarLocales(): array
     {
         return [
-            'English' => ['en', 'Search services', 'Create event', 'Today'],
-            'Swedish' => ['sv', 'Sök gudstjänster', 'Skapa tillfälle', 'Idag'],
+            'English' => ['en', 'Search services', 'Create service', 'Today'],
+            'Swedish' => ['sv', 'Sök evenemang', 'Skapa evenemang', 'Idag'],
             'Arabic' => ['ar', 'ابحث عن خدمات', 'إنشاء حدث', 'اليوم'],
         ];
     }

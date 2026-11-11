@@ -14,7 +14,7 @@ class EditEventDetails extends EditRecord
 
     public function getTitle(): string|Htmlable
     {
-        return __('Edit event details');
+        return __('Edit service details');
     }
 
     public function getBreadcrumb(): string
@@ -31,7 +31,7 @@ class EditEventDetails extends EditRecord
     {
         return [
             Action::make('backToEvent')
-                ->label(__('Back to event'))
+                ->label(__('Back to service'))
                 ->icon(Heroicon::OutlinedArrowLeft)
                 ->color('gray')
                 ->url(fn (): string => EventResource::getUrl('edit', ['record' => $this->getRecord()])),

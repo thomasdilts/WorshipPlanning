@@ -10,7 +10,7 @@
         <span>{{ __('Type') }}: <span class="font-medium text-gray-950 dark:text-white">{{ $channel }}</span></span>
         <span>{{ __('Sent') }}: <span class="font-medium text-gray-950 dark:text-white">{{ $message->created_at?->translatedFormat(\App\Support\DateTimeFormats::dateTime()) }}</span></span>
         @if ($message->event)
-            <span>{{ __('Event') }}: <span class="font-medium text-gray-950 dark:text-white">{{ $message->event->name }}</span></span>
+            <span>{{ __('Service') }}: <span class="font-medium text-gray-950 dark:text-white">{{ $message->event->name }}</span></span>
         @endif
     </div>
 

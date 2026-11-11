@@ -21,7 +21,7 @@ class SharedFilesTable
             ->defaultSort('name')
             ->persistSearchInSession()
             ->emptyStateHeading(__('No files yet'))
-            ->emptyStateDescription(__('Upload a file for the church or a team, then attach it on a service activity.'))
+            ->emptyStateDescription(__('Upload a file for the church or a team, then attach it on a service task.'))
             ->emptyStateActions([
                 CreateAction::make()
                     ->label(__('Add file'))

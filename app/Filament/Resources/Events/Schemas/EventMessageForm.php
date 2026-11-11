@@ -47,7 +47,7 @@ class EventMessageForm
                 ->columns(2)
                 ->live()
                 ->helperText($participants->isEmpty()
-                    ? __('No people assigned on this event yet.')
+                    ? __('No people assigned on this service yet.')
                     : __('Only tasks that have not been accepted are shown. One message is sent for each selected task.'))
                 ->visible($participants->isNotEmpty())
                 ->bulkToggleable(),

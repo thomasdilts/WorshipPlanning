@@ -68,7 +68,7 @@
 
         @if (EventResource::canCreate())
             <x-filament::button tag="a" :href="EventResource::getUrl('create')" icon="heroicon-m-plus" class="wp-services-create">
-                {{ __('Create event') }}
+                {{ __('Create service') }}
             </x-filament::button>
         @endif
     </div>

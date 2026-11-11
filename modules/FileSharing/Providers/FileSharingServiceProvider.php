@@ -14,7 +14,7 @@ class FileSharingServiceProvider extends ServiceProvider
         $modules->register(new ModuleDefinition(
             key: 'file_sharing',
             name: 'File sharing',
-            description: 'Upload files for the church or a team and attach them to activities. Skip if you already share files elsewhere.',
+            description: 'Upload files for the church or a team and attach them to tasks. Skip if you already share files elsewhere.',
             required: false,
         ));
 

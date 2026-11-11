@@ -35,7 +35,7 @@ class TaskTemplateForm
                     ->label(__('Default description text'))
                     ->rows(3)
                     ->columnSpanFull()
-                    ->helperText(__('Copied onto the event task when description usage is optional or required.')),
+                    ->helperText(__('Copied onto the service task when description usage is optional or required.')),
                 Toggle::make('use_globally')
                     ->label(__('Use globally'))
                     ->default(false)
@@ -54,7 +54,7 @@ class TaskTemplateForm
                     ->default(0)
                     ->required()
                     ->visible(fn (Get $get): bool => (bool) $get('use_globally'))
-                    ->helperText(__('Sort order among global tasks at the top of each event.')),
+                    ->helperText(__('Sort order among global tasks at the top of each service.')),
                 TextInput::make('default_order')
                     ->label(__('Default order'))
                     ->numeric()
@@ -70,9 +70,9 @@ class TaskTemplateForm
                     ->default(5)
                     ->required(fn (Get $get): bool => ! (bool) $get('use_globally'))
                     ->visible(fn (Get $get): bool => ! (bool) $get('use_globally'))
-                    ->helperText(__('Copied onto new event tasks; changing a task’s duration shifts later tasks.')),
+                    ->helperText(__('Copied onto new service tasks; changing a task’s duration shifts later tasks.')),
                 Section::make(__('Fields on the service-order task'))
-                    ->description(__('Control whether each field appears on event tasks created from this template.'))
+                    ->description(__('Control whether each field appears on service tasks created from this template.'))
                     ->schema([
                         Select::make('person_usage')
                             ->label(__('Person'))
@@ -202,7 +202,7 @@ class TaskTemplateForm
                 Toggle::make('is_active')
                     ->label(__('Active'))
                     ->default(true)
-                    ->helperText(__('Inactive templates cannot be added to new events.')),
+                    ->helperText(__('Inactive templates cannot be added to new services.')),
                 Toggle::make('show_in_spreadsheet')
                     ->label(__('Show in task spreadsheet'))
                     ->default(false)

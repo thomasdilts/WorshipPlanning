@@ -109,7 +109,7 @@ class EventListStatusIconsTest extends TestCase
         Livewire::test(ListEvents::class)
             ->assertSuccessful()
             ->assertSee('Communion Sunday')
-            ->assertDontSee('Tasks by event')
+            ->assertDontSee('Tasks by service')
             ->assertSeeHtml('wp-event-status-bad')
             ->assertSeeHtml('wp-event-status-icons');
     }

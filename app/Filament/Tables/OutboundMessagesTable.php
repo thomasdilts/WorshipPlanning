@@ -63,7 +63,7 @@ class OutboundMessagesTable
                         default => 'gray',
                     })
                     ->state(fn (OutboundMessage $record): string => match ($record->kind()) {
-                        OutboundMessage::KIND_EVENT => $record->event?->name ?? __('Event'),
+                        OutboundMessage::KIND_EVENT => $record->event?->name ?? __('Service'),
                         OutboundMessage::KIND_TEAM => $teamName((int) $record->meta['team_id']) ?? __('Team'),
                         default => __('System'),
                     }),
@@ -140,7 +140,7 @@ class OutboundMessagesTable
                     ->modalCancelActionLabel(__('Close'))
                     ->modalWidth('3xl'),
                 Action::make('openEvent')
-                    ->label(__('Open event'))
+                    ->label(__('Open service'))
                     ->icon(Heroicon::OutlinedArrowTopRightOnSquare)
                     ->color('gray')
                     ->visible(fn (OutboundMessage $record): bool => $record->event !== null

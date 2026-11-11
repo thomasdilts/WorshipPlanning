@@ -14,7 +14,7 @@ enum LandingDestinationKey: string
     public function label(): string
     {
         return match ($this) {
-            self::TasksByEvent => __('Tasks by event'),
+            self::TasksByEvent => __('Tasks by service'),
             self::MySchedule => __('My schedule'),
             self::Services => __('Services'),
         };

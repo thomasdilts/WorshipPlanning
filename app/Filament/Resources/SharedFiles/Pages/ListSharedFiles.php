@@ -13,7 +13,7 @@ class ListSharedFiles extends ListRecords
 
     public function getSubheading(): string|Htmlable|null
     {
-        return __('Files for the whole church or specific teams — attach them on a service activity.');
+        return __('Files for the whole church or specific teams — attach them on a service task.');
     }
 
     protected function getHeaderActions(): array

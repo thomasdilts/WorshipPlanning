@@ -7,10 +7,10 @@
 <x-filament::dropdown :menu="false" placement="bottom-start" width="sm" :max-height="'24rem'" :teleport="true">
     <x-slot name="trigger">
         <button type="button" class="wp-ss-control wp-ss-event-trigger">
-            <span class="wp-ss-control-label">{{ __('Event types') }}</span>
+            <span class="wp-ss-control-label">{{ __('Service types') }}</span>
             <span class="wp-ss-control-value">
                 @if ($allTypesSelected)
-                    {{ __('All event types') }}
+                    {{ __('All service types') }}
                 @elseif (count($selectedNames) === 1)
                     {{ $selectedNames[0] }}
                 @else
@@ -23,7 +23,7 @@
     <div class="wp-ss-event-menu" x-data="{ multiple: @js(is_array($selectedNames) && count($selectedNames) !== 1 && count($selectedNames) !== count($eventNames)) }">
         <div x-show="!multiple">
             <button type="button" class="wp-ss-event-option" wire:click="selectEventType" x-on:click="close()">
-                {{ __('All event types') }}
+                {{ __('All service types') }}
             </button>
             @foreach ($eventNames as $name)
                 <button type="button" class="wp-ss-event-option" wire:click="selectEventType(@js($name))" x-on:click="close()">

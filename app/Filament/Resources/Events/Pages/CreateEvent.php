@@ -67,7 +67,7 @@ class CreateEvent extends CreateRecord
     protected function getCreatedNotificationTitle(): ?string
     {
         return $this->createdCount > 1
-            ? __(':count events copied', ['count' => $this->createdCount])
+            ? __(':count services copied', ['count' => $this->createdCount])
             : parent::getCreatedNotificationTitle();
     }
 }

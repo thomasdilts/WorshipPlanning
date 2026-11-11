@@ -14,7 +14,7 @@ class AbilitiesServiceProvider extends ServiceProvider
         $modules->register(new ModuleDefinition(
             key: 'abilities',
             name: 'Abilities',
-            description: 'Limit who can be picked for each activity type. Useful with larger rosters; needs careful setup.',
+            description: 'Limit who can be picked for each task type. Useful with larger rosters; needs careful setup.',
             required: false,
         ));
 

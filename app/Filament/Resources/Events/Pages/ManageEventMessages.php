@@ -44,7 +44,7 @@ class ManageEventMessages extends ManageRelatedRecords
 
     public function getTitle(): string|Htmlable
     {
-        return __('Event messages');
+        return __('Service messages');
     }
 
     public static function canAccess(array $parameters = []): bool
@@ -140,7 +140,7 @@ class ManageEventMessages extends ManageRelatedRecords
                     ->label(__('Add message'))
                     ->icon(Heroicon::OutlinedPlus)
                     ->visible(fn (): bool => $this->canCreateMessage())
-                    ->modalHeading(__('Add message for this event'))
+                    ->modalHeading(__('Add message for this service'))
                     ->modalWidth('3xl')
                     ->createAnother(false)
                     ->modalSubmitActionLabel(__('Send'))
@@ -198,7 +198,7 @@ class ManageEventMessages extends ManageRelatedRecords
                     ->visible(fn (): bool => $this->canCreateMessage()),
             ])
             ->emptyStateHeading(__('No messages yet'))
-            ->emptyStateDescription(__('Add a message to notify people assigned on this event.'))
+            ->emptyStateDescription(__('Add a message to notify people assigned on this service.'))
             ->emptyStateIcon(Heroicon::OutlinedEnvelope);
     }
 
