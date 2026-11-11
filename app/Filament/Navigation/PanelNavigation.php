@@ -71,17 +71,19 @@ class PanelNavigation
                 $this->forClass(ChurchStarter::class, __('Getting started'), Heroicon::OutlinedRocketLaunch)
                     ->visible(fn (): bool => ChurchStarter::shouldRegisterNavigation()),
                 $this->forClass(ChurchSettings::class, __('Church')),
-                $this->forClass(ManageModules::class, __('Modules')),
+                $this->subMenu(__('Modules'), Heroicon::OutlinedPuzzlePiece, [
+                    $this->forClass(ManageModules::class, __('Module selection')),
+                    $this->forClass(MessagingSettings::class),
+                    $this->forClass(SmsMessagingSettings::class),
+                    $this->forClass(NtfyMessagingSettings::class),
+                    $this->forClass(WhatsAppMessagingSettings::class),
+                    $this->forClass(TelegramMessagingSettings::class),
+                    $this->forClass(BibleSettings::class, __('Bible settings')),
+                ]),
                 $this->forClass(RoleResource::class, __('Roles')),
-                $this->forClass(TaskTemplateResource::class, __('Activity types')),
+                $this->forClass(TaskTemplateResource::class, __('Activity templates')),
                 $this->forClass(MessageTemplateResource::class, __('Message templates')),
                 $this->forClass(AutomaticMessageResource::class, __('Automatic messages')),
-                $this->forClass(MessagingSettings::class),
-                $this->forClass(SmsMessagingSettings::class),
-                $this->forClass(WhatsAppMessagingSettings::class),
-                $this->forClass(NtfyMessagingSettings::class),
-                $this->forClass(TelegramMessagingSettings::class),
-                $this->forClass(BibleSettings::class),
                 $this->forClass(LanguageResource::class),
                 $this->forClass(ExportChurchData::class, __('Export church data')),
             ]),
@@ -166,6 +168,24 @@ class PanelNavigation
         }
 
         return $item;
+    }
+
+    /**
+     * A menu entry that opens its first visible child and shows its children only while one of them
+     * is open, which keeps the surrounding group short.
+     *
+     * @param  list<NavigationItem>  $children
+     */
+    private function subMenu(string $label, mixed $icon, array $children): NavigationItem
+    {
+        $visible = array_values(array_filter($children, fn (NavigationItem $item): bool => $item->isVisible()));
+
+        return NavigationItem::make($label)
+            ->icon($icon)
+            ->url(fn (): ?string => ($visible[0] ?? null)?->getUrl())
+            ->childItems($visible)
+            ->isActiveWhen(fn (): bool => collect($visible)->contains(fn (NavigationItem $item): bool => $item->isActive()))
+            ->visible(fn (): bool => $visible !== []);
     }
 
     /**

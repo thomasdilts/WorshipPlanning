@@ -27,7 +27,6 @@
     "Active": "نشط",
     "Activity": "نشاط",
     "Activity type:": "نوع النشاط:",
-    "Activity types": "أنواع الأنشطة",
     "Add a message to notify people assigned on this event.": "أضف رسالة لإبلاغ الأشخاص المعيّنين في هذا الحدث.",
     "Add a song for the catalog, or import a CSV from More.": "أضف أغنية إلى الكتالوج، أو استورد CSV من المزيد.",
     "Add activity": "إضافة نشاط",
@@ -1077,5 +1076,8 @@
     "Sent for services": "أُرسلت لخدمات",
     "No automatic messages yet": "لا توجد رسائل تلقائية بعد",
     "Add one to remind everyone on a service, for example three days before it starts.": "أضف رسالة لتذكير الجميع بالخدمة، مثلاً قبل بدئها بثلاثة أيام.",
-    "When": "متى"
+    "When": "متى",
+    "Activity templates": "قوالب الأنشطة",
+    "Module selection": "اختيار الوحدات",
+    "Bible settings": "إعدادات الكتاب المقدس"
 }

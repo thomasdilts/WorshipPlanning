@@ -27,7 +27,6 @@
     "Active": "Aktiv",
     "Activity": "Aktivitet",
     "Activity type:": "Aktivitetstyp:",
-    "Activity types": "Aktivitetstyper",
     "Add a message to notify people assigned on this event.": "Lägg till ett meddelande för att meddela personer tilldelade detta evenemang.",
     "Add a song for the catalog, or import a CSV from More.": "Lägg till en sång i katalogen, eller importera en CSV via Mer.",
     "Add activity": "Lägg till aktivitet",
@@ -1077,5 +1076,8 @@
     "Sent for services": "Skickat för gudstjänster",
     "No automatic messages yet": "Inga automatiska meddelanden än",
     "Add one to remind everyone on a service, for example three days before it starts.": "Lägg till ett för att påminna alla på en gudstjänst, till exempel tre dagar före start.",
-    "When": "När"
+    "When": "När",
+    "Activity templates": "Aktivitetsmallar",
+    "Module selection": "Modulval",
+    "Bible settings": "Bibelinställningar"
 }

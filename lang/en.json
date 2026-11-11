@@ -27,7 +27,6 @@
     "Active": "Active",
     "Activity": "Activity",
     "Activity type:": "Activity type:",
-    "Activity types": "Activity types",
     "Add a message to notify people assigned on this event.": "Add a message to notify people assigned on this event.",
     "Add a song for the catalog, or import a CSV from More.": "Add a song for the catalog, or import a CSV from More.",
     "Add activity": "Add activity",
@@ -1077,5 +1076,8 @@
     "Sent for services": "Sent for services",
     "No automatic messages yet": "No automatic messages yet",
     "Add one to remind everyone on a service, for example three days before it starts.": "Add one to remind everyone on a service, for example three days before it starts.",
-    "When": "When"
+    "When": "When",
+    "Activity templates": "Activity templates",
+    "Module selection": "Module selection",
+    "Bible settings": "Bible settings"
 }
