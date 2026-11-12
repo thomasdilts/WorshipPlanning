@@ -82,6 +82,7 @@ class TaskSpreadsheetPreferences
         $next = array_merge($current, $prefs);
         $all = $user->spreadsheet_preferences ?? [];
         $all[(string) $church->id] = [
+            ...$this->storedFor($user, $church),
             'view' => SpreadsheetViewKey::tryFrom((string) $next['view'])?->value
                 ?? SpreadsheetViewKey::AllStaffing->value,
             'density' => SpreadsheetDensity::tryFrom((string) $next['density'])?->value
@@ -95,5 +96,47 @@ class TaskSpreadsheetPreferences
         ];
 
         $user->forceFill(['spreadsheet_preferences' => $all])->save();
+    }
+
+    /**
+     * The person's chosen spreadsheet columns (which are shown and in what order), as Filament's column
+     * manager state, or null when they have not changed the columns.
+     *
+     * @return list<array<string, mixed>>|null
+     */
+    public function columnsFor(User $user, Church $church): ?array
+    {
+        $columns = $this->storedFor($user, $church)['columns'] ?? null;
+
+        return is_array($columns) && $columns !== [] ? array_values($columns) : null;
+    }
+
+    /**
+     * Saves the person's column choices and order; null (or no columns) goes back to the default columns.
+     *
+     * @param  list<array<string, mixed>>|null  $columns
+     */
+    public function rememberColumns(User $user, Church $church, ?array $columns): void
+    {
+        $columns = filled($columns) ? array_values($columns) : null;
+
+        if ($this->columnsFor($user, $church) === $columns) {
+            return;
+        }
+
+        $all = $user->spreadsheet_preferences ?? [];
+        $all[(string) $church->id] = [...$this->storedFor($user, $church), 'columns' => $columns];
+
+        $user->forceFill(['spreadsheet_preferences' => $all])->save();
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
+    protected function storedFor(User $user, Church $church): array
+    {
+        $stored = $user->spreadsheet_preferences ?? [];
+
+        return is_array($stored[(string) $church->id] ?? null) ? $stored[(string) $church->id] : [];
     }
 }

@@ -200,6 +200,39 @@ class TaskSpreadsheetPhase3Test extends TestCase
         $this->assertSame('comfortable', $prefs->for($this->admin, $other)['density']);
     }
 
+    public function test_column_choices_and_order_are_saved_for_each_person(): void
+    {
+        $template = TaskTemplate::factory()->create([
+            'church_id' => $this->church->id,
+            'person_usage' => FieldUsage::Required,
+            'team_usage' => FieldUsage::NotUsed,
+        ]);
+        $event = Event::factory()->create(['church_id' => $this->church->id, 'starts_at' => now()->addDay()]);
+        EventTask::factory()->create(['event_id' => $event->id, 'task_template_id' => $template->id]);
+        $this->actingAs($this->admin);
+        $component = Livewire::test(TaskSpreadsheet::class);
+        $columns = $component->get('tableColumns');
+        $this->assertNull($this->admin->fresh()->spreadsheet_preferences[(string) $this->church->id]['columns'] ?? null);
+
+        $columns = array_reverse($columns);
+        $columns[0]['isToggled'] = false;
+        $component->call('applyTableColumnManager', $columns, true);
+        $saved = $this->admin->fresh()->spreadsheet_preferences[(string) $this->church->id]['columns'];
+
+        $this->actingAs($this->admin->fresh());
+        Livewire::test(TaskSpreadsheet::class)->assertSet('tableColumns', $saved);
+        $this->assertSame(array_column($columns, 'name'), array_column($saved, 'name'));
+        $this->assertFalse($saved[0]['isToggled']);
+
+        app(TaskSpreadsheetPreferences::class)->remember($this->admin->fresh(), $this->church, ['density' => 'compact']);
+        $this->assertSame($saved, app(TaskSpreadsheetPreferences::class)->columnsFor($this->admin->fresh(), $this->church));
+
+        $colleague = User::factory()->create(['church_id' => $this->church->id]);
+        RolesAndPermissionsSeeder::assignDefaultRoles($colleague, 'Church Admin');
+        $this->actingAs($colleague);
+        $this->assertNotSame($saved, Livewire::test(TaskSpreadsheet::class)->get('tableColumns'));
+    }
+
     public function test_event_filters_and_search_are_restored_when_returning_to_the_spreadsheet(): void
     {
         $this->actingAs($this->admin);

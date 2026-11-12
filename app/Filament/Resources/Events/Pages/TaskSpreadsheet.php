@@ -613,7 +613,6 @@ class TaskSpreadsheet extends Page implements HasTable
             ->striped(false)
             ->reorderableColumns()
             ->deferColumnManager(false)
-            ->persistColumnsInSession()
             ->paginated([25, 50, 100, 'all'])
             ->emptyStateHeading(__('No upcoming services'))
             ->emptyStateDescription(__('Services from today onward appear here once they have person/team tasks.'));
@@ -732,6 +731,38 @@ class TaskSpreadsheet extends Page implements HasTable
     protected function rangeKey(): SpreadsheetRangeKey
     {
         return SpreadsheetRangeKey::tryFrom($this->range) ?? SpreadsheetRangeKey::NextSixWeeks;
+    }
+
+    /**
+     * Starts from the person's saved column choices and order, kept in the database rather than the session.
+     *
+     * @return array<int, array<string, mixed>>
+     */
+    protected function loadTableColumnsFromSession(): array
+    {
+        $user = auth()->user();
+        $church = $this->church();
+
+        if (! $user instanceof User || $church === null) {
+            return $this->getDefaultTableColumnState();
+        }
+
+        return app(TaskSpreadsheetPreferences::class)->columnsFor($user, $church)
+            ?? $this->getDefaultTableColumnState();
+    }
+
+    protected function persistTableColumns(): void
+    {
+        $user = auth()->user();
+        $church = $this->church();
+
+        if (! $user instanceof User || $church === null) {
+            return;
+        }
+
+        $isDefault = $this->tableColumns === $this->getDefaultTableColumnState();
+
+        app(TaskSpreadsheetPreferences::class)->rememberColumns($user, $church, $isDefault ? null : $this->tableColumns);
     }
 
     /**
