@@ -16,8 +16,9 @@ use Spatie\Permission\PermissionRegistrar;
 use Throwable;
 
 /**
- * Tells the people on a service's "receive all decline messages" tasks that someone declined a task,
- * using the message template chosen in the church settings.
+ * Tells the person who assigned a task that it was declined, using the message template chosen in the
+ * church settings. When nobody else assigned it, the people on the service's "receive all decline
+ * messages" tasks are told instead.
  */
 class DeclineMessages
 {
@@ -40,7 +41,7 @@ class DeclineMessages
      */
     public function send(EventTask $declinedTask, User $decliner): int
     {
-        $declinedTask->loadMissing(['event.church.declineMessageTemplate', 'assignedTeam']);
+        $declinedTask->loadMissing(['event.church.declineMessageTemplate', 'assignedTeam', 'assignedBy']);
         $event = $declinedTask->event;
         $church = $event?->church;
         $template = $church?->declineMessageTemplate;
@@ -100,12 +101,40 @@ class DeclineMessages
     }
 
     /**
+     * The person who assigned the declined task. The people on the service's decline-message tasks
+     * instead when the assigner is unknown, left the church, or is the one (or on the team) who declined.
+     *
+     * @return Collection<int, User>
+     */
+    protected function recipients(EventTask $declinedTask, User $decliner): Collection
+    {
+        $assigner = $this->assignerToTell($declinedTask, $decliner);
+
+        return $assigner !== null
+            ? collect([$assigner])
+            : $this->declineMessageTaskPeople($declinedTask, $decliner);
+    }
+
+    protected function assignerToTell(EventTask $declinedTask, User $decliner): ?User
+    {
+        $assigner = $declinedTask->assignedBy;
+
+        if ($assigner === null || $assigner->id === $decliner->id || $assigner->church_id !== $declinedTask->event->church_id) {
+            return null;
+        }
+
+        $isOnDeclinedTeam = $declinedTask->assignedTeam?->members()->whereKey($assigner->id)->exists() ?? false;
+
+        return $isOnDeclinedTeam ? null : $assigner;
+    }
+
+    /**
      * The people on the service's decline-message tasks, except the one who declined and anyone who
      * declined or was cancelled on that task themself.
      *
      * @return Collection<int, User>
      */
-    protected function recipients(EventTask $declinedTask, User $decliner): Collection
+    protected function declineMessageTaskPeople(EventTask $declinedTask, User $decliner): Collection
     {
         $tasks = EventTask::query()
             ->where('event_id', $declinedTask->event_id)

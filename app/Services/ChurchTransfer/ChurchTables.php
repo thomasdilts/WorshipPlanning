@@ -51,6 +51,7 @@ class ChurchTables
             'task_template_id' => 'task_templates',
             'assigned_user_id' => 'users',
             'assigned_team_id' => 'teams',
+            'assigned_by_user_id' => 'users',
             'song_id' => 'songs',
             'accepted_verbally_by_user_id' => 'users',
         ]],

@@ -26,6 +26,7 @@ class EventTask extends Model
         'task_template_id',
         'assigned_user_id',
         'assigned_team_id',
+        'assigned_by_user_id',
         'person_text',
         'team_text',
         'guest_person',
@@ -59,7 +60,8 @@ class EventTask extends Model
     }
 
     /**
-     * A verbal acceptance belongs to the person or team it was given by.
+     * A verbal acceptance belongs to the person or team it was given by, and a new person or team
+     * records who assigned them: the signed-in user, unless the assigner is set explicitly.
      */
     protected static function booted(): void
     {
@@ -73,6 +75,11 @@ class EventTask extends Model
 
         static::saving(function (EventTask $task): void {
             $reassigned = $task->isDirty('assigned_user_id') || $task->isDirty('assigned_team_id');
+
+            if ($reassigned && ! $task->isDirty('assigned_by_user_id')) {
+                $hasAssignee = filled($task->assigned_user_id) || filled($task->assigned_team_id);
+                $task->assigned_by_user_id = $hasAssignee ? auth()->id() : null;
+            }
 
             if ($task->exists && $reassigned && ! $task->isDirty('accepted_verbally_at')) {
                 $task->accepted_verbally_at = null;
@@ -155,6 +162,14 @@ class EventTask extends Model
     public function assignedUser(): BelongsTo
     {
         return $this->belongsTo(User::class, 'assigned_user_id');
+    }
+
+    /**
+     * The person who put the current person or team on this task.
+     */
+    public function assignedBy(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'assigned_by_user_id');
     }
 
     public function assignedTeam(): BelongsTo

@@ -206,7 +206,7 @@ class TaskTemplateForm
                 Toggle::make('receives_decline_messages')
                     ->label(__('Receive all decline messages for service'))
                     ->default(false)
-                    ->helperText(__('The person on this task gets a message whenever anyone on the same service declines a task. Choose the message in Church settings.')),
+                    ->helperText(__('When a task on the same service is declined and nobody else assigned it, the person on this task gets the decline message. Choose the message in Church settings.')),
             ]);
     }
 

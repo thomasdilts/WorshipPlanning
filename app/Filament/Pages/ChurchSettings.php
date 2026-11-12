@@ -131,7 +131,7 @@ class ChurchSettings extends Page
                             ->helperText(__('On: 14:30. Off: 2:30 PM.')),
                     ]),
                 Section::make(__('Decline messages'))
-                    ->description(__('Sent to the person on every task whose task template has “Receive all decline messages for service” turned on, whenever someone on the same service declines a task.'))
+                    ->description(__('Sent to the person who assigned a declined task. When nobody else assigned it (no one is recorded, or they declined it themself), it goes to the person on every task on that service whose task template has “Receive all decline messages for service” turned on.'))
                     ->visible(fn (): bool => app(MessagingAvailability::class)->anyEnabled($this->church()))
                     ->schema([
                         Select::make('decline_message_template_id')
