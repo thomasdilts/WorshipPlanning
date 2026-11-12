@@ -97,14 +97,14 @@ class MessageTemplateForm
                     ])
                     ->columnSpanFull(),
                 Section::make(__('WhatsApp template'))
-                    ->description(__('WhatsApp only delivers templates approved by Meta, so people who prefer WhatsApp get this approved wording instead of the text above.'))
+                    ->description(__('WhatsApp only delivers templates approved by Meta, so people who prefer WhatsApp get this approved wording instead of the text above. Leave it empty to send them an email instead.'))
                     ->visible(fn (): bool => self::whatsAppEnabled())
                     ->schema([
                         Select::make('whatsapp_template')
                             ->label(__('Meta template'))
                             ->options(fn (?string $state): array => self::whatsAppTemplateOptions($state))
                             ->searchable()
-                            ->required(fn (): bool => self::whatsAppEnabled())
+                            ->placeholder(__('None — send by email'))
                             ->helperText(fn (): string => self::whatsAppTemplateHelp()),
                     ])
                     ->columnSpanFull(),

@@ -18,8 +18,10 @@ use Database\Seeders\RolesAndPermissionsSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\Client\Request;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Mail;
 use Livewire\Livewire;
 use Modules\Messaging\Data\OutboundMessageData;
+use Modules\Messaging\Mail\GenericMessageMail;
 use Modules\Messaging\Services\EventMessageService;
 use Modules\Messaging\Services\MessageSender;
 use Modules\Messaging\Services\TemplateMessages;
@@ -154,7 +156,7 @@ class WhatsAppTemplatesTest extends TestCase
                 === 'Rehearsal at 18:00. Bring   your stand.');
     }
 
-    public function test_message_template_needs_a_meta_template_while_whatsapp_is_on(): void
+    public function test_message_template_can_be_saved_without_a_meta_template_while_whatsapp_is_on(): void
     {
         Http::fake([self::TEMPLATES_URL => Http::response(['data' => [$this->requestReplyTemplate('APPROVED')]])]);
         $this->actingAs($this->admin);
@@ -165,9 +167,27 @@ class WhatsAppTemplatesTest extends TestCase
                 'text_body' => 'Can you come?',
             ])
             ->call('create')
-            ->assertHasFormErrors(['whatsapp_template' => 'required']);
+            ->assertHasNoFormErrors();
 
-        $this->assertSame(0, MessageTemplate::query()->count());
+        $this->assertNull(MessageTemplate::query()->sole()->whatsapp_template);
+    }
+
+    public function test_message_without_a_meta_template_goes_by_email_to_someone_who_prefers_whatsapp(): void
+    {
+        Http::preventStrayRequests();
+        Mail::fake();
+        app(ChurchModuleManager::class)->enable($this->church, MessagingAvailability::MODULE_EMAIL, [
+            'email' => ['host' => 'smtp.church.test', 'port' => 587, 'from_address' => 'noreply@church.test'],
+        ]);
+
+        $result = app(MessageSender::class)->sendToUser(
+            $this->member,
+            new OutboundMessageData(subject: 'Can you come?', body: 'Can you come?'),
+        );
+
+        $this->assertSame(MessagePreference::Email->value, $result->channel);
+        Http::assertNothingSent();
+        Mail::assertSent(GenericMessageMail::class, fn (GenericMessageMail $mail): bool => $mail->hasTo($this->member->email));
     }
 
     public function test_template_not_yet_approved_fails_without_sending(): void

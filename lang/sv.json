@@ -859,7 +859,7 @@
     "Sent by WhatsApp when someone chooses WhatsApp as their preferred messaging. The choice is refused if it cannot be sent.": "Skickas via WhatsApp när någon väljer WhatsApp som föredragen meddelandetyp. Valet nekas om det inte kan skickas.",
     "The custom message typed when sending": "Det egna meddelandet som skrivs vid sändning",
     "Until one is chosen, nobody can switch to WhatsApp. The templates load once the access token and account ID are saved.": "Tills en mall är vald kan ingen byta till WhatsApp. Mallarna hämtas när åtkomsttoken och konto-ID har sparats.",
-    "WhatsApp only delivers templates approved by Meta, so people who prefer WhatsApp get this approved wording instead of the text above.": "WhatsApp levererar bara mallar som godkänts av Meta, så den som föredrar WhatsApp får den godkända texten i stället för texten ovan.",
+    "WhatsApp only delivers templates approved by Meta, so people who prefer WhatsApp get this approved wording instead of the text above. Leave it empty to send them an email instead.": "WhatsApp levererar bara mallar som godkänts av Meta, så den som föredrar WhatsApp får den godkända texten i stället för texten ovan. Lämna tomt för att skicka e-post till dem i stället.",
     "Name of the person sending the message, or who changed the preferred messaging": "Namnet på den som skickar meddelandet, eller som ändrade föredragen meddelandetyp",
     "Team name — only in messages sent to a team; elsewhere it is left as written": "Teamets namn — bara i meddelanden som skickas till ett team; annars lämnas det som det står",
     "Worship team": "Lovsångsteamet",
@@ -1117,5 +1117,6 @@
     "Sent to the person on every task whose task template has “Receive all decline messages for service” turned on, whenever someone on the same service declines a task.": "Skickas till personen på varje uppgift vars uppgiftsmall har ”Ta emot alla avböjanden för gudstjänsten” påslaget, när någon i samma gudstjänst avböjer en uppgift.",
     "Templates marked “Other” are listed here. Use {{declined_by}} for who declined, {{task}} for the declined task, {{task_url}} for a link to it and {{event}}, {{date}} and {{time}} for the service. Without a template no decline messages are sent.": "Mallar markerade ”Övrigt” visas här. Använd {{declined_by}} för vem som avböjde, {{task}} för den avböjda uppgiften, {{task_url}} för en länk till den och {{event}}, {{date}} och {{time}} för gudstjänsten. Utan mall skickas inga meddelanden om avböjanden.",
     "Who declined — only in decline messages, where {{task}} is the declined task": "Vem som avböjde — bara i meddelanden om avböjanden, där {{task}} är den avböjda uppgiften",
-    "Link that opens the declined task on the service page — only in decline messages": "Länk som öppnar den avböjda uppgiften på gudstjänstsidan — bara i meddelanden om avböjanden"
+    "Link that opens the declined task on the service page — only in decline messages": "Länk som öppnar den avböjda uppgiften på gudstjänstsidan — bara i meddelanden om avböjanden",
+    "None — send by email": "Ingen — skicka med e-post"
 }

@@ -47,6 +47,13 @@ class MessageSender
             );
         }
 
+        // A message template without a Meta template cannot reach WhatsApp reliably, so it goes by email.
+        if ($preference === MessagePreference::WhatsApp
+            && blank($message->whatsappTemplate)
+            && $this->availability->isChannelEnabled($church, MessagePreference::Email)) {
+            return $this->sendToUser($user, $message, MessagePreference::Email);
+        }
+
         $channel = $this->resolveChannel($preference->value);
 
         if ($channel === null) {
