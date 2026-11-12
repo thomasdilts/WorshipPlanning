@@ -94,6 +94,27 @@ class GuestAssigneeTest extends TestCase
         $this->assertSame(1, app(EventStaffingSummary::class)->for($this->event->fresh())['vacant']);
     }
 
+    public function test_editing_a_task_to_a_named_guest_keeps_the_guest(): void
+    {
+        $this->createTask([]);
+        $task = EventTask::query()->sole();
+
+        Livewire::test(TasksRelationManager::class, [
+            'ownerRecord' => $this->event,
+            'pageClass' => EditEvent::class,
+        ])
+            ->callTableAction('edit', $task, data: [
+                'assigned_user_id' => EventTaskForm::GUEST,
+                'person_text' => 'Visiting pastor Anna',
+            ])
+            ->assertHasNoTableActionErrors();
+
+        $task->refresh();
+        $this->assertTrue($task->guest_person);
+        $this->assertNull($task->assigned_user_id);
+        $this->assertSame('Visiting pastor Anna', $task->person_text);
+    }
+
     public function test_picking_someone_from_the_list_replaces_the_guest(): void
     {
         $member = User::factory()->create(['church_id' => $this->church->id]);

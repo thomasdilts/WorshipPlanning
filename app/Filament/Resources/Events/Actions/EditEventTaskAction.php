@@ -116,7 +116,6 @@ class EditEventTaskAction
             ->modalWidth('3xl')
             ->modalSubmitAction(fn (Action $action): Action => $action->color('gray'))
             ->mutateRecordDataUsing(fn (array $data, EventTask $record): array => EventTaskForm::fillFromRecord($record))
-            ->mutateFormDataUsing(fn (array $data): array => EventTaskForm::normalize($data, $event))
             ->using(fn (array $data, EventTask $record): EventTask => EventTaskForm::persist($record, $data, $event))
             ->extraModalFooterActions(fn (EditAction $action, EventTask $record): array => [
                 static::saveAndMessageButton($action, $record),
