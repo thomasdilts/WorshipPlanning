@@ -26,6 +26,12 @@ class MessagePlaceholders
     /** The team's name; only filled in for team messages. */
     public const TEAM = 'team';
 
+    /** Who declined a task; only filled in for decline messages. */
+    public const DECLINED_BY = 'declined_by';
+
+    /** The link that opens the declined task on the service page; only filled in for decline messages. */
+    public const TASK_URL = 'task_url';
+
     /** The link to set or reset a password; only filled in for password messages. */
     public const PASSWORD_URL = 'password_url';
 
@@ -39,7 +45,7 @@ class MessagePlaceholders
      */
     public static function templateKeys(): array
     {
-        return [...self::KEYS, self::SENDER, self::TEAM, self::CUSTOM_MESSAGE, self::PASSWORD_URL, self::EXPIRE_MINUTES];
+        return [...self::KEYS, self::SENDER, self::TEAM, self::DECLINED_BY, self::TASK_URL, self::CUSTOM_MESSAGE, self::PASSWORD_URL, self::EXPIRE_MINUTES];
     }
 
     /**

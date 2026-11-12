@@ -8,6 +8,7 @@ use App\Models\User;
 use BackedEnum;
 use Filament\Actions\Action;
 use Filament\Forms\Components\FileUpload;
+use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
 use Filament\Notifications\Notification;
@@ -20,6 +21,8 @@ use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Illuminate\Contracts\Support\Htmlable;
 use Illuminate\Support\Facades\Storage;
+use Modules\Messaging\Services\TemplateMessages;
+use Modules\Messaging\Support\MessagingAvailability;
 use Spatie\Permission\PermissionRegistrar;
 use UnitEnum;
 
@@ -86,6 +89,7 @@ class ChurchSettings extends Page
             'name' => $church->name,
             'logo_path' => $church->logo_path,
             'uses_24_hour_time' => $church->uses_24_hour_time,
+            'decline_message_template_id' => $church->decline_message_template_id,
         ]);
     }
 
@@ -126,6 +130,16 @@ class ChurchSettings extends Page
                             ->label(__('Use 24-hour time'))
                             ->helperText(__('On: 14:30. Off: 2:30 PM.')),
                     ]),
+                Section::make(__('Decline messages'))
+                    ->description(__('Sent to the person on every task whose task template has “Receive all decline messages for service” turned on, whenever someone on the same service declines a task.'))
+                    ->visible(fn (): bool => app(MessagingAvailability::class)->anyEnabled($this->church()))
+                    ->schema([
+                        Select::make('decline_message_template_id')
+                            ->label(__('Message template'))
+                            ->options(fn (?string $state): array => app(TemplateMessages::class)->confirmationOptions($state))
+                            ->searchable()
+                            ->helperText(__('Templates marked “Other” are listed here. Use {{declined_by}} for who declined, {{task}} for the declined task, {{task_url}} for a link to it and {{event}}, {{date}} and {{time}} for the service. Without a template no decline messages are sent.')),
+                    ]),
             ])
             ->statePath('data');
     }
@@ -164,6 +178,9 @@ class ChurchSettings extends Page
             'name' => (string) $data['name'],
             'logo_path' => filled($newLogo) ? (string) $newLogo : null,
             'uses_24_hour_time' => (bool) ($data['uses_24_hour_time'] ?? true),
+            ...(array_key_exists('decline_message_template_id', $data) ? [
+                'decline_message_template_id' => filled($data['decline_message_template_id']) ? (int) $data['decline_message_template_id'] : null,
+            ] : []),
         ]);
 
         if (filled($previousLogo) && $previousLogo !== $church->logo_path) {

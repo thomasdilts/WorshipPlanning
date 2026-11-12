@@ -33,6 +33,9 @@ class ChurchImporter
 
     protected int $oldChurchId = 0;
 
+    /** @var array<string, int|string> message template ids on the exported church row, by column */
+    protected array $churchTemplateIds = [];
+
     protected int $newChurchId = 0;
 
     public function __construct(
@@ -85,6 +88,10 @@ class ChurchImporter
 
                     if ($table === 'churches' && $this->newChurchId === 0) {
                         throw new RuntimeException(__('This export holds no church.'));
+                    }
+
+                    if ($table === 'message_templates') {
+                        $this->linkChurchTemplates();
                     }
                 }
             });
@@ -280,7 +287,7 @@ class ChurchImporter
     protected function prepareRow(string $table, array $row): array
     {
         return match ($table) {
-            'churches' => [...$row, 'slug' => $this->uniqueSlug((string) ($row['slug'] ?? 'church'))],
+            'churches' => $this->prepareChurch($row),
             'users' => [
                 ...$row,
                 'is_platform_admin' => false,
@@ -291,6 +298,38 @@ class ChurchImporter
             'outbound_messages' => [...$row, 'meta' => $this->messageMeta($row['meta'] ?? null)],
             default => $row,
         };
+    }
+
+    /**
+     * The church row goes in before its message templates, so template ids are set once those exist.
+     *
+     * @param  array<string, mixed>  $row
+     * @return array<string, mixed>
+     */
+    protected function prepareChurch(array $row): array
+    {
+        $this->churchTemplateIds = array_filter(
+            array_intersect_key($row, array_flip(ChurchTables::CHURCH_TEMPLATE_COLUMNS)),
+            fn (mixed $id): bool => is_numeric($id),
+        );
+
+        return [
+            ...$row,
+            ...array_map(fn (): null => null, array_flip(ChurchTables::CHURCH_TEMPLATE_COLUMNS)),
+            'slug' => $this->uniqueSlug((string) ($row['slug'] ?? 'church')),
+        ];
+    }
+
+    protected function linkChurchTemplates(): void
+    {
+        $ids = array_filter(array_map(
+            fn (mixed $id): ?int => $this->idMap['message_templates'][(int) $id] ?? null,
+            $this->churchTemplateIds,
+        ));
+
+        if ($ids !== []) {
+            DB::table('churches')->where('id', $this->newChurchId)->update($ids);
+        }
     }
 
     protected function uniqueSlug(string $slug): string

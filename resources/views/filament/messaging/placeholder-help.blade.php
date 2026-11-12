@@ -29,6 +29,8 @@
         'church' => [__('Church name'), __('Your church')],
         'message_sender' => [__('Name of the person sending the message, or who changed the preferred messaging'), 'Erik Lund'],
         'team' => [__('Team name — only in messages sent to a team; elsewhere it is left as written'), __('Worship team')],
+        'declined_by' => [__('Who declined — only in decline messages, where {{task}} is the declined task'), 'Erik Lund'],
+        'task_url' => [__('Link that opens the declined task on the service page — only in decline messages'), 'https://…/events/12?task=34'],
         'custom_mess' => [__('The custom message typed when sending'), __('Bring your own music stand.')],
     ];
 @endphp

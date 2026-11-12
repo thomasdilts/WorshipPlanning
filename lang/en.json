@@ -1110,5 +1110,12 @@
     "Add only themself to existing tasks in services": "Add only themself to existing tasks in services",
     "Add me": "Add me",
     "Edit my task": "Edit my task",
-    "Add me to this task": "Add me to this task"
+    "Add me to this task": "Add me to this task",
+    "Receive all decline messages for service": "Receive all decline messages for service",
+    "The person on this task gets a message whenever anyone on the same service declines a task. Choose the message in Church settings.": "The person on this task gets a message whenever anyone on the same service declines a task. Choose the message in Church settings.",
+    "Decline messages": "Decline messages",
+    "Sent to the person on every task whose task template has “Receive all decline messages for service” turned on, whenever someone on the same service declines a task.": "Sent to the person on every task whose task template has “Receive all decline messages for service” turned on, whenever someone on the same service declines a task.",
+    "Templates marked “Other” are listed here. Use {{declined_by}} for who declined, {{task}} for the declined task, {{task_url}} for a link to it and {{event}}, {{date}} and {{time}} for the service. Without a template no decline messages are sent.": "Templates marked “Other” are listed here. Use {{declined_by}} for who declined, {{task}} for the declined task, {{task_url}} for a link to it and {{event}}, {{date}} and {{time}} for the service. Without a template no decline messages are sent.",
+    "Who declined — only in decline messages, where {{task}} is the declined task": "Who declined — only in decline messages, where {{task}} is the declined task",
+    "Link that opens the declined task on the service page — only in decline messages": "Link that opens the declined task on the service page — only in decline messages"
 }

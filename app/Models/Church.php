@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Facades\Storage;
 
@@ -24,6 +25,7 @@ class Church extends Model
         'uses_24_hour_time',
         'logo_path',
         'is_active',
+        'decline_message_template_id',
     ];
 
     protected function casts(): array
@@ -51,6 +53,14 @@ class Church extends Model
     public function modules(): HasMany
     {
         return $this->hasMany(ChurchModule::class);
+    }
+
+    /**
+     * The message sent to people on tasks that receive every decline message of a service.
+     */
+    public function declineMessageTemplate(): BelongsTo
+    {
+        return $this->belongsTo(MessageTemplate::class, 'decline_message_template_id')->withoutGlobalScope('church');
     }
 
     public function hasModule(string $key): bool

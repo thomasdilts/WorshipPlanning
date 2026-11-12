@@ -203,6 +203,10 @@ class TaskTemplateForm
                     ->label(__('Show in task spreadsheet'))
                     ->default(false)
                     ->helperText(__('Always include this template as a column on Planning → Task spreadsheet (in addition to person/team columns).')),
+                Toggle::make('receives_decline_messages')
+                    ->label(__('Receive all decline messages for service'))
+                    ->default(false)
+                    ->helperText(__('The person on this task gets a message whenever anyone on the same service declines a task. Choose the message in Church settings.')),
             ]);
     }
 

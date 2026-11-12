@@ -38,6 +38,7 @@ class TaskTemplate extends Model
         'bible_usage',
         'is_active',
         'show_in_spreadsheet',
+        'receives_decline_messages',
     ];
 
     protected function casts(): array
@@ -58,6 +59,7 @@ class TaskTemplate extends Model
             'bible_usage' => FieldUsage::class,
             'is_active' => 'boolean',
             'show_in_spreadsheet' => 'boolean',
+            'receives_decline_messages' => 'boolean',
         ];
     }
 

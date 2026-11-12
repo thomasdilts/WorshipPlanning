@@ -10,6 +10,13 @@ namespace App\Services\ChurchTransfer;
 class ChurchTables
 {
     /**
+     * Columns on the churches row that point at the church's message templates, which are imported later.
+     *
+     * @var list<string>
+     */
+    public const CHURCH_TEMPLATE_COLUMNS = ['decline_message_template_id'];
+
+    /**
      * scope: 'church' (the churches row), 'church_id' (rows with that column), or [column, table] for
      * rows that belong to an exported row of another table.
      * refs: column => table whose new id replaces the old one. 'permissions' and 'languages' are

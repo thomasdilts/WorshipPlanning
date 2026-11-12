@@ -1110,5 +1110,12 @@
     "Add only themself to existing tasks in services": "Får bara lägga till sig själv på befintliga uppgifter i evenemang",
     "Add me": "Lägg till mig",
     "Edit my task": "Redigera min uppgift",
-    "Add me to this task": "Lägg till mig på den här uppgiften"
+    "Add me to this task": "Lägg till mig på den här uppgiften",
+    "Receive all decline messages for service": "Ta emot alla avböjanden för gudstjänsten",
+    "The person on this task gets a message whenever anyone on the same service declines a task. Choose the message in Church settings.": "Personen på den här uppgiften får ett meddelande när någon i samma gudstjänst avböjer en uppgift. Välj meddelandet i Församlingsinställningar.",
+    "Decline messages": "Meddelanden om avböjanden",
+    "Sent to the person on every task whose task template has “Receive all decline messages for service” turned on, whenever someone on the same service declines a task.": "Skickas till personen på varje uppgift vars uppgiftsmall har ”Ta emot alla avböjanden för gudstjänsten” påslaget, när någon i samma gudstjänst avböjer en uppgift.",
+    "Templates marked “Other” are listed here. Use {{declined_by}} for who declined, {{task}} for the declined task, {{task_url}} for a link to it and {{event}}, {{date}} and {{time}} for the service. Without a template no decline messages are sent.": "Mallar markerade ”Övrigt” visas här. Använd {{declined_by}} för vem som avböjde, {{task}} för den avböjda uppgiften, {{task_url}} för en länk till den och {{event}}, {{date}} och {{time}} för gudstjänsten. Utan mall skickas inga meddelanden om avböjanden.",
+    "Who declined — only in decline messages, where {{task}} is the declined task": "Vem som avböjde — bara i meddelanden om avböjanden, där {{task}} är den avböjda uppgiften",
+    "Link that opens the declined task on the service page — only in decline messages": "Länk som öppnar den avböjda uppgiften på gudstjänstsidan — bara i meddelanden om avböjanden"
 }

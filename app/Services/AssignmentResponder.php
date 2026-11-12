@@ -13,6 +13,7 @@ use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Notification;
 use Illuminate\Validation\ValidationException;
+use Modules\Messaging\Services\DeclineMessages;
 use Spatie\Permission\PermissionRegistrar;
 
 /**
@@ -142,7 +143,7 @@ class AssignmentResponder
             ]);
         }
 
-        return DB::transaction(function () use ($task, $actor, $status, $method, $note, $asVerbal): EventTaskResponse {
+        $response = DB::transaction(function () use ($task, $actor, $status, $method, $note, $asVerbal): EventTaskResponse {
             $fresh = EventTask::query()->lockForUpdate()->findOrFail($task->id);
 
             if (
@@ -181,6 +182,13 @@ class AssignmentResponder
 
             return $response;
         });
+
+        // After the commit, so a slow or failing delivery never holds the lock or undoes the decline.
+        if ($response->wasRecentlyCreated && $status === AssignmentResponseStatus::Declined) {
+            app(DeclineMessages::class)->send($task->fresh(), $actor);
+        }
+
+        return $response;
     }
 
     /**

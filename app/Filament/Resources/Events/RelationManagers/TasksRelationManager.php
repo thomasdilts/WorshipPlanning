@@ -6,6 +6,7 @@ use App\Filament\Resources\Events\Actions\EditEventTaskAction;
 use App\Filament\Resources\Events\Actions\SendTaskMessageAction;
 use App\Filament\Resources\Events\Actions\ViewEventTaskAction;
 use App\Filament\Resources\Events\Concerns\HasEventMessageActions;
+use App\Filament\Resources\Events\Concerns\OpensLinkedTask;
 use App\Filament\Resources\Events\EventResource;
 use App\Filament\Resources\Events\Schemas\EventTaskForm;
 use App\Models\Event;
@@ -34,6 +35,7 @@ use Illuminate\Support\Facades\DB;
 class TasksRelationManager extends RelationManager
 {
     use HasEventMessageActions;
+    use OpensLinkedTask;
 
     protected static string $relationship = 'tasks';
 
@@ -46,6 +48,11 @@ class TasksRelationManager extends RelationManager
      * Sortable key of the start-time divider row in the Order table.
      */
     public const START_MARKER_KEY = 'start-marker';
+
+    /**
+     * Loaded with the page, so a link's ?task= is still in the request when the table mounts.
+     */
+    protected static bool $isLazy = false;
 
     public static function getTitle(Model $ownerRecord, string $pageClass): string
     {

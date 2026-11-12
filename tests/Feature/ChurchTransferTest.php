@@ -190,6 +190,20 @@ class ChurchTransferTest extends TestCase
         );
     }
 
+    public function test_the_decline_message_template_follows_the_imported_templates(): void
+    {
+        $this->church->update(['decline_message_template_id' => MessageTemplate::query()->where('key', 'telegram_confirmation')->value('id')]);
+        app(ChurchExporter::class)->export($this->church, $this->zipPath, includeSecrets: false);
+
+        $this->freeEmailsAsIfImportingOnAnotherServer();
+        $imported = app(ChurchImporter::class)->import($this->zipPath)['church'];
+
+        $this->assertSame(
+            MessageTemplate::query()->where('church_id', $imported->id)->where('key', 'telegram_confirmation')->value('id'),
+            $imported->decline_message_template_id,
+        );
+    }
+
     public function test_imported_people_never_become_platform_admins(): void
     {
         $this->admin->forceFill(['is_platform_admin' => true])->save();

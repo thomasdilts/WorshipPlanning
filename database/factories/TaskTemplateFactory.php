@@ -42,6 +42,7 @@ class TaskTemplateFactory extends Factory
             'bible_usage' => FieldUsage::NotUsed,
             'is_active' => true,
             'show_in_spreadsheet' => false,
+            'receives_decline_messages' => false,
         ];
     }
 }
