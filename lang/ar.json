@@ -1106,5 +1106,9 @@
     "Use 24-hour time": "استخدام نظام 24 ساعة",
     "On: 14:30. Off: 2:30 PM.": "مفعّل: 14:30. غير مفعّل: 2:30 م.",
     "No people assigned on this service yet.": "لا يوجد أشخاص معيّنون لهذا الحدث بعد.",
-    "When a planner assigns you to a line in the service order, it appears here with the service date.": "عندما يعيّنك أحد المخططين في سطر من ترتيب الحدث، سيظهر هنا مع تاريخ الحدث."
+    "When a planner assigns you to a line in the service order, it appears here with the service date.": "عندما يعيّنك أحد المخططين في سطر من ترتيب الحدث، سيظهر هنا مع تاريخ الحدث.",
+    "Add only themself to existing tasks in services": "يمكنه إضافة نفسه فقط إلى المهام الموجودة في الأحداث",
+    "Add me": "أضفني",
+    "Edit my task": "تحرير مهمتي",
+    "Add me to this task": "أضفني إلى هذه المهمة"
 }

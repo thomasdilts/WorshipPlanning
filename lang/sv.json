@@ -1106,5 +1106,9 @@
     "Use 24-hour time": "Använd 24-timmarsformat",
     "On: 14:30. Off: 2:30 PM.": "På: 14:30. Av: 2:30 PM.",
     "No people assigned on this service yet.": "Inga personer tilldelade till det här evenemanget än.",
-    "When a planner assigns you to a line in the service order, it appears here with the service date.": "När en planerare tilldelar dig en rad i evenemangsordningen visas den här med evenemangets datum."
+    "When a planner assigns you to a line in the service order, it appears here with the service date.": "När en planerare tilldelar dig en rad i evenemangsordningen visas den här med evenemangets datum.",
+    "Add only themself to existing tasks in services": "Får bara lägga till sig själv på befintliga uppgifter i evenemang",
+    "Add me": "Lägg till mig",
+    "Edit my task": "Redigera min uppgift",
+    "Add me to this task": "Lägg till mig på den här uppgiften"
 }

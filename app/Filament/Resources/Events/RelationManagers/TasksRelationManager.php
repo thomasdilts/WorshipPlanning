@@ -210,6 +210,7 @@ class TasksRelationManager extends RelationManager
                     ->color('gray')
                     ->visible(fn (EventTask $record): bool => $canUpdate && $isOrder && ! $this->isReadOnly() && ! $record->isGlobal())
                     ->action(fn (EventTask $record) => $this->moveTask($record, 1)),
+                EditEventTaskAction::makeSelfAssignTableAction(),
                 EditEventTaskAction::makeTableAction($event)
                     ->visible(fn (): bool => $canUpdate),
                 DeleteAction::make()

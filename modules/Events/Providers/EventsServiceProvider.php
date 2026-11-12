@@ -22,6 +22,7 @@ class EventsServiceProvider extends ServiceProvider
             'events.view',
             'events.create',
             'events.update',
+            'events.assign_self',
             'events.delete',
             'events.tasks_by_event',
             'task_templates.view',

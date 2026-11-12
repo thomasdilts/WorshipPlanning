@@ -6,6 +6,7 @@ use App\Core\Tenancy\CurrentChurch;
 use App\Filament\Resources\Events\Schemas\EventTaskForm;
 use App\Models\Event;
 use App\Models\EventTask;
+use App\Models\User;
 use App\Support\DateTimeFormats;
 use Filament\Actions\Action;
 use Filament\Actions\Contracts\HasActions;
@@ -23,6 +24,9 @@ class EditEventTaskAction
 {
     /**
      * Page / standalone action (spreadsheet). Pass taskId in mount arguments.
+     *
+     * Planners who can edit the service get the full editor, people who may only put themself on tasks
+     * get the self-assignment editor, and everyone else sees the task read-only.
      */
     public static function makePageAction(?callable $after = null): Action
     {
@@ -30,17 +34,26 @@ class EditEventTaskAction
             ->label(__('Edit task'))
             ->modalHeading(fn (array $arguments): string => static::heading($arguments))
             ->modalDescription(fn (array $arguments): ?string => static::description($arguments))
-            ->modalSubmitActionLabel(__('Save changes'))
             ->modalWidth('3xl')
-            ->modalSubmitAction(fn (Action $action): Action => $action->color('gray'))
-            ->extraModalFooterActions(fn (Action $action, array $arguments): array => [
-                static::saveAndMessageButton($action, static::resolveTask($arguments)),
-            ])
+            ->modalSubmitAction(function (Action $action, array $arguments): Action|false {
+                $task = static::resolveTask($arguments);
+
+                if (static::isReadOnlyFor($task)) {
+                    return false;
+                }
+
+                return $action->color('gray')->label(static::submitLabel($task));
+            })
+            ->modalCancelActionLabel(fn (array $arguments): ?string => static::isReadOnlyFor(static::resolveTask($arguments)) ? __('Close') : null)
+            ->disabledSchema(fn (array $arguments): bool => static::isReadOnlyFor(static::resolveTask($arguments)))
+            ->extraModalFooterActions(fn (Action $action, array $arguments): array => static::canEditFully(static::resolveTask($arguments))
+                ? [static::saveAndMessageButton($action, static::resolveTask($arguments))]
+                : [])
             ->icon(Heroicon::OutlinedPencilSquare)
             ->fillForm(function (array $arguments): array {
                 $task = static::resolveTask($arguments);
 
-                return EventTaskForm::fillFromRecord($task) + [
+                return static::fillFor($task) + [
                     'expected_updated_at' => $task->updated_at?->toJSON(),
                 ];
             })
@@ -49,7 +62,7 @@ class EditEventTaskAction
 
                 return $schema->dense()->columns(['default' => 1, 'md' => 2])->components([
                     Hidden::make('expected_updated_at'),
-                    ...EventTaskForm::components($task->event),
+                    ...EventTaskForm::components($task->event, static::selfAssigner($task)),
                 ]);
             })
             ->action(function (array $data, array $arguments, Action $action, HasActions $livewire) use ($after): void {
@@ -69,7 +82,14 @@ class EditEventTaskAction
                     return;
                 }
 
-                EventTaskForm::persist($task, $data, $task->event);
+                $selfAssigner = static::selfAssigner($task);
+
+                if ($selfAssigner !== null) {
+                    EventTaskForm::persistSelfAssignment($task, $data, $selfAssigner);
+                } else {
+                    abort_unless(static::canEditFully($task), 403);
+                    EventTaskForm::persist($task, $data, $task->event);
+                }
 
                 Notification::make()
                     ->success()
@@ -106,6 +126,80 @@ class EditEventTaskAction
                     SendTaskMessageAction::openAfterSave($livewire, $record);
                 }
             });
+    }
+
+    /**
+     * Service-page action for someone who may only put themself on tasks: "Add me" on a task with no person,
+     * "Edit my task" on one they are already on.
+     */
+    public static function makeSelfAssignTableAction(): Action
+    {
+        return Action::make('selfAssign')
+            ->label(fn (EventTask $record): string => blank($record->assigned_user_id) ? __('Add me') : __('Edit my task'))
+            ->icon(fn (EventTask $record): Heroicon => blank($record->assigned_user_id) ? Heroicon::OutlinedHandRaised : Heroicon::OutlinedPencilSquare)
+            ->color('gray')
+            ->visible(fn (EventTask $record): bool => static::selfAssigner($record) !== null)
+            ->authorize(fn (EventTask $record): bool => static::selfAssigner($record) !== null)
+            ->modalHeading(fn (EventTask $record): string => __('Edit task — :name', ['name' => $record->displayName()]))
+            ->modalWidth('3xl')
+            ->modalSubmitAction(fn (Action $action, EventTask $record): Action => $action->color('gray')->label(static::submitLabel($record)))
+            ->fillForm(fn (EventTask $record): array => static::fillFor($record))
+            ->schema(fn (Schema $schema, EventTask $record): Schema => $schema->dense()->columns(['default' => 1, 'md' => 2])->components(
+                EventTaskForm::components($record->event, static::selfAssigner($record)),
+            ))
+            ->action(function (array $data, EventTask $record): void {
+                $selfAssigner = static::selfAssigner($record);
+                abort_if($selfAssigner === null, 403);
+
+                EventTaskForm::persistSelfAssignment($record, $data, $selfAssigner);
+
+                Notification::make()
+                    ->success()
+                    ->title(__('Assignment saved'))
+                    ->send();
+            });
+    }
+
+    /**
+     * The signed-in user when they get the self-assignment editor for this task, otherwise null.
+     */
+    public static function selfAssigner(EventTask $task): ?User
+    {
+        $user = auth()->user();
+
+        return $user instanceof User && $user->can('selfAssign', $task) ? $user : null;
+    }
+
+    protected static function isReadOnlyFor(EventTask $task): bool
+    {
+        return ! static::canEditFully($task) && static::selfAssigner($task) === null;
+    }
+
+    protected static function canEditFully(EventTask $task): bool
+    {
+        return $task->event !== null && (auth()->user()?->can('update', $task->event) ?? false);
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
+    protected static function fillFor(EventTask $task): array
+    {
+        $data = EventTaskForm::fillFromRecord($task);
+        $selfAssigner = static::selfAssigner($task);
+
+        if ($selfAssigner !== null) {
+            $data['assigned_user_id'] = $selfAssigner->id;
+        }
+
+        return $data;
+    }
+
+    protected static function submitLabel(EventTask $task): string
+    {
+        return static::selfAssigner($task) !== null && blank($task->assigned_user_id)
+            ? __('Add me to this task')
+            : __('Save changes');
     }
 
     /**

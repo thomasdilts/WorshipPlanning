@@ -54,6 +54,7 @@ final class PermissionLabels
             'events.view' => __('View services'),
             'events.create' => __('Create services'),
             'events.update' => __('Edit services'),
+            'events.assign_self' => __('Add only themself to existing tasks in services'),
             'events.delete' => __('Delete services'),
             'events.tasks_by_event' => __('View tasks by service'),
             'task_templates.view' => __('Use task templates'),

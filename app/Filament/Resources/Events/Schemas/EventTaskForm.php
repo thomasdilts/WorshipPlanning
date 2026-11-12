@@ -10,11 +10,13 @@ use App\Models\Song;
 use App\Models\TaskTemplate;
 use App\Models\Team;
 use App\Models\User;
+use App\Services\AssignmentResponder;
 use App\Services\EventTaskTimeline;
 use App\Services\MaterialAssignmentChange;
 use App\Services\PlanningAttachmentSearch;
 use App\Services\SongCatalogSearch;
 use App\Support\AnnouncementPoints;
+use App\Support\UserAvatar;
 use Filament\Forms\Components\Placeholder;
 use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\Select;
@@ -24,6 +26,8 @@ use Filament\Forms\Components\Toggle;
 use Filament\Schemas\Components\Utilities\Get;
 use Filament\Schemas\Components\Utilities\Set;
 use Filament\Schemas\Schema;
+use Illuminate\Auth\Access\AuthorizationException;
+use Illuminate\Support\Arr;
 use Illuminate\Support\HtmlString;
 use Modules\Abilities\Services\UserAbilities;
 use Modules\BibleVerses\Services\ZamarBibleClient;
@@ -42,6 +46,25 @@ class EventTaskForm
      */
     public const GUEST = 'guest';
 
+    /**
+     * Fields someone with only the self-assignment permission may change on their own task.
+     * The task type, its place in the order, and who else is on it stay as the planner left them.
+     *
+     * @var list<string>
+     */
+    public const SELF_ASSIGNABLE_FIELDS = [
+        'name',
+        'description',
+        'announcement_points',
+        'song',
+        'song_id',
+        'picture_ids',
+        'shared_file_ids',
+        'special_needs',
+        'bible_passages',
+        'duration',
+    ];
+
     public static function configure(Schema $schema, Event $event): Schema
     {
         return $schema
@@ -51,10 +74,14 @@ class EventTaskForm
     }
 
     /**
+     * Pass $selfAssigner for someone who may only put themself on the task: the person is fixed to them,
+     * and the task type, team, and position in the order cannot be changed.
+     *
      * @return array<int, mixed>
      */
-    public static function components(Event $event): array
+    public static function components(Event $event, ?User $selfAssigner = null): array
     {
+        $isSelfAssignment = $selfAssigner !== null;
         $teamsEnabled = static::moduleEnabled($event, 'teams');
         $picturesEnabled = static::moduleEnabled($event, 'pictures');
         $fileSharingEnabled = static::moduleEnabled($event, 'file_sharing');
@@ -76,6 +103,7 @@ class EventTaskForm
                     ->all())
                 ->searchable()
                 ->required()
+                ->disabled($isSelfAssignment)
                 ->live()
                 ->afterStateUpdated(function (?int $state, callable $set) use ($abilitiesEnabled): void {
                     if (! $state) {
@@ -429,10 +457,15 @@ class EventTaskForm
                 ->extraFieldWrapperAttributes(['class' => 'wp-task-option'])
                 ->helperText(__('Done before the service starts. These tasks are timed backwards from the start time.'))
                 ->default(false)
+                ->hidden($isSelfAssignment)
                 ->visible(fn (Get $get): bool => ! static::templateIsGlobal($get)),
             Select::make('assigned_user_id')
                 ->label(__('Person'))
-                ->options(function (Get $get) use ($event): array {
+                ->options(function (Get $get) use ($event, $selfAssigner): array {
+                    if ($selfAssigner !== null) {
+                        return [$selfAssigner->id => UserAvatar::html($selfAssigner)->toHtml()];
+                    }
+
                     $templateId = filled($get('task_template_id'))
                         ? (int) $get('task_template_id')
                         : null;
@@ -451,6 +484,7 @@ class EventTaskForm
                 ->searchable()
                 ->preload()
                 ->nullable()
+                ->disabled($isSelfAssignment)
                 ->live()
                 ->afterStateUpdated(fn (Set $set) => $set('accepted_verbally', false))
                 ->visible(fn (Get $get): bool => static::templateUsage($get, 'person')->isUsed())
@@ -490,6 +524,7 @@ class EventTaskForm
                 ->label(__('Guest name'))
                 ->maxLength(255)
                 ->live(onBlur: true)
+                ->hidden($isSelfAssignment)
                 ->visible(fn (Get $get): bool => static::templateUsage($get, 'person')->isUsed()
                     && $get('assigned_user_id') === self::GUEST)
                 ->helperText(__('Someone who is not in WorshipPlanning. Guests do not get messages.')),
@@ -510,6 +545,7 @@ class EventTaskForm
                 ->searchable()
                 ->preload()
                 ->nullable()
+                ->disabled($isSelfAssignment)
                 ->live()
                 ->afterStateUpdated(fn (Set $set) => $set('accepted_verbally', false))
                 ->visible(function (Get $get) use ($teamsEnabled): bool {
@@ -537,6 +573,7 @@ class EventTaskForm
                 ->label(__('Guest team name'))
                 ->maxLength(255)
                 ->live(onBlur: true)
+                ->disabled($isSelfAssignment)
                 ->visible(fn (Get $get): bool => $teamsEnabled
                     && static::templateUsage($get, 'team')->isUsed()
                     && $get('assigned_team_id') === self::GUEST)
@@ -545,6 +582,7 @@ class EventTaskForm
                 ->label(__('Accepted verbally'))
                 ->inline()
                 ->extraFieldWrapperAttributes(['class' => 'wp-task-option'])
+                ->hidden($isSelfAssignment)
                 ->helperText(__('They said yes in person or by phone. This overrides any reply to messages, and is cleared if the person or team changes.'))
                 ->visible(fn (Get $get): bool => (filled($get('assigned_user_id')) && $get('assigned_user_id') !== self::GUEST)
                     || (filled($get('assigned_team_id')) && $get('assigned_team_id') !== self::GUEST)),
@@ -553,6 +591,7 @@ class EventTaskForm
                 ->numeric()
                 ->default(0)
                 ->required()
+                ->hidden($isSelfAssignment)
                 ->visible(fn (Get $get): bool => ! static::templateIsGlobal($get))
                 ->helperText(__('Position on the timed timeline.')),
         ];
@@ -687,6 +726,38 @@ class EventTaskForm
         static::syncSharedFiles($task, $sharedFileIds);
         app(EventTaskTimeline::class)->recalculate($event->fresh(['tasks.template']));
         $material->applyAfterRecalculate($event->fresh(['tasks.template', 'tasks.responses', 'tasks.event']), $before);
+
+        return $task->fresh(['assignedUser', 'assignedTeam', 'template', 'pictures', 'sharedFiles', 'responses']);
+    }
+
+    /**
+     * Saves a task for someone who may only put themself on it. Only {@see SELF_ASSIGNABLE_FIELDS} are taken
+     * from the form; the person becomes the actor, and taking an open task counts as their confirmation.
+     *
+     * @param  array<string, mixed>  $data
+     */
+    public static function persistSelfAssignment(EventTask $task, array $data, User $actor): EventTask
+    {
+        /* Re-read the task so someone who took it a moment ago is not overwritten. */
+        $task = EventTask::query()->with(['event', 'template'])->findOrFail($task->id);
+
+        if (! $actor->can('selfAssign', $task)) {
+            throw new AuthorizationException;
+        }
+
+        $isTakingTask = blank($task->assigned_user_id);
+
+        $data = Arr::only($data, self::SELF_ASSIGNABLE_FIELDS) + [
+            'task_template_id' => $task->task_template_id,
+            'assigned_user_id' => $actor->id,
+            'accepted_verbally' => $task->isAcceptedVerbally(),
+        ];
+
+        $task = static::persist($task, $data, $task->event);
+
+        if ($isTakingTask) {
+            app(AssignmentResponder::class)->confirm($task, $actor);
+        }
 
         return $task->fresh(['assignedUser', 'assignedTeam', 'template', 'pictures', 'sharedFiles', 'responses']);
     }

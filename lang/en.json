@@ -1106,5 +1106,9 @@
     "Use 24-hour time": "Use 24-hour time",
     "On: 14:30. Off: 2:30 PM.": "On: 14:30. Off: 2:30 PM.",
     "No people assigned on this service yet.": "No people assigned on this service yet.",
-    "When a planner assigns you to a line in the service order, it appears here with the service date.": "When a planner assigns you to a line in the service order, it appears here with the service date."
+    "When a planner assigns you to a line in the service order, it appears here with the service date.": "When a planner assigns you to a line in the service order, it appears here with the service date.",
+    "Add only themself to existing tasks in services": "Add only themself to existing tasks in services",
+    "Add me": "Add me",
+    "Edit my task": "Edit my task",
+    "Add me to this task": "Add me to this task"
 }
