@@ -3378,7 +3378,8 @@
                 "default_duration": 5,
                 "special_needs_usage": "not_used",
                 "file_usage": "optional",
-                "bible_usage": "not_used"
+                "bible_usage": "not_used",
+                "description_as_bullets": 0
             },
             {
                 "id": 103,
@@ -3402,7 +3403,8 @@
                 "default_duration": 5,
                 "special_needs_usage": "not_used",
                 "file_usage": "not_used",
-                "bible_usage": "not_used"
+                "bible_usage": "not_used",
+                "description_as_bullets": 0
             },
             {
                 "id": 104,
@@ -3426,7 +3428,8 @@
                 "default_duration": 5,
                 "special_needs_usage": "not_used",
                 "file_usage": "optional",
-                "bible_usage": "optional"
+                "bible_usage": "optional",
+                "description_as_bullets": 0
             },
             {
                 "id": 105,
@@ -3450,7 +3453,8 @@
                 "default_duration": 5,
                 "special_needs_usage": "not_used",
                 "file_usage": "not_used",
-                "bible_usage": "not_used"
+                "bible_usage": "not_used",
+                "description_as_bullets": 1
             },
             {
                 "id": 106,
@@ -3474,7 +3478,8 @@
                 "default_duration": 5,
                 "special_needs_usage": "not_used",
                 "file_usage": "not_used",
-                "bible_usage": "not_used"
+                "bible_usage": "not_used",
+                "description_as_bullets": 0
             },
             {
                 "id": 107,
@@ -3498,7 +3503,8 @@
                 "default_duration": 5,
                 "special_needs_usage": "not_used",
                 "file_usage": "not_used",
-                "bible_usage": "not_used"
+                "bible_usage": "not_used",
+                "description_as_bullets": 0
             },
             {
                 "id": 108,
@@ -3522,7 +3528,8 @@
                 "default_duration": 5,
                 "special_needs_usage": "not_used",
                 "file_usage": "not_used",
-                "bible_usage": "optional"
+                "bible_usage": "optional",
+                "description_as_bullets": 0
             },
             {
                 "id": 109,
@@ -3546,7 +3553,8 @@
                 "default_duration": 5,
                 "special_needs_usage": "not_used",
                 "file_usage": "optional",
-                "bible_usage": "not_used"
+                "bible_usage": "not_used",
+                "description_as_bullets": 0
             },
             {
                 "id": 110,
@@ -3570,7 +3578,8 @@
                 "default_duration": 5,
                 "special_needs_usage": "not_used",
                 "file_usage": "optional",
-                "bible_usage": "optional"
+                "bible_usage": "optional",
+                "description_as_bullets": 0
             },
             {
                 "id": 111,
@@ -3594,7 +3603,8 @@
                 "default_duration": 5,
                 "special_needs_usage": "not_used",
                 "file_usage": "not_used",
-                "bible_usage": "optional"
+                "bible_usage": "optional",
+                "description_as_bullets": 0
             },
             {
                 "id": 112,
@@ -3618,7 +3628,8 @@
                 "default_duration": 5,
                 "special_needs_usage": "not_used",
                 "file_usage": "not_used",
-                "bible_usage": "optional"
+                "bible_usage": "optional",
+                "description_as_bullets": 0
             },
             {
                 "id": 113,
@@ -3642,7 +3653,8 @@
                 "default_duration": 5,
                 "special_needs_usage": "not_used",
                 "file_usage": "not_used",
-                "bible_usage": "not_used"
+                "bible_usage": "not_used",
+                "description_as_bullets": 0
             },
             {
                 "id": 114,
@@ -3666,7 +3678,8 @@
                 "default_duration": 5,
                 "special_needs_usage": "not_used",
                 "file_usage": "not_used",
-                "bible_usage": "not_used"
+                "bible_usage": "not_used",
+                "description_as_bullets": 0
             },
             {
                 "id": 115,
@@ -3690,7 +3703,8 @@
                 "default_duration": 5,
                 "special_needs_usage": "not_used",
                 "file_usage": "not_used",
-                "bible_usage": "not_used"
+                "bible_usage": "not_used",
+                "description_as_bullets": 0
             },
             {
                 "id": 116,
@@ -3714,7 +3728,8 @@
                 "default_duration": 5,
                 "special_needs_usage": "not_used",
                 "file_usage": "not_used",
-                "bible_usage": "not_used"
+                "bible_usage": "not_used",
+                "description_as_bullets": 0
             },
             {
                 "id": 117,
@@ -3738,7 +3753,8 @@
                 "default_duration": 5,
                 "special_needs_usage": "not_used",
                 "file_usage": "not_used",
-                "bible_usage": "not_used"
+                "bible_usage": "not_used",
+                "description_as_bullets": 0
             },
             {
                 "id": 118,
@@ -3762,7 +3778,8 @@
                 "default_duration": 5,
                 "special_needs_usage": "optional",
                 "file_usage": "optional",
-                "bible_usage": "optional"
+                "bible_usage": "optional",
+                "description_as_bullets": 0
             },
             {
                 "id": 119,
@@ -3786,7 +3803,8 @@
                 "default_duration": 5,
                 "special_needs_usage": "optional",
                 "file_usage": "optional",
-                "bible_usage": "optional"
+                "bible_usage": "optional",
+                "description_as_bullets": 0
             },
             {
                 "id": 120,
@@ -3810,7 +3828,8 @@
                 "default_duration": 5,
                 "special_needs_usage": "not_used",
                 "file_usage": "not_used",
-                "bible_usage": "not_used"
+                "bible_usage": "not_used",
+                "description_as_bullets": 0
             },
             {
                 "id": 121,
@@ -3834,7 +3853,8 @@
                 "default_duration": 5,
                 "special_needs_usage": "optional",
                 "file_usage": "optional",
-                "bible_usage": "optional"
+                "bible_usage": "optional",
+                "description_as_bullets": 0
             },
             {
                 "id": 122,
@@ -3858,7 +3878,8 @@
                 "default_duration": 5,
                 "special_needs_usage": "optional",
                 "file_usage": "optional",
-                "bible_usage": "optional"
+                "bible_usage": "optional",
+                "description_as_bullets": 0
             },
             {
                 "id": 123,
@@ -3882,7 +3903,8 @@
                 "default_duration": 5,
                 "special_needs_usage": "not_used",
                 "file_usage": "not_used",
-                "bible_usage": "not_used"
+                "bible_usage": "not_used",
+                "description_as_bullets": 0
             },
             {
                 "id": 124,
@@ -3906,7 +3928,8 @@
                 "default_duration": 5,
                 "special_needs_usage": "optional",
                 "file_usage": "not_used",
-                "bible_usage": "optional"
+                "bible_usage": "optional",
+                "description_as_bullets": 0
             },
             {
                 "id": 125,
@@ -3930,7 +3953,8 @@
                 "default_duration": 5,
                 "special_needs_usage": "optional",
                 "file_usage": "optional",
-                "bible_usage": "not_used"
+                "bible_usage": "not_used",
+                "description_as_bullets": 0
             },
             {
                 "id": 126,
@@ -3954,7 +3978,8 @@
                 "default_duration": 5,
                 "special_needs_usage": "optional",
                 "file_usage": "optional",
-                "bible_usage": "optional"
+                "bible_usage": "optional",
+                "description_as_bullets": 0
             },
             {
                 "id": 127,
@@ -3978,7 +4003,8 @@
                 "default_duration": 5,
                 "special_needs_usage": "optional",
                 "file_usage": "optional",
-                "bible_usage": "not_used"
+                "bible_usage": "not_used",
+                "description_as_bullets": 0
             },
             {
                 "id": 128,
@@ -4002,7 +4028,8 @@
                 "default_duration": 5,
                 "special_needs_usage": "not_used",
                 "file_usage": "not_used",
-                "bible_usage": "not_used"
+                "bible_usage": "not_used",
+                "description_as_bullets": 0
             },
             {
                 "id": 129,
@@ -4026,7 +4053,8 @@
                 "default_duration": 5,
                 "special_needs_usage": "optional",
                 "file_usage": "not_used",
-                "bible_usage": "not_used"
+                "bible_usage": "not_used",
+                "description_as_bullets": 0
             },
             {
                 "id": 130,
@@ -4050,7 +4078,8 @@
                 "default_duration": 5,
                 "special_needs_usage": "not_used",
                 "file_usage": "optional",
-                "bible_usage": "optional"
+                "bible_usage": "optional",
+                "description_as_bullets": 0
             },
             {
                 "id": 131,
@@ -4074,7 +4103,8 @@
                 "default_duration": 5,
                 "special_needs_usage": "not_used",
                 "file_usage": "not_used",
-                "bible_usage": "not_used"
+                "bible_usage": "not_used",
+                "description_as_bullets": 0
             },
             {
                 "id": 132,
@@ -4098,7 +4128,8 @@
                 "default_duration": 5,
                 "special_needs_usage": "optional",
                 "file_usage": "not_used",
-                "bible_usage": "not_used"
+                "bible_usage": "not_used",
+                "description_as_bullets": 0
             },
             {
                 "id": 133,
@@ -4122,7 +4153,8 @@
                 "default_duration": 5,
                 "special_needs_usage": "not_used",
                 "file_usage": "not_used",
-                "bible_usage": "not_used"
+                "bible_usage": "not_used",
+                "description_as_bullets": 0
             },
             {
                 "id": 134,
@@ -4146,7 +4178,8 @@
                 "default_duration": 5,
                 "special_needs_usage": "not_used",
                 "file_usage": "not_used",
-                "bible_usage": "not_used"
+                "bible_usage": "not_used",
+                "description_as_bullets": 0
             },
             {
                 "id": 135,
@@ -4170,7 +4203,8 @@
                 "default_duration": 5,
                 "special_needs_usage": "not_used",
                 "file_usage": "not_used",
-                "bible_usage": "not_used"
+                "bible_usage": "not_used",
+                "description_as_bullets": 0
             },
             {
                 "id": 136,
@@ -4194,7 +4228,8 @@
                 "default_duration": 5,
                 "special_needs_usage": "not_used",
                 "file_usage": "not_used",
-                "bible_usage": "not_used"
+                "bible_usage": "not_used",
+                "description_as_bullets": 0
             },
             {
                 "id": 137,
@@ -4218,7 +4253,8 @@
                 "default_duration": 5,
                 "special_needs_usage": "not_used",
                 "file_usage": "not_used",
-                "bible_usage": "not_used"
+                "bible_usage": "not_used",
+                "description_as_bullets": 0
             },
             {
                 "id": 138,
@@ -4242,7 +4278,8 @@
                 "default_duration": 5,
                 "special_needs_usage": "not_used",
                 "file_usage": "not_used",
-                "bible_usage": "not_used"
+                "bible_usage": "not_used",
+                "description_as_bullets": 0
             },
             {
                 "id": 139,
@@ -4266,7 +4303,8 @@
                 "default_duration": 5,
                 "special_needs_usage": "optional",
                 "file_usage": "not_used",
-                "bible_usage": "not_used"
+                "bible_usage": "not_used",
+                "description_as_bullets": 0
             },
             {
                 "id": 140,
@@ -4290,7 +4328,8 @@
                 "default_duration": 5,
                 "special_needs_usage": "optional",
                 "file_usage": "not_used",
-                "bible_usage": "not_used"
+                "bible_usage": "not_used",
+                "description_as_bullets": 0
             },
             {
                 "id": 141,
@@ -4314,7 +4353,8 @@
                 "default_duration": 5,
                 "special_needs_usage": "not_used",
                 "file_usage": "not_used",
-                "bible_usage": "not_used"
+                "bible_usage": "not_used",
+                "description_as_bullets": 0
             },
             {
                 "id": 142,
@@ -4338,7 +4378,8 @@
                 "default_duration": 5,
                 "special_needs_usage": "not_used",
                 "file_usage": "not_used",
-                "bible_usage": "not_used"
+                "bible_usage": "not_used",
+                "description_as_bullets": 0
             },
             {
                 "id": 143,
@@ -4362,7 +4403,8 @@
                 "default_duration": 5,
                 "special_needs_usage": "not_used",
                 "file_usage": "not_used",
-                "bible_usage": "not_used"
+                "bible_usage": "not_used",
+                "description_as_bullets": 0
             },
             {
                 "id": 144,
@@ -4386,7 +4428,8 @@
                 "default_duration": 5,
                 "special_needs_usage": "not_used",
                 "file_usage": "not_used",
-                "bible_usage": "not_used"
+                "bible_usage": "not_used",
+                "description_as_bullets": 0
             },
             {
                 "id": 145,
@@ -4410,7 +4453,8 @@
                 "default_duration": 5,
                 "special_needs_usage": "not_used",
                 "file_usage": "not_used",
-                "bible_usage": "not_used"
+                "bible_usage": "not_used",
+                "description_as_bullets": 0
             },
             {
                 "id": 146,
@@ -4434,7 +4478,8 @@
                 "default_duration": 5,
                 "special_needs_usage": "not_used",
                 "file_usage": "not_used",
-                "bible_usage": "not_used"
+                "bible_usage": "not_used",
+                "description_as_bullets": 0
             },
             {
                 "id": 147,
@@ -4458,7 +4503,8 @@
                 "default_duration": 5,
                 "special_needs_usage": "not_used",
                 "file_usage": "not_used",
-                "bible_usage": "not_used"
+                "bible_usage": "not_used",
+                "description_as_bullets": 0
             },
             {
                 "id": 148,
@@ -4482,7 +4528,8 @@
                 "default_duration": 5,
                 "special_needs_usage": "not_used",
                 "file_usage": "not_used",
-                "bible_usage": "not_used"
+                "bible_usage": "not_used",
+                "description_as_bullets": 0
             },
             {
                 "id": 149,
@@ -4506,7 +4553,8 @@
                 "default_duration": 5,
                 "special_needs_usage": "optional",
                 "file_usage": "not_used",
-                "bible_usage": "not_used"
+                "bible_usage": "not_used",
+                "description_as_bullets": 0
             },
             {
                 "id": 150,
@@ -4530,7 +4578,8 @@
                 "default_duration": 5,
                 "special_needs_usage": "not_used",
                 "file_usage": "not_used",
-                "bible_usage": "not_used"
+                "bible_usage": "not_used",
+                "description_as_bullets": 0
             },
             {
                 "id": 151,
@@ -4554,7 +4603,8 @@
                 "default_duration": 5,
                 "special_needs_usage": "not_used",
                 "file_usage": "not_used",
-                "bible_usage": "not_used"
+                "bible_usage": "not_used",
+                "description_as_bullets": 0
             }
         ],
         "task_template_user": [

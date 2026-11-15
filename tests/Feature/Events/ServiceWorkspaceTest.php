@@ -99,16 +99,16 @@ class ServiceWorkspaceTest extends TestCase
             ->assertDontSee('Open workspace');
     }
 
-    public function test_announcements_save_and_reopen_as_numbered_points(): void
+    public function test_bullet_descriptions_save_and_reopen_as_numbered_points(): void
     {
         [$admin, $event, $task] = $this->seedWorkspaceWithTasks();
-        $task->template->update(['name' => 'Pålysningar', 'description_usage' => FieldUsage::Required]);
-        $task->update(['name' => 'Pålysningar', 'description' => "• Church lunch\n• Youth meeting"]);
+        $task->template->update(['name' => 'Notices', 'description_usage' => FieldUsage::Required, 'description_as_bullets' => true]);
+        $task->update(['name' => 'Notices', 'description' => "• Church lunch\n• Youth meeting"]);
         $this->actingAs($admin);
 
         Livewire::test(OrderTasksRelationManager::class, ['ownerRecord' => $event, 'pageClass' => EditEvent::class])
             ->callTableAction('edit', $task, data: [
-                'announcement_points' => [
+                'description_bullets' => [
                     ['text' => "Youth meeting\nBring a friend"],
                     ['text' => 'Church lunch'],
                     ['text' => 'Choir practice'],
@@ -121,32 +121,32 @@ class ServiceWorkspaceTest extends TestCase
             ['text' => "Youth meeting\nBring a friend"],
             ['text' => 'Church lunch'],
             ['text' => 'Choir practice'],
-        ], EventTaskForm::fillFromRecord($task->fresh())['announcement_points']);
+        ], EventTaskForm::fillFromRecord($task->fresh())['description_bullets']);
     }
 
-    public function test_required_announcements_can_be_cleared(): void
+    public function test_required_bullet_descriptions_can_be_cleared(): void
     {
         [$admin, $event, $task] = $this->seedWorkspaceWithTasks();
-        $task->template->update(['name' => 'Pålysningar', 'description_usage' => FieldUsage::Required]);
-        $task->update(['name' => 'Pålysningar', 'description' => 'Keep this announcement']);
+        $task->template->update(['name' => 'Notices', 'description_usage' => FieldUsage::Required, 'description_as_bullets' => true]);
+        $task->update(['name' => 'Notices', 'description' => 'Keep this bullet']);
         $this->actingAs($admin);
 
         Livewire::test(OrderTasksRelationManager::class, ['ownerRecord' => $event, 'pageClass' => EditEvent::class])
-            ->callTableAction('edit', $task, data: ['announcement_points' => [['text' => '']]])
+            ->callTableAction('edit', $task, data: ['description_bullets' => [['text' => '']]])
             ->assertHasNoTableActionErrors();
 
         $this->assertEmpty($task->fresh()->description);
     }
 
-    public function test_optional_announcements_can_be_saved_without_points(): void
+    public function test_optional_bullet_descriptions_can_be_saved_without_points(): void
     {
         [$admin, $event, $task] = $this->seedWorkspaceWithTasks();
-        $task->template->update(['name' => 'Pålysningar', 'description_usage' => FieldUsage::Optional]);
-        $task->update(['name' => 'Pålysningar', 'description' => null]);
+        $task->template->update(['name' => 'Notices', 'description_usage' => FieldUsage::Optional, 'description_as_bullets' => true]);
+        $task->update(['name' => 'Notices', 'description' => null]);
         $this->actingAs($admin);
 
         Livewire::test(OrderTasksRelationManager::class, ['ownerRecord' => $event, 'pageClass' => EditEvent::class])
-            ->callTableAction('edit', $task, data: ['duration' => 8, 'announcement_points' => [['text' => '']]])
+            ->callTableAction('edit', $task, data: ['duration' => 8, 'description_bullets' => [['text' => '']]])
             ->assertHasNoTableActionErrors();
 
         $this->assertNull($task->fresh()->description);

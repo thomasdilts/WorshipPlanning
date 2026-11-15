@@ -34,6 +34,7 @@ class TaskTemplateFactory extends Factory
             'person_usage' => FieldUsage::Optional,
             'team_usage' => FieldUsage::NotUsed,
             'description_usage' => FieldUsage::Optional,
+            'description_as_bullets' => false,
             'special_needs_usage' => FieldUsage::Optional,
             'song_usage' => FieldUsage::NotUsed,
             'allow_manual_song_entry' => false,

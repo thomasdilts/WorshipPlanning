@@ -126,7 +126,18 @@ class TaskTemplateForm
                             ->options(FieldUsage::options())
                             ->default(FieldUsage::Optional->value)
                             ->required()
-                            ->native(false),
+                            ->native(false)
+                            ->live()
+                            ->afterStateUpdated(function (?string $state, callable $set): void {
+                                if ($state === FieldUsage::NotUsed->value || $state === null) {
+                                    $set('description_as_bullets', false);
+                                }
+                            }),
+                        Toggle::make('description_as_bullets')
+                            ->label(__('Show as bullets'))
+                            ->default(false)
+                            ->visible(fn (Get $get): bool => FieldUsage::tryFrom((string) $get('description_usage'))?->isUsed() ?? false)
+                            ->helperText(__('The description is written as numbered bullets, one box per bullet, and printed as a numbered list.')),
                         Select::make('special_needs_usage')
                             ->label(__('Special needs'))
                             ->options(FieldUsage::options())

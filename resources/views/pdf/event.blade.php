@@ -23,9 +23,9 @@
         .church-logo { position: absolute; top: 0; right: 0; max-width: 95px; max-height: 28px; width: auto; height: auto; }
         h1 { font-size: 14px; margin: 0 0 2px; }
         .meta { font-size: 9px; color: #52636b; }
-        .wp-announcement-points { margin: 0; padding-left: 20px; list-style-type: decimal; }
-        .wp-announcement-points li { margin-bottom: 4px; white-space: pre-line; }
-        [dir="rtl"] .wp-announcement-points { padding-left: 0; padding-right: 20px; }
+        .wp-description-bullets { margin: 0; padding-left: 20px; list-style-type: decimal; }
+        .wp-description-bullets li { margin-bottom: 4px; white-space: pre-line; }
+        [dir="rtl"] .wp-description-bullets { padding-left: 0; padding-right: 20px; }
         h2 { font-size: 11px; margin: 0 0 5px; }
         .order { float: {{ app()->getLocale() === 'ar' ? 'right' : 'left' }}; width: {{ $responsibilities->isEmpty() ? '100%' : '75%' }}; }
         .people { float: {{ app()->getLocale() === 'ar' ? 'left' : 'right' }}; width: 22%; }

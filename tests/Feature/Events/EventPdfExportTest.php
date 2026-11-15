@@ -58,27 +58,42 @@ class EventPdfExportTest extends TestCase
         }
     }
 
-    public function test_announcements_render_as_numbered_points_in_the_order_and_pdf_with_safe_text(): void
+    public function test_bullet_descriptions_render_as_numbered_points_in_the_order_and_pdf_with_safe_text(): void
     {
         $church = Church::factory()->create();
         app(CurrentChurch::class)->set($church);
         $event = Event::factory()->create(['church_id' => $church->id]);
-        $template = TaskTemplate::factory()->create(['church_id' => $church->id, 'name' => 'Pålysningar', 'description_usage' => FieldUsage::Optional]);
+        $template = TaskTemplate::factory()->create(['church_id' => $church->id, 'name' => 'Notices', 'description_usage' => FieldUsage::Optional, 'description_as_bullets' => true]);
         $task = EventTask::factory()->create([
-            'event_id' => $event->id, 'task_template_id' => $template->id, 'name' => 'Pålysningar',
+            'event_id' => $event->id, 'task_template_id' => $template->id, 'name' => 'Notices',
             'description' => "1. Church lunch\n2. Youth <script>alert(1)</script>\n3. Choir practice",
         ]);
         $event->load(['church', 'tasks.template', 'tasks.assignedUser', 'tasks.assignedTeam', 'tasks.sharedFiles', 'tasks.pictures', 'tasks.catalogSong']);
         $summary = app(EventTaskRowSummary::class);
 
         foreach ([$summary->html($task, $event)->toHtml(), View::make('pdf.event', ['event' => $event, 'summary' => $summary])->render()] as $html) {
-            $this->assertStringContainsString('<ol class="wp-announcement-points">', $html);
+            $this->assertStringContainsString('<ol class="wp-description-bullets">', $html);
             $this->assertStringContainsString('<li>Church lunch</li>', $html);
             $this->assertStringContainsString('<li>Choir practice</li>', $html);
             $this->assertStringContainsString('&lt;script&gt;', $html);
             $this->assertStringNotContainsString('<script>', $html);
             $this->assertStringNotContainsString('Desc: 1.', $html);
         }
+    }
+
+    public function test_descriptions_without_show_as_bullets_stay_plain_text_whatever_the_template_name(): void
+    {
+        $church = Church::factory()->create();
+        app(CurrentChurch::class)->set($church);
+        $event = Event::factory()->create(['church_id' => $church->id]);
+        $template = TaskTemplate::factory()->create(['church_id' => $church->id, 'name' => 'Pålysningar', 'description_usage' => FieldUsage::Optional, 'description_as_bullets' => false]);
+        $task = EventTask::factory()->create([
+            'event_id' => $event->id, 'task_template_id' => $template->id, 'name' => 'Pålysningar',
+            'description' => "1. Church lunch\n2. Choir practice",
+        ]);
+        $event->load(['church', 'tasks.template', 'tasks.assignedUser', 'tasks.assignedTeam', 'tasks.sharedFiles', 'tasks.pictures', 'tasks.catalogSong']);
+
+        $this->assertStringNotContainsString('wp-description-bullets', app(EventTaskRowSummary::class)->html($task, $event)->toHtml());
     }
 
     public function test_print_hides_empty_extra_content_absence_and_planning_warnings(): void

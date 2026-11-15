@@ -67,6 +67,34 @@ class TaskTemplateFieldUsageTest extends TestCase
         $this->assertTrue($template->usage('team')->isRequired());
     }
 
+    public function test_show_as_bullets_is_saved_only_while_the_description_is_used(): void
+    {
+        $church = Church::factory()->create();
+        $this->seed(RolesAndPermissionsSeeder::class);
+        $admin = User::factory()->create(['church_id' => $church->id]);
+        RolesAndPermissionsSeeder::assignDefaultRoles($admin, 'Church Admin');
+        app(CurrentChurch::class)->set($church);
+        $this->actingAs($admin);
+
+        Livewire::test(CreateTaskTemplate::class)
+            ->fillForm(['name' => 'Notices', 'default_order' => 10, 'description_usage' => FieldUsage::Optional->value])
+            ->assertFormFieldVisible('description_as_bullets')
+            ->fillForm(['description_as_bullets' => true])
+            ->call('create')
+            ->assertHasNoFormErrors();
+
+        $this->assertTrue(TaskTemplate::query()->where('name', 'Notices')->value('description_as_bullets'));
+
+        Livewire::test(CreateTaskTemplate::class)
+            ->fillForm(['name' => 'Offering', 'default_order' => 20, 'description_usage' => FieldUsage::Optional->value, 'description_as_bullets' => true])
+            ->fillForm(['description_usage' => FieldUsage::NotUsed->value])
+            ->assertFormFieldHidden('description_as_bullets')
+            ->call('create')
+            ->assertHasNoFormErrors();
+
+        $this->assertFalse(TaskTemplate::query()->where('name', 'Offering')->value('description_as_bullets'));
+    }
+
     public function test_event_task_persists_song_when_template_allows_it(): void
     {
         $church = Church::factory()->create();

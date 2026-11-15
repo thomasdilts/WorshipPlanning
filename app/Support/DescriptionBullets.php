@@ -2,19 +2,11 @@
 
 namespace App\Support;
 
-class AnnouncementPoints
+/**
+ * Splits a task description into numbered bullets and back, for task templates with "Show as bullets" on.
+ */
+class DescriptionBullets
 {
-    public static function appliesTo(?string $name, ?string $templateName = null): bool
-    {
-        foreach ([$name, $templateName] as $candidate) {
-            if (in_array(mb_strtolower(trim($candidate ?? '')), ['pålysningar', 'palysningar', 'announcements', 'إعلانات', 'الإعلانات'], true)) {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
     /** @return list<array{text: string}> */
     public static function fromDescription(?string $description): array
     {

@@ -15,7 +15,7 @@ use App\Services\EventTaskTimeline;
 use App\Services\MaterialAssignmentChange;
 use App\Services\PlanningAttachmentSearch;
 use App\Services\SongCatalogSearch;
-use App\Support\AnnouncementPoints;
+use App\Support\DescriptionBullets;
 use App\Support\UserAvatar;
 use Filament\Forms\Components\Placeholder;
 use Filament\Forms\Components\Repeater;
@@ -55,7 +55,7 @@ class EventTaskForm
     public const SELF_ASSIGNABLE_FIELDS = [
         'name',
         'description',
-        'announcement_points',
+        'description_bullets',
         'song',
         'song_id',
         'picture_ids',
@@ -137,7 +137,7 @@ class EventTaskForm
                         $set('description', null);
                     }
 
-                    $set('announcement_points', AnnouncementPoints::fromDescription($template->description) ?: [['text' => '']]);
+                    $set('description_bullets', DescriptionBullets::fromDescription($template->description) ?: [['text' => '']]);
 
                     if (! $template->usage('person')->isUsed()) {
                         $set('assigned_user_id', null);
@@ -184,29 +184,29 @@ class EventTaskForm
                 ->label(__('Description'))
                 ->rows(2)
                 ->live(onBlur: true)
-                ->afterStateUpdated(fn (?string $state, Set $set) => $set('announcement_points', AnnouncementPoints::fromDescription($state) ?: [['text' => '']]))
-                ->visible(fn (Get $get): bool => static::templateUsage($get, 'description')->isUsed() && ! static::isAnnouncement($get))
+                ->afterStateUpdated(fn (?string $state, Set $set) => $set('description_bullets', DescriptionBullets::fromDescription($state) ?: [['text' => '']]))
+                ->visible(fn (Get $get): bool => static::templateUsage($get, 'description')->isUsed() && ! static::showsDescriptionAsBullets($get))
                 ->markAsRequired(fn (Get $get): bool => static::templateUsage($get, 'description')->isRequired()),
-            Repeater::make('announcement_points')
-                ->label(__('Announcement points'))
-                ->helperText(__('Write one announcement in each numbered box. Add as many points as you need; the PDF uses the same order.'))
+            Repeater::make('description_bullets')
+                ->label(__('Bullets'))
+                ->helperText(__('Write one bullet in each numbered box. Add as many bullets as you need; the PDF uses the same order.'))
                 ->schema([
                     Textarea::make('text')
-                        ->label(__('Announcement'))
+                        ->label(__('Bullet'))
                         ->hiddenLabel()
                         ->rows(2)
                         ->autosize(),
                 ])
-                ->itemLabel(__('Announcement'))
+                ->itemLabel(__('Bullet'))
                 ->itemNumbers()
-                ->addActionLabel(__('Add announcement'))
+                ->addActionLabel(__('Add bullet'))
                 ->defaultItems(1)
                 ->reorderableWithButtons()
-                ->extraAttributes(['class' => 'wp-announcement-editor'])
+                ->extraAttributes(['class' => 'wp-bullets-editor'])
                 ->live(onBlur: true)
-                ->afterStateUpdated(fn (?array $state, Set $set) => $set('description', AnnouncementPoints::toDescription($state ?? [])))
+                ->afterStateUpdated(fn (?array $state, Set $set) => $set('description', DescriptionBullets::toDescription($state ?? [])))
                 ->columnSpanFull()
-                ->visible(fn (Get $get): bool => static::templateUsage($get, 'description')->isUsed() && static::isAnnouncement($get)),
+                ->visible(fn (Get $get): bool => static::templateUsage($get, 'description')->isUsed() && static::showsDescriptionAsBullets($get)),
             Select::make('song_id')
                 ->label(__('Song from catalog'))
                 ->searchable()
@@ -615,7 +615,7 @@ class EventTaskForm
         if ($task->hasGuestTeam()) {
             $data['assigned_team_id'] = self::GUEST;
         }
-        $data['announcement_points'] = AnnouncementPoints::fromDescription($task->description) ?: [['text' => '']];
+        $data['description_bullets'] = DescriptionBullets::fromDescription($task->description) ?: [['text' => '']];
 
         return $data;
     }
@@ -631,16 +631,16 @@ class EventTaskForm
             : null;
 
         if ($template === null) {
-            unset($data['announcement_points']);
+            unset($data['description_bullets']);
 
             return $data;
         }
 
-        if (AnnouncementPoints::appliesTo($data['name'] ?? null, $template->name) && array_key_exists('announcement_points', $data)) {
-            $data['description'] = AnnouncementPoints::toDescription($data['announcement_points'] ?? []);
+        if ($template->description_as_bullets && array_key_exists('description_bullets', $data)) {
+            $data['description'] = DescriptionBullets::toDescription($data['description_bullets'] ?? []);
         }
 
-        unset($data['announcement_points']);
+        unset($data['description_bullets']);
 
         $data = static::normalizeGuests($data, $template);
 
@@ -1025,9 +1025,9 @@ class EventTaskForm
         return (bool) (static::resolveTemplate($get)?->use_globally ?? false);
     }
 
-    protected static function isAnnouncement(Get $get): bool
+    protected static function showsDescriptionAsBullets(Get $get): bool
     {
-        return AnnouncementPoints::appliesTo($get('name'), static::resolveTemplate($get)?->name);
+        return (bool) (static::resolveTemplate($get)?->description_as_bullets ?? false);
     }
 
     protected static function templateUsage(Get $get, string $field): FieldUsage

@@ -6,7 +6,7 @@ use App\Core\Modules\ChurchModuleManager;
 use App\Enums\AssignmentState;
 use App\Models\Event;
 use App\Models\EventTask;
-use App\Support\AnnouncementPoints;
+use App\Support\DescriptionBullets;
 use App\Support\UserAvatar;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\HtmlString;
@@ -67,8 +67,8 @@ class EventTaskRowSummary
         $bits = [];
 
         if (filled($task->description) && ($template?->usage('description')->isUsed() ?? true)) {
-            $bits[] = ($withAvatarHtml || $forPrint) && AnnouncementPoints::appliesTo($task->name, $template?->name)
-                ? new HtmlString(view('filament.events.announcement-points', ['points' => AnnouncementPoints::fromDescription($task->description)])->render())
+            $bits[] = ($withAvatarHtml || $forPrint) && ($template?->description_as_bullets ?? false)
+                ? new HtmlString(view('filament.events.description-bullets', ['points' => DescriptionBullets::fromDescription($task->description)])->render())
                 : $task->description;
         }
 

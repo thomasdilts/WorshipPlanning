@@ -68,6 +68,10 @@ class TaskTemplatesTable
                     ->formatStateUsing(fn (FieldUsage|string|null $state): string => static::usageLabel($state))
                     ->color(fn (FieldUsage|string|null $state): string => static::usageColor($state))
                     ->toggleable(),
+                IconColumn::make('description_as_bullets')
+                    ->label(__('Bullets'))
+                    ->boolean()
+                    ->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('special_needs_usage')
                     ->label(__('Needs'))
                     ->badge()
