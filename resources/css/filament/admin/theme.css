@@ -2156,10 +2156,10 @@ a.wp-schedule-event:hover {
 
 .wp-login-aside-title {
     margin: 0;
-    font-family: var(--serif-font-family, Georgia, serif);
+    font-family: var(--font-family, 'Instrument Sans', sans-serif);
     font-size: 1.75rem;
     line-height: 1.2;
-    font-weight: 400;
+    font-weight: 500;
     letter-spacing: -0.02em;
     color: var(--wp-text);
 }
