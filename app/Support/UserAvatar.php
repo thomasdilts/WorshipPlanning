@@ -2,28 +2,21 @@
 
 namespace App\Support;
 
+use App\Filament\Forms\AvatarUpload;
 use App\Filament\Resources\Users\UserResource;
 use App\Models\User;
-use App\Services\UserAvatarProcessor;
-use Filament\Forms\Components\FileUpload;
 use Illuminate\Support\HtmlString;
 
 final class UserAvatar
 {
-    public static function upload(string $directory): FileUpload
+    public static function upload(string $directory): AvatarUpload
     {
-        return FileUpload::make('avatar_path')
+        return AvatarUpload::make('avatar_path')
             ->label(__('Profile picture'))
-            ->avatar()
-            ->imageEditor()
-            ->circleCropper()
             ->disk('public')
             ->directory($directory)
             ->visibility('public')
-            ->automaticallyResizeImagesToHeight((string) UserAvatarProcessor::MAX_EDGE)
-            ->automaticallyResizeImagesToWidth((string) UserAvatarProcessor::MAX_EDGE)
-            ->maxSize(2048)
-            ->helperText(__('Drag to position and zoom inside the circle. Saved as a small JPEG (max 100px).'));
+            ->maxSize(2048);
     }
 
     public static function html(?User $user, bool $withName = true, string $size = 'md'): HtmlString

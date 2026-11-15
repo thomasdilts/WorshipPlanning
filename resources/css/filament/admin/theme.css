@@ -552,6 +552,219 @@
     object-fit: cover;
 }
 
+/* ---------- Profile picture field and editor (rounded square, like the avatars) ---------- */
+
+.wp-avatar-field-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 1rem;
+}
+
+.wp-avatar-field-preview {
+    position: relative;
+    display: grid;
+    place-items: center;
+    width: 7.5rem;
+    height: 7.5rem;
+    flex-shrink: 0;
+    overflow: hidden;
+    border: 2px dashed var(--wp-border);
+    border-radius: 1.25rem;
+    background: var(--wp-surface-sunken);
+    color: var(--wp-text-muted);
+    cursor: pointer;
+    transition: border-color var(--wp-motion) var(--wp-ease);
+}
+
+.wp-avatar-field-preview:hover,
+.wp-avatar-field-preview-drop {
+    border-color: var(--wp-primary);
+}
+
+.wp-avatar-field-preview:focus-visible {
+    outline: 2px solid var(--wp-focus);
+    outline-offset: 2px;
+}
+
+.wp-avatar-field-preview:disabled {
+    cursor: default;
+}
+
+.wp-avatar-field-preview img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.wp-avatar-field-busy {
+    position: absolute;
+    inset: 0;
+    display: grid;
+    place-items: center;
+    background: color-mix(in srgb, var(--wp-surface) 70%, transparent);
+    color: var(--wp-primary);
+}
+
+.wp-avatar-field-actions {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+}
+
+.wp-avatar-field-hint,
+.wp-avatar-field-notice,
+.wp-avatar-field-error {
+    margin: 0.5rem 0 0;
+    font-size: 0.875rem;
+}
+
+.wp-avatar-field-hint { color: var(--wp-text-muted); }
+.wp-avatar-field-notice { color: var(--wp-primary); font-weight: 600; }
+.dark .wp-avatar-field-notice { color: var(--wp-focus); }
+.wp-avatar-field-error { color: rgb(220 38 38); }
+
+.wp-avatar-editor {
+    position: fixed;
+    inset: 0;
+    z-index: 60;
+    display: grid;
+    place-items: center;
+    padding: 1rem;
+    overflow-y: auto;
+}
+
+.wp-avatar-editor-backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgb(0 0 0 / 0.55);
+}
+
+.wp-avatar-editor-window {
+    position: relative;
+    display: grid;
+    gap: 1rem;
+    width: min(34rem, 100%);
+    padding: 1.25rem;
+    border-radius: var(--wp-radius-surface);
+    background: var(--wp-surface);
+    color: var(--wp-text);
+    box-shadow: 0 20px 50px rgb(0 0 0 / 0.3);
+}
+
+.wp-avatar-editor-heading {
+    margin: 0;
+    font-size: 1.125rem;
+    font-weight: 700;
+}
+
+.wp-avatar-editor-help {
+    margin: 0;
+    color: var(--wp-text-muted);
+    font-size: 0.95rem;
+}
+
+.wp-avatar-editor-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-start;
+    gap: 1rem;
+}
+
+.wp-avatar-editor-stage {
+    position: relative;
+    width: min(18rem, 100%);
+    aspect-ratio: 1 / 1;
+    overflow: hidden;
+    border-radius: var(--wp-radius-control);
+    background: #2a2723;
+    cursor: grab;
+    touch-action: none;
+    user-select: none;
+}
+
+.wp-avatar-editor-stage:focus-visible {
+    outline: 3px solid var(--wp-focus);
+    outline-offset: 2px;
+}
+
+.wp-avatar-editor-stage-dragging { cursor: grabbing; }
+
+.wp-avatar-editor-stage img {
+    position: absolute;
+    top: 0;
+    left: 0;
+    max-width: none;
+    transform-origin: 0 0;
+    pointer-events: none;
+}
+
+/* Rounded-square guide: what is outside it is dimmed, like the avatar's corners. */
+.wp-avatar-editor-frame {
+    position: absolute;
+    inset: 0;
+    border-radius: 18%;
+    box-shadow: 0 0 0 999px rgb(0 0 0 / 0.45), inset 0 0 0 2px rgb(255 255 255 / 0.85);
+    pointer-events: none;
+}
+
+.wp-avatar-editor-side {
+    display: grid;
+    gap: 0.35rem;
+    justify-items: start;
+}
+
+.wp-avatar-editor-label {
+    font-size: 0.875rem;
+    color: var(--wp-text-muted);
+}
+
+.wp-avatar-editor-side canvas {
+    width: 6rem;
+    height: 6rem;
+    border-radius: 1rem;
+    border: 1px solid var(--wp-border);
+}
+
+.wp-avatar-editor-zoom {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    max-width: 22rem;
+}
+
+.wp-avatar-editor-zoom input[type="range"] {
+    flex: 1;
+    min-width: 6rem;
+    accent-color: var(--wp-primary);
+}
+
+.wp-avatar-editor-zoom-step {
+    display: grid;
+    place-items: center;
+    width: 2.25rem;
+    height: 2.25rem;
+    flex-shrink: 0;
+    border: 1px solid var(--wp-border);
+    border-radius: var(--wp-radius-control);
+    background: var(--wp-surface);
+    color: var(--wp-text);
+    font-size: 1.25rem;
+    line-height: 1;
+}
+
+.wp-avatar-editor-zoom-step:hover { border-color: var(--wp-primary); }
+
+.wp-avatar-editor-footer {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    gap: 0.5rem;
+}
+
 .dark img.fi-logo {
     /* Light teal plate so the logo reads on dark chrome */
     background-color: var(--wp-logo-plate);

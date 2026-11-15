@@ -106,6 +106,7 @@ class AdminPanelProvider extends PanelProvider
             ->renderHook(PanelsRenderHook::BODY_END, fn (): string => auth()->check()
                 ? view('filament.navigation.mobile-tabs', ['tabs' => app(PanelNavigation::class)->mobileTabs()])->render()
                     .view('filament.events.order-drag-script')->render()
+                    .view('filament.users.avatar-editor-script')->render()
                     .view('filament.users.profile-preview-host')->render()
                 : '')
             ->navigation(fn (NavigationBuilder $builder): NavigationBuilder => app(PanelNavigation::class)->build($builder))
