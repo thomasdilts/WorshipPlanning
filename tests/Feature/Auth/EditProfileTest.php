@@ -69,7 +69,8 @@ class EditProfileTest extends TestCase
         Livewire::test(EditProfile::class)
             ->set('data.avatar_path.new-picture', UploadedFile::fake()->image('profile-picture.jpg', 400, 400))
             ->call('save')
-            ->assertHasNoFormErrors();
+            ->assertHasNoFormErrors()
+            ->assertDispatched('refresh-topbar');
 
         $path = $user->fresh()->avatar_path;
         $this->assertStringStartsWith($user->avatarDirectory().'/', $path);

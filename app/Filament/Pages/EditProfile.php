@@ -93,6 +93,10 @@ class EditProfile extends BaseEditProfile
             app(UserAbilities::class)->sync($this->getUser(), $this->pendingAbilityTemplateIds);
             $this->pendingAbilityTemplateIds = null;
         }
+
+        // The user menu shows the picture and name; redraw it now instead of on the next page load.
+        $this->dispatch('refresh-topbar');
+        $this->dispatch('refresh-sidebar');
     }
 
     protected function getLanguageFormComponent(): Component
