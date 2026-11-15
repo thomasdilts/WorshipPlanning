@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\Events\Pages;
 
 use App\Filament\Resources\Events\Concerns\HasEventMessageActions;
+use App\Filament\Resources\Events\Concerns\RefreshesAfterTaskChanges;
 use App\Filament\Resources\Events\EventResource;
 use App\Support\DateTimeFormats;
 use Filament\Resources\Pages\EditRecord;
@@ -15,6 +16,7 @@ use Livewire\Attributes\Url;
 class EditEvent extends EditRecord
 {
     use HasEventMessageActions;
+    use RefreshesAfterTaskChanges;
 
     /** @var array<string, string> */
     protected array $extraBodyAttributes = [

@@ -50,6 +50,11 @@ class TasksRelationManager extends RelationManager
     public const START_MARKER_KEY = 'start-marker';
 
     /**
+     * Sent after anything in the table may have changed tasks; the service page redraws around it.
+     */
+    public const TASKS_CHANGED_EVENT = 'service-tasks-changed';
+
+    /**
      * Loaded with the page, so a link's ?task= is still in the request when the table mounts.
      */
     protected static bool $isLazy = false;
@@ -283,6 +288,21 @@ class TasksRelationManager extends RelationManager
     }
 
     /**
+     * Every popup or row button here can change tasks (edit, save and send message, add, delete, move, messages),
+     * so the service page around the table is told to redraw once the action has run.
+     *
+     * @param  array<string, mixed>  $arguments
+     */
+    public function callMountedAction(array $arguments = []): mixed
+    {
+        $result = parent::callMountedAction($arguments);
+
+        $this->dispatch(static::TASKS_CHANGED_EVENT);
+
+        return $result;
+    }
+
+    /**
      * The Order table also sends the start-time divider's position; tasks above it run before the start.
      *
      * @param  array<int, int|string>  $order
@@ -294,6 +314,7 @@ class TasksRelationManager extends RelationManager
 
         if (static::$globalOnly !== false || $markerIndex === false || ! $this->getTable()->isReorderable()) {
             parent::reorderTable($order, $draggedRecordKey);
+            $this->dispatch(static::TASKS_CHANGED_EVENT);
 
             return;
         }
@@ -313,6 +334,8 @@ class TasksRelationManager extends RelationManager
 
             parent::reorderTable($taskOrder, $draggedRecordKey);
         });
+
+        $this->dispatch(static::TASKS_CHANGED_EVENT);
     }
 
     /**

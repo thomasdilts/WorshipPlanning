@@ -156,6 +156,7 @@ class TaskResponseStatusTest extends TestCase
         $this->tasksTable()
             ->callAction(TestAction::make('edit')->table($this->task)->arguments(['sendMessage' => true]))
             ->assertHasNoErrors()
+            ->assertDispatched(TasksRelationManager::TASKS_CHANGED_EVENT)
             ->assertActionMounted('sendTaskMessage')
             ->assertSchemaStateSet([
                 'recipient_task_ids' => [$this->task->id],

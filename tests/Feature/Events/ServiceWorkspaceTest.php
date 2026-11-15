@@ -72,6 +72,24 @@ class ServiceWorkspaceTest extends TestCase
             ->assertSee('Staffing');
     }
 
+    public function test_saving_a_task_in_the_popup_redraws_the_service_page_around_the_table(): void
+    {
+        [$admin, $event, , $global] = $this->seedWorkspaceWithTasks();
+        $this->actingAs($admin);
+
+        $page = Livewire::test(EditEvent::class, ['record' => $event->getRouteKey()])
+            ->assertSee('2 not assigned');
+
+        Livewire::test(PeopleTasksRelationManager::class, ['ownerRecord' => $event, 'pageClass' => EditEvent::class])
+            ->callTableAction('edit', $global, data: ['assigned_user_id' => $admin->id])
+            ->assertHasNoTableActionErrors()
+            ->assertDispatched(TasksRelationManager::TASKS_CHANGED_EVENT);
+
+        $page->dispatch(TasksRelationManager::TASKS_CHANGED_EVENT)
+            ->assertSee('1 not assigned')
+            ->assertDontSee('2 not assigned');
+    }
+
     public function test_return_query_does_not_restore_the_redundant_back_button(): void
     {
         [$admin, $event] = $this->seedWorkspace();
