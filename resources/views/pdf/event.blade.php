@@ -26,7 +26,8 @@
         h1 { color: #115e59; font-size: 14px; margin: 0 0 2px; }
         .meta { font-size: 9px; color: #52636b; }
         .wp-description-bullets { margin: 0; padding-left: 20px; list-style-type: decimal; }
-        .wp-description-bullets li { margin-bottom: 4px; white-space: pre-line; }
+        .wp-description-bullets li { margin-bottom: 5px; padding-bottom: 5px; border-bottom: 1px solid #dce3e8; white-space: pre-line; }
+        .wp-description-bullets li:last-child { margin-bottom: 0; padding-bottom: 0; border-bottom: 0; }
         [dir="rtl"] .wp-description-bullets { padding-left: 0; padding-right: 20px; }
         h2 { font-size: 11px; margin: 0 0 5px; color: #115e59; }
         .people > h2 { padding: 4px 5px; background: #d9efea; border-bottom: 1px solid #0f766e; }
@@ -45,7 +46,7 @@
         .problem { color: #b42318; font-weight: bold; }
         .responsibility { padding: 2px 0; border-bottom: 1px solid #dce3e8; page-break-inside: avoid; }
         .responsibility strong { display: inline; color: #115e59; }
-        .responsibility .detail-line { display: inline; margin: 0; color: #1e40af; }
+        .responsibility .detail-line { display: inline; margin: 0; color: #000000; }
         .responsibility .detail-line + .detail-line:before { content: " / "; }
         .bullet-details { margin-top: 10px; }
         .bullet-detail { margin-bottom: 8px; }
@@ -53,9 +54,9 @@
         .empty { color: #52636b; }
         .before-start td { background: #edf2f7; color: #475569; font-size: {{ $dense ? '7.5' : '9' }}px; line-height: 1.1; padding: {{ $dense ? '1.6px 4px' : '2.7px 4px' }}; }
         .before-start .detail-line { margin-bottom: 0; }
-        .start-marker td { padding: 0 8px; font-size: 8.2px; line-height: 1; background: #0f766e; color: #ffffff; text-align: center; border-top: 1px solid #115e59; border-bottom: 1px solid #115e59; }
-        .start-marker .start-time { font-size: 8.2px; font-weight: bold; letter-spacing: 1px; }
-        .start-marker .start-side { font-size: 7px; padding: 0 14px; }
+        .start-marker td { padding: 4px 8px; font-size: 9px; line-height: 1.2; background: #0f766e; color: #ffffff; text-align: center; border-top: 1px solid #115e59; border-bottom: 1px solid #115e59; }
+        .start-marker .start-time { font-size: 10px; font-weight: bold; letter-spacing: 1px; }
+        .start-marker .start-side { font-size: 8px; padding: 0 14px; }
     </style>
 </head>
 <body>
