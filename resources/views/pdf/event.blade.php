@@ -21,37 +21,39 @@
     <style>
         @page { size: A4 landscape; margin: 8mm 9mm; }
         body { font-family: DejaVu Sans, sans-serif; font-size: {{ $dense ? '9' : '11' }}px; line-height: 1.25; color: #172b2c; }
-        .header { position: relative; min-height: 26px; margin-bottom: 8px; padding: 0 105px 5px 0; border-bottom: 1px solid #52636b; }
+        .header { position: relative; min-height: 26px; margin-bottom: 8px; padding: 0 105px 5px 0; border-bottom: 2px solid #0f766e; }
         .church-logo { position: absolute; top: 0; right: 0; max-width: 95px; max-height: 28px; width: auto; height: auto; }
-        h1 { font-size: 14px; margin: 0 0 2px; }
+        h1 { color: #115e59; font-size: 14px; margin: 0 0 2px; }
         .meta { font-size: 9px; color: #52636b; }
         .wp-description-bullets { margin: 0; padding-left: 20px; list-style-type: decimal; }
         .wp-description-bullets li { margin-bottom: 4px; white-space: pre-line; }
         [dir="rtl"] .wp-description-bullets { padding-left: 0; padding-right: 20px; }
-        h2 { font-size: 11px; margin: 0 0 5px; }
+        h2 { font-size: 11px; margin: 0 0 5px; color: #115e59; }
+        .people > h2 { padding: 4px 5px; background: #d9efea; border-bottom: 1px solid #0f766e; }
         .order { float: {{ app()->getLocale() === 'ar' ? 'right' : 'left' }}; width: {{ $hasSidebar ? '70.6%' : '100%' }}; }
         .people { float: {{ app()->getLocale() === 'ar' ? 'left' : 'right' }}; width: 26.4%; }
         table { width: 100%; border-collapse: collapse; }
-        th { text-align: {{ app()->getLocale() === 'ar' ? 'right' : 'left' }}; color: #52636b; font-weight: normal; padding: 3px 4px; border-bottom: 1px solid #8fa0a9; }
+        th { text-align: {{ app()->getLocale() === 'ar' ? 'right' : 'left' }}; color: #ffffff; background: #115e59; font-weight: bold; padding: 4px; border-bottom: 1px solid #115e59; }
+        th.col-task { color: #ffffff; }
         td { padding: {{ $dense ? '3px 4px' : '5px 4px' }}; vertical-align: top; border-bottom: 1px solid #dce3e8; overflow-wrap: break-word; }
         tr { page-break-inside: avoid; }
         .col-time { width: 35px; white-space: nowrap; font-size: 8px; }
         .col-mins { width: 25px; }
-        .col-task { width: 23%; font-weight: bold; }
+        .col-task { width: 23%; font-weight: bold; color: #115e59; }
         .col-status { width: 56px; font-size: 8px; }
         .detail-line { margin-bottom: 1px; }
         .problem { color: #b42318; font-weight: bold; }
         .responsibility { padding: 2px 0; border-bottom: 1px solid #dce3e8; page-break-inside: avoid; }
-        .responsibility strong { display: inline; }
-        .responsibility .detail-line { display: inline; margin: 0; }
+        .responsibility strong { display: inline; color: #115e59; }
+        .responsibility .detail-line { display: inline; margin: 0; color: #1e40af; }
         .responsibility .detail-line + .detail-line:before { content: " / "; }
         .bullet-details { margin-top: 10px; }
         .bullet-detail { margin-bottom: 8px; }
-        .bullet-detail h2 { margin-bottom: 3px; }
+        .bullet-detail h2 { margin-bottom: 4px; padding: 3px 5px; color: #854d0e; background: #fef3c7; border-bottom: 1px solid #d4aa4d; }
         .empty { color: #52636b; }
-        .before-start td { background: #f1f4f6; font-size: {{ $dense ? '7.5' : '9' }}px; line-height: 1.1; padding: {{ $dense ? '1.6px 4px' : '2.7px 4px' }}; }
+        .before-start td { background: #edf2f7; color: #475569; font-size: {{ $dense ? '7.5' : '9' }}px; line-height: 1.1; padding: {{ $dense ? '1.6px 4px' : '2.7px 4px' }}; }
         .before-start .detail-line { margin-bottom: 0; }
-        .start-marker td { padding: 0 8px; font-size: 8.2px; line-height: 1; background: #e2e7eb; color: #172b2c; text-align: center; border-top: 1px solid #c9d2d9; border-bottom: 1px solid #c9d2d9; }
+        .start-marker td { padding: 0 8px; font-size: 8.2px; line-height: 1; background: #0f766e; color: #ffffff; text-align: center; border-top: 1px solid #115e59; border-bottom: 1px solid #115e59; }
         .start-marker .start-time { font-size: 8.2px; font-weight: bold; letter-spacing: 1px; }
         .start-marker .start-side { font-size: 7px; padding: 0 14px; }
     </style>
