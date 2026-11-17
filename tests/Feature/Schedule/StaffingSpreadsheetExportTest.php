@@ -95,7 +95,7 @@ class StaffingSpreadsheetExportTest extends TestCase
         $this->actingAs($admin)
             ->get(route('schedule.staffing-csv', [
                 'view' => SpreadsheetViewKey::AllStaffing->value,
-                'range' => 'next_six_weeks',
+                'range' => 'next_twelve_weeks',
             ]))
             ->assertOk()
             ->assertHeader('content-type', 'text/csv; charset=UTF-8')

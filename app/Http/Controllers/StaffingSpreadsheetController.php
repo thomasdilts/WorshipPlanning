@@ -22,8 +22,8 @@ class StaffingSpreadsheetController extends Controller
 
         $view = SpreadsheetViewKey::tryFrom((string) request('view', SpreadsheetViewKey::AllStaffing->value))
             ?? SpreadsheetViewKey::AllStaffing;
-        $range = SpreadsheetRangeKey::tryFrom((string) request('range', SpreadsheetRangeKey::NextSixWeeks->value))
-            ?? SpreadsheetRangeKey::NextSixWeeks;
+        $range = SpreadsheetRangeKey::tryFrom((string) request('range', SpreadsheetRangeKey::NextTwelveWeeks->value))
+            ?? SpreadsheetRangeKey::NextTwelveWeeks;
 
         [$from, $until] = $range->bounds(
             request()->string('from')->toString() ?: null,

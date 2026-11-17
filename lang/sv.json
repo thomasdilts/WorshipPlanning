@@ -389,7 +389,7 @@
     "New church access request": "Ny ansökan om kyrkoåtkomst",
     "New start": "Ny start",
     "New: :count": "Nya: :count",
-    "Next 6 weeks": "Kommande 6 veckor",
+    "Next 12 weeks": "Kommande 12 veckor",
     "Next commitments": "Nästa åtaganden",
     "Next month": "Nästa månad",
     "No assigned tasks": "Inga tilldelade uppgifter",
@@ -1137,5 +1137,15 @@
     "Templates marked “Other” are listed here. Use {{declined_by}} for who declined, {{task}} for the declined task, {{task_url}} for a link to it and {{event}}, {{date}} and {{time}} for the service. Without a template no decline messages are sent.": "Mallar markerade ”Övrigt” visas här. Använd {{declined_by}} för vem som avböjde, {{task}} för den avböjda uppgiften, {{task_url}} för en länk till den och {{event}}, {{date}} och {{time}} för gudstjänsten. Utan mall skickas inga meddelanden om avböjanden.",
     "Who declined — only in decline messages, where {{task}} is the declined task": "Vem som avböjde — bara i meddelanden om avböjanden, där {{task}} är den avböjda uppgiften",
     "Link that opens the declined task on the service page — only in decline messages": "Länk som öppnar den avböjda uppgiften på gudstjänstsidan — bara i meddelanden om avböjanden",
-    "None — send by email": "Ingen — skicka med e-post"
+    "None — send by email": "Ingen — skicka med e-post",
+    "Street address": "Gatuadress",
+    "City": "Ort",
+    "Postal code": "Postnummer",
+    "Administrator name": "Administratörens namn",
+    "Position in the church": "Roll i församlingen",
+    "Church website": "Församlingens webbplats",
+    "Church website (optional)": "Församlingens webbplats (valfritt)",
+    "All fields are required except the church website.": "Alla fält är obligatoriska utom församlingens webbplats.",
+    "Enter “None” if you have no special requests.": "Skriv ”Inga” om ni inte har några särskilda önskemål.",
+    "Request access to WorshipPlanning for your church. Share your church and administrator details so we can help you get started.": "Ansök om tillgång till WorshipPlanning för er församling. Ange församlingens och administratörens uppgifter så hjälper vi er att komma igång."
 }

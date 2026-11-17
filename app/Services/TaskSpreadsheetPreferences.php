@@ -27,7 +27,7 @@ class TaskSpreadsheetPreferences
             'view' => SpreadsheetViewKey::AllStaffing->value,
             'density' => SpreadsheetDensity::Comfortable->value,
             'layout' => SpreadsheetLayout::Auto->value,
-            'range' => SpreadsheetRangeKey::NextSixWeeks->value,
+            'range' => SpreadsheetRangeKey::NextTwelveWeeks->value,
             'from' => null,
             'until' => null,
         ];
@@ -60,7 +60,7 @@ class TaskSpreadsheetPreferences
             'layout' => SpreadsheetLayout::tryFrom((string) $merged['layout'])?->value
                 ?? SpreadsheetLayout::Auto->value,
             'range' => SpreadsheetRangeKey::tryFrom((string) $merged['range'])?->value
-                ?? SpreadsheetRangeKey::NextSixWeeks->value,
+                ?? SpreadsheetRangeKey::NextTwelveWeeks->value,
             'from' => filled($merged['from'] ?? null) ? (string) $merged['from'] : null,
             'until' => filled($merged['until'] ?? null) ? (string) $merged['until'] : null,
         ];
@@ -90,7 +90,7 @@ class TaskSpreadsheetPreferences
             'layout' => SpreadsheetLayout::tryFrom((string) $next['layout'])?->value
                 ?? SpreadsheetLayout::Auto->value,
             'range' => SpreadsheetRangeKey::tryFrom((string) $next['range'])?->value
-                ?? SpreadsheetRangeKey::NextSixWeeks->value,
+                ?? SpreadsheetRangeKey::NextTwelveWeeks->value,
             'from' => filled($next['from'] ?? null) ? (string) $next['from'] : null,
             'until' => filled($next['until'] ?? null) ? (string) $next['until'] : null,
         ];

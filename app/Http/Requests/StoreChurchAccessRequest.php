@@ -23,13 +23,18 @@ class StoreChurchAccessRequest extends FormRequest
     {
         return [
             'church_name' => ['required', 'string', 'max:150'],
-            'address' => ['required', 'string', 'max:500'],
+            'street_address' => ['required', 'string', 'max:255'],
+            'city' => ['required', 'string', 'max:150'],
+            'postal_code' => ['required', 'string', 'max:30'],
             'country' => ['required', 'string', Rule::in(array_keys(CountryOptions::all()))],
+            'admin_name' => ['required', 'string', 'max:150'],
+            'admin_position' => ['required', 'string', 'max:150'],
+            'website' => ['nullable', 'url:http,https', 'max:255'],
             'phone' => ['required', 'string', 'max:40'],
             'email' => ['required', 'email', 'max:255'],
             'expected_users' => ['required', Rule::enum(ExpectedUserRange::class)],
             'required_languages' => ['required', 'string', 'max:255'],
-            'special_requests' => ['nullable', 'string', 'max:2000'],
+            'special_requests' => ['required', 'string', 'max:2000'],
         ];
     }
 
@@ -58,8 +63,13 @@ class StoreChurchAccessRequest extends FormRequest
     {
         return [
             'church_name' => __('Church name'),
-            'address' => __('Address'),
+            'street_address' => __('Street address'),
+            'city' => __('City'),
+            'postal_code' => __('Postal code'),
             'country' => __('Country'),
+            'admin_name' => __('Administrator name'),
+            'admin_position' => __('Position in the church'),
+            'website' => __('Church website'),
             'phone' => __('Telephone'),
             'email' => __('Email'),
             'expected_users' => __('Expected users'),

@@ -56,7 +56,7 @@ class TaskSpreadsheet extends Page implements HasTable
     public string $staffingView = 'all_staffing';
 
     #[Url]
-    public string $range = 'next_six_weeks';
+    public string $range = 'next_twelve_weeks';
 
     /** @var array<string, mixed>|null */
     #[Url(as: 'filters')]
@@ -279,7 +279,7 @@ class TaskSpreadsheet extends Page implements HasTable
     {
         $names = $this->tableFilters['events']['names'] ?? null;
         $wasAllTypes = $names === null || count(array_diff(array_keys($this->eventNameOptions()), $names)) === 0;
-        $key = SpreadsheetRangeKey::tryFrom($range) ?? SpreadsheetRangeKey::NextSixWeeks;
+        $key = SpreadsheetRangeKey::tryFrom($range) ?? SpreadsheetRangeKey::NextTwelveWeeks;
         $this->range = $key->value;
 
         if ($key !== SpreadsheetRangeKey::Custom) {
@@ -730,7 +730,7 @@ class TaskSpreadsheet extends Page implements HasTable
 
     protected function rangeKey(): SpreadsheetRangeKey
     {
-        return SpreadsheetRangeKey::tryFrom($this->range) ?? SpreadsheetRangeKey::NextSixWeeks;
+        return SpreadsheetRangeKey::tryFrom($this->range) ?? SpreadsheetRangeKey::NextTwelveWeeks;
     }
 
     /**

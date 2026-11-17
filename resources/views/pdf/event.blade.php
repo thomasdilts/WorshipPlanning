@@ -9,6 +9,8 @@
     $startTime = \App\Support\DateTimeFormats::formatTime($event->starts_at->timezone(config('app.timezone')), $event->church);
     $startMarkerAt = $timedTasks->filter(fn ($task) => $task->before_start)->count();
     $responsibilities = $printableTasks->reject(fn ($task) => $timedTasks->contains('id', $task->id));
+    $bulletTasks = $printableTasks->filter(fn ($task) => ($task->template?->description_as_bullets ?? false) && ($task->template?->usage('description')->isUsed() ?? true) && filled($task->description));
+    $hasSidebar = $responsibilities->isNotEmpty() || $bulletTasks->isNotEmpty();
     $dense = $timedTasks->count() > 18;
 @endphp
 <!DOCTYPE html>
@@ -27,8 +29,8 @@
         .wp-description-bullets li { margin-bottom: 4px; white-space: pre-line; }
         [dir="rtl"] .wp-description-bullets { padding-left: 0; padding-right: 20px; }
         h2 { font-size: 11px; margin: 0 0 5px; }
-        .order { float: {{ app()->getLocale() === 'ar' ? 'right' : 'left' }}; width: {{ $responsibilities->isEmpty() ? '100%' : '75%' }}; }
-        .people { float: {{ app()->getLocale() === 'ar' ? 'left' : 'right' }}; width: 22%; }
+        .order { float: {{ app()->getLocale() === 'ar' ? 'right' : 'left' }}; width: {{ $hasSidebar ? '70.6%' : '100%' }}; }
+        .people { float: {{ app()->getLocale() === 'ar' ? 'left' : 'right' }}; width: 26.4%; }
         table { width: 100%; border-collapse: collapse; }
         th { text-align: {{ app()->getLocale() === 'ar' ? 'right' : 'left' }}; color: #52636b; font-weight: normal; padding: 3px 4px; border-bottom: 1px solid #8fa0a9; }
         td { padding: {{ $dense ? '3px 4px' : '5px 4px' }}; vertical-align: top; border-bottom: 1px solid #dce3e8; overflow-wrap: break-word; }
@@ -39,10 +41,16 @@
         .col-status { width: 56px; font-size: 8px; }
         .detail-line { margin-bottom: 1px; }
         .problem { color: #b42318; font-weight: bold; }
-        .responsibility { padding: 5px 0; border-bottom: 1px solid #dce3e8; page-break-inside: avoid; }
-        .responsibility strong { display: block; margin-bottom: 2px; }
+        .responsibility { padding: 2px 0; border-bottom: 1px solid #dce3e8; page-break-inside: avoid; }
+        .responsibility strong { display: inline; }
+        .responsibility .detail-line { display: inline; margin: 0; }
+        .responsibility .detail-line + .detail-line:before { content: " / "; }
+        .bullet-details { margin-top: 10px; }
+        .bullet-detail { margin-bottom: 8px; }
+        .bullet-detail h2 { margin-bottom: 3px; }
         .empty { color: #52636b; }
-        .before-start td { background: #f1f4f6; }
+        .before-start td { background: #f1f4f6; font-size: {{ $dense ? '7.5' : '9' }}px; line-height: 1.1; padding: {{ $dense ? '1.6px 4px' : '2.7px 4px' }}; }
+        .before-start .detail-line { margin-bottom: 0; }
         .start-marker td { padding: 0 8px; font-size: 8.2px; line-height: 1; background: #e2e7eb; color: #172b2c; text-align: center; border-top: 1px solid #c9d2d9; border-bottom: 1px solid #c9d2d9; }
         .start-marker .start-time { font-size: 8.2px; font-weight: bold; letter-spacing: 1px; }
         .start-marker .start-side { font-size: 7px; padding: 0 14px; }
@@ -60,7 +68,6 @@
         </div>
     </div>
     <div class="order">
-        <h2>{{ __('Service order') }}</h2>
         @if ($timedTasks->isEmpty())
             <p class="empty">{{ __('No tasks on this service yet.') }}</p>
         @else
@@ -89,7 +96,7 @@
                             <td class="col-task">{{ $task->displayName() }}</td>
                             <td class="col-status">{{ $showStatus ? $state->label() : '—' }}</td>
                             <td>
-                                @foreach ($summary->filledBits($task, $event, forPrint: true) as $bit)
+                                @foreach ($summary->filledBits($task, $event, forPrint: true, withDescription: ! $bulletTasks->contains('id', $task->id)) as $bit)
                                     <div class="detail-line">{{ $bit }}</div>
                                 @endforeach
                                 @foreach ($summary->problems($task, $event, forPrint: true) as $problem)
@@ -105,13 +112,15 @@
             </table>
         @endif
     </div>
-    @if ($responsibilities->isNotEmpty())
+    @if ($hasSidebar)
         <div class="people">
-            <h2>{{ __('People & teams') }}</h2>
+            @if ($responsibilities->isNotEmpty())
+                <h2>{{ __('People & teams') }}</h2>
+            @endif
             @foreach ($responsibilities as $task)
                 <div class="responsibility">
-                    <strong>{{ $task->displayName() }}</strong>
-                    @foreach ($summary->filledBits($task, $event, forPrint: true) as $bit)
+                    <strong>{{ $task->displayName() }}:</strong>
+                    @foreach ($summary->filledBits($task, $event, forPrint: true, withDescription: ! $bulletTasks->contains('id', $task->id)) as $bit)
                         <div class="detail-line">{{ $bit }}</div>
                     @endforeach
                     @foreach ($summary->problems($task, $event, forPrint: true) as $problem)
@@ -119,6 +128,16 @@
                     @endforeach
                 </div>
             @endforeach
+            @if ($bulletTasks->isNotEmpty())
+                <div class="bullet-details">
+                    @foreach ($bulletTasks as $task)
+                        <div class="bullet-detail">
+                            <h2>{{ $task->displayName() }}</h2>
+                            @include('filament.events.description-bullets', ['points' => \App\Support\DescriptionBullets::fromDescription($task->description)])
+                        </div>
+                    @endforeach
+                </div>
+            @endif
         </div>
     @endif
 </body>

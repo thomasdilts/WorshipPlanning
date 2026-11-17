@@ -5,7 +5,7 @@
     use App\Enums\SpreadsheetViewKey;
 
     $view = SpreadsheetViewKey::tryFrom($this->staffingView) ?? SpreadsheetViewKey::AllStaffing;
-    $range = SpreadsheetRangeKey::tryFrom($this->range) ?? SpreadsheetRangeKey::NextSixWeeks;
+    $range = SpreadsheetRangeKey::tryFrom($this->range) ?? SpreadsheetRangeKey::NextTwelveWeeks;
     $density = SpreadsheetDensity::Comfortable;
     $layout = SpreadsheetLayout::Auto;
     $listRows = $this->listRows();

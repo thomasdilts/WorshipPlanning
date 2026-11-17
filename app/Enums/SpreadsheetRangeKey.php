@@ -6,7 +6,7 @@ use Illuminate\Support\Carbon;
 
 enum SpreadsheetRangeKey: string
 {
-    case NextSixWeeks = 'next_six_weeks';
+    case NextTwelveWeeks = 'next_twelve_weeks';
     case ThisMonth = 'this_month';
     case NextMonth = 'next_month';
     case Custom = 'custom';
@@ -14,7 +14,7 @@ enum SpreadsheetRangeKey: string
     public function label(): string
     {
         return match ($this) {
-            self::NextSixWeeks => __('Next 6 weeks'),
+            self::NextTwelveWeeks => __('Next 12 weeks'),
             self::ThisMonth => __('This month'),
             self::NextMonth => __('Next month'),
             self::Custom => __('Custom range'),
@@ -29,7 +29,7 @@ enum SpreadsheetRangeKey: string
         $today = now()->startOfDay();
 
         return match ($this) {
-            self::NextSixWeeks => [$today, $today->copy()->addWeeks(6)->endOfDay()],
+            self::NextTwelveWeeks => [$today, $today->copy()->addWeeks(12)->endOfDay()],
             self::ThisMonth => [$today, $today->copy()->endOfMonth()->endOfDay()],
             self::NextMonth => [
                 $today->copy()->addMonthNoOverflow()->startOfMonth(),

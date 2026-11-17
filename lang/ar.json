@@ -389,7 +389,7 @@
     "New church access request": "طلب وصول جديد للكنيسة",
     "New start": "بداية جديدة",
     "New: :count": "جديد: :count",
-    "Next 6 weeks": "الأسابيع الستة القادمة",
+    "Next 12 weeks": "الأسابيع الـ12 القادمة",
     "Next commitments": "الالتزامات التالية",
     "Next month": "الشهر القادم",
     "No assigned tasks": "لا مهام معيّنة",
@@ -1137,5 +1137,15 @@
     "Templates marked “Other” are listed here. Use {{declined_by}} for who declined, {{task}} for the declined task, {{task_url}} for a link to it and {{event}}, {{date}} and {{time}} for the service. Without a template no decline messages are sent.": "تظهر هنا القوالب المعلَّمة «أخرى». استخدم {{declined_by}} لمن اعتذر، و{{task}} للمهمة المعتذر عنها، و{{task_url}} لرابط إليها، و{{event}} و{{date}} و{{time}} للخدمة. بدون قالب لا تُرسل رسائل اعتذار.",
     "Who declined — only in decline messages, where {{task}} is the declined task": "من اعتذر — فقط في رسائل الاعتذار، حيث {{task}} هي المهمة المعتذر عنها",
     "Link that opens the declined task on the service page — only in decline messages": "رابط يفتح المهمة المعتذر عنها في صفحة الخدمة — فقط في رسائل الاعتذار",
-    "None — send by email": "لا شيء — أرسل بالبريد الإلكتروني"
+    "None — send by email": "لا شيء — أرسل بالبريد الإلكتروني",
+    "Street address": "عنوان الشارع",
+    "City": "المدينة",
+    "Postal code": "الرمز البريدي",
+    "Administrator name": "اسم المسؤول",
+    "Position in the church": "المنصب في الكنيسة",
+    "Church website": "الموقع الإلكتروني للكنيسة",
+    "Church website (optional)": "الموقع الإلكتروني للكنيسة (اختياري)",
+    "All fields are required except the church website.": "جميع الحقول مطلوبة باستثناء الموقع الإلكتروني للكنيسة.",
+    "Enter “None” if you have no special requests.": "اكتب «لا يوجد» إذا لم تكن لديكم طلبات خاصة.",
+    "Request access to WorshipPlanning for your church. Share your church and administrator details so we can help you get started.": "اطلبوا الوصول إلى WorshipPlanning لكنيستكم. شاركونا بيانات الكنيسة والمسؤول لنساعدكم على البدء."
 }

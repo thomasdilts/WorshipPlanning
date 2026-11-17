@@ -17,13 +17,18 @@ class ChurchAccessRequestMail extends Mailable
     /**
      * @param  array{
      *     church_name: string,
-     *     address: string,
+     *     street_address: string,
+     *     city: string,
+     *     postal_code: string,
      *     country: string,
+     *     admin_name: string,
+     *     admin_position: string,
+     *     website?: ?string,
      *     phone: string,
      *     email: string,
      *     expected_users: string,
      *     required_languages: string,
-     *     special_requests: ?string
+     *     special_requests: string
      * }  $payload
      */
     public function __construct(public array $payload) {}
@@ -44,8 +49,13 @@ class ChurchAccessRequestMail extends Mailable
             markdown: 'mail.church-access-request',
             with: [
                 'churchName' => $this->payload['church_name'],
-                'address' => $this->payload['address'],
+                'streetAddress' => $this->payload['street_address'],
+                'city' => $this->payload['city'],
+                'postalCode' => $this->payload['postal_code'],
                 'country' => CountryOptions::label($this->payload['country']),
+                'adminName' => $this->payload['admin_name'],
+                'adminPosition' => $this->payload['admin_position'],
+                'website' => $this->payload['website'] ?? null,
                 'phone' => $this->payload['phone'],
                 'email' => $this->payload['email'],
                 'expectedUsers' => $expected?->label() ?? $this->payload['expected_users'],

@@ -545,7 +545,7 @@
     font-size: 0.75rem;
 }
 
-.fi-user-avatar {
+.fi-avatar.fi-user-avatar {
     width: 2.5rem;
     height: 2.5rem;
     border-radius: 0.5rem;
@@ -1452,6 +1452,11 @@ a.wp-schedule-event:hover {
     cursor: pointer;
 }
 
+.wp-spreadsheet .wp-ss-toolbar :is(.wp-ss-select-field, .wp-ss-search) :is(select, input):focus {
+    outline: none;
+    box-shadow: none;
+}
+
 .wp-ss-select-field select {
     padding-inline-end: 1.25rem;
 }
@@ -2092,7 +2097,12 @@ a.wp-schedule-event:hover {
         display: none;
     }
 
-    .wp-ss-select-field select {
+    .wp-spreadsheet .wp-ss-toolbar :is(.wp-ss-select-field, .wp-ss-search) :is(select, input):focus {
+    outline: none;
+    box-shadow: none;
+}
+
+.wp-ss-select-field select {
         flex: 1;
         max-width: 100%;
         width: 100%;
@@ -2421,7 +2431,12 @@ a.wp-schedule-event:hover {
 
     .wp-ss-search input,
     .wp-ss-select-field input,
-    .wp-ss-select-field select {
+    .wp-spreadsheet .wp-ss-toolbar :is(.wp-ss-select-field, .wp-ss-search) :is(select, input):focus {
+    outline: none;
+    box-shadow: none;
+}
+
+.wp-ss-select-field select {
         min-height: 3rem;
     }
 
@@ -2529,7 +2544,12 @@ a.wp-schedule-event:hover {
         width: 100%;
     }
 
-    .wp-ss-toolbar .wp-ss-select-field select {
+    .wp-ss-toolbar .wp-spreadsheet .wp-ss-toolbar :is(.wp-ss-select-field, .wp-ss-search) :is(select, input):focus {
+    outline: none;
+    box-shadow: none;
+}
+
+.wp-ss-select-field select {
         max-width: 100%;
     }
 

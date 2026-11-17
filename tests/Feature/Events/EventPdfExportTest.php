@@ -81,6 +81,43 @@ class EventPdfExportTest extends TestCase
         }
     }
 
+    public function test_pdf_moves_timed_and_global_bullet_descriptions_below_compact_responsibilities(): void
+    {
+        $church = Church::factory()->create(['name' => 'PDF Church']);
+        app(CurrentChurch::class)->set($church);
+        app(ChurchModuleManager::class)->enable($church, 'teams');
+        $event = Event::factory()->create(['church_id' => $church->id, 'name' => 'Sunday service', 'starts_at' => '2026-11-15 10:00:00']);
+        $timed = TaskTemplate::factory()->create(['church_id' => $church->id, 'use_globally' => false, 'person_usage' => FieldUsage::NotUsed, 'description_usage' => FieldUsage::Optional]);
+        $bullets = TaskTemplate::factory()->create(['church_id' => $church->id, 'use_globally' => false, 'description_usage' => FieldUsage::Optional, 'description_as_bullets' => true, 'person_usage' => FieldUsage::NotUsed]);
+        $global = TaskTemplate::factory()->create(['church_id' => $church->id, 'use_globally' => true, 'description_usage' => FieldUsage::Optional, 'description_as_bullets' => true, 'person_usage' => FieldUsage::Optional, 'team_usage' => FieldUsage::Optional]);
+        $person = User::factory()->create(['church_id' => $church->id, 'display_name' => 'Alex Andersson']);
+        $team = Team::factory()->create(['church_id' => $church->id, 'name' => 'Welcome team']);
+        EventTask::factory()->create(['event_id' => $event->id, 'task_template_id' => $global->id, 'name' => 'Coordinator', 'assigned_user_id' => $person->id, 'assigned_team_id' => $team->id, 'description' => '1. Welcome guests']);
+        EventTask::factory()->create(['event_id' => $event->id, 'task_template_id' => $bullets->id, 'name' => 'Notices', 'duration' => 5, 'description' => "1. Church lunch\n2. Youth <script>alert(1)</script>"]);
+        EventTask::factory()->count(4)->sequence(fn ($sequence) => ['sort_order' => $sequence->index])->create(['event_id' => $event->id, 'task_template_id' => $timed->id, 'name' => 'Preparation', 'before_start' => true, 'duration' => 10, 'description' => 'Sound and lighting check']);
+        EventTask::factory()->count(10)->sequence(fn ($sequence) => ['sort_order' => $sequence->index + 1])->create(['event_id' => $event->id, 'task_template_id' => $timed->id, 'name' => 'Worship and prayer', 'duration' => 5, 'description' => 'Service details']);
+        app(EventTaskTimeline::class)->recalculate($event);
+        $event->load(['church', 'tasks.template', 'tasks.assignedUser', 'tasks.assignedTeam', 'tasks.sharedFiles', 'tasks.pictures', 'tasks.catalogSong']);
+
+        foreach (['en', 'sv', 'ar', 'hy'] as $locale) {
+            app()->setLocale($locale);
+            $html = View::make('pdf.event', ['event' => $event, 'summary' => app(EventTaskRowSummary::class)])->render();
+            [$main, $sidebar] = explode('<div class="people">', $html, 2);
+            [$people, $details] = explode('<div class="bullet-details">', $sidebar, 2);
+            $this->assertStringNotContainsString('Church lunch', $main);
+            $this->assertStringNotContainsString('Welcome guests', $main.$people);
+            $this->assertStringContainsString('Church lunch', $details);
+            $this->assertStringContainsString('Welcome guests', $details);
+            $this->assertStringContainsString('&lt;script&gt;', $details);
+            $this->assertStringContainsString('Alex Andersson', $people);
+            $this->assertStringContainsString('Welcome team', $people);
+            $this->assertStringContainsString('Service details', $main);
+            $this->assertStringNotContainsString('<h2>'.__('Service order').'</h2>', $html);
+            $pdf = app(EventPdfExporter::class)->stream($event)->getContent();
+            $this->assertSame(1, preg_match_all('/\/Type\s*\/Page\b/', $pdf));
+        }
+    }
+
     public function test_descriptions_without_show_as_bullets_stay_plain_text_whatever_the_template_name(): void
     {
         $church = Church::factory()->create();

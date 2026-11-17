@@ -389,7 +389,7 @@
     "New church access request": "New church access request",
     "New start": "New start",
     "New: :count": "New: :count",
-    "Next 6 weeks": "Next 6 weeks",
+    "Next 12 weeks": "Next 12 weeks",
     "Next commitments": "Next commitments",
     "Next month": "Next month",
     "No assigned tasks": "No assigned tasks",
@@ -1137,5 +1137,15 @@
     "Templates marked “Other” are listed here. Use {{declined_by}} for who declined, {{task}} for the declined task, {{task_url}} for a link to it and {{event}}, {{date}} and {{time}} for the service. Without a template no decline messages are sent.": "Templates marked “Other” are listed here. Use {{declined_by}} for who declined, {{task}} for the declined task, {{task_url}} for a link to it and {{event}}, {{date}} and {{time}} for the service. Without a template no decline messages are sent.",
     "Who declined — only in decline messages, where {{task}} is the declined task": "Who declined — only in decline messages, where {{task}} is the declined task",
     "Link that opens the declined task on the service page — only in decline messages": "Link that opens the declined task on the service page — only in decline messages",
-    "None — send by email": "None — send by email"
+    "None — send by email": "None — send by email",
+    "Street address": "Street address",
+    "City": "City",
+    "Postal code": "Postal code",
+    "Administrator name": "Administrator name",
+    "Position in the church": "Position in the church",
+    "Church website": "Church website",
+    "Church website (optional)": "Church website (optional)",
+    "All fields are required except the church website.": "All fields are required except the church website.",
+    "Enter “None” if you have no special requests.": "Enter “None” if you have no special requests.",
+    "Request access to WorshipPlanning for your church. Share your church and administrator details so we can help you get started.": "Request access to WorshipPlanning for your church. Share your church and administrator details so we can help you get started."
 }

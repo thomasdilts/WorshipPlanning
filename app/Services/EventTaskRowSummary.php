@@ -61,12 +61,12 @@ class EventTaskRowSummary
     /**
      * @return list<string|HtmlString>
      */
-    public function filledBits(EventTask $task, Event $event, bool $withAvatarHtml = false, bool $forPrint = false): array
+    public function filledBits(EventTask $task, Event $event, bool $withAvatarHtml = false, bool $forPrint = false, bool $withDescription = true): array
     {
         $template = $task->template;
         $bits = [];
 
-        if (filled($task->description) && ($template?->usage('description')->isUsed() ?? true)) {
+        if ($withDescription && filled($task->description) && ($template?->usage('description')->isUsed() ?? true)) {
             $bits[] = ($withAvatarHtml || $forPrint) && ($template?->description_as_bullets ?? false)
                 ? new HtmlString(view('filament.events.description-bullets', ['points' => DescriptionBullets::fromDescription($task->description)])->render())
                 : $task->description;

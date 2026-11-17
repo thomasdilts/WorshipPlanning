@@ -49,8 +49,9 @@ class TaskSpreadsheetPhase3Test extends TestCase
         app(PermissionRegistrar::class)->setPermissionsTeamId($this->church->id);
     }
 
-    public function test_default_range_excludes_events_beyond_six_weeks(): void
+    public function test_default_range_includes_twelve_weeks_and_excludes_later_events(): void
     {
+        $this->travelTo(now()->startOfDay());
         $template = TaskTemplate::factory()->create([
             'church_id' => $this->church->id,
             'person_usage' => FieldUsage::Required,
@@ -65,7 +66,7 @@ class TaskSpreadsheetPhase3Test extends TestCase
         $far = Event::factory()->create([
             'church_id' => $this->church->id,
             'name' => 'Later',
-            'starts_at' => now()->addWeeks(8),
+            'starts_at' => now()->addWeeks(12)->endOfDay(),
         ]);
 
         EventTask::factory()->create([
@@ -77,10 +78,17 @@ class TaskSpreadsheetPhase3Test extends TestCase
             'task_template_id' => $template->id,
         ]);
 
-        [$from, $until] = SpreadsheetRangeKey::NextSixWeeks->bounds();
+        Event::factory()->create([
+            'church_id' => $this->church->id,
+            'name' => 'Beyond range',
+            'starts_at' => now()->addWeeks(12)->addDay(),
+        ]);
+
+        $preferences = app(TaskSpreadsheetPreferences::class)->defaults();
+        [$from, $until] = SpreadsheetRangeKey::from($preferences['range'])->bounds();
         $matrix = app(TaskSpreadsheetBuilder::class)->build($this->church, $from, $until);
 
-        $this->assertSame(['Soon'], $matrix['rows']->pluck('event_name')->values()->all());
+        $this->assertSame(['Soon', 'Later'], $matrix['rows']->pluck('event_name')->values()->all());
     }
 
     public function test_needs_attention_view_hides_confirmed_rows(): void

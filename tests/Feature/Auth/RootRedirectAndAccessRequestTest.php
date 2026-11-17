@@ -6,6 +6,7 @@ use App\Mail\ChurchAccessRequestMail;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Mail;
+use PHPUnit\Framework\Attributes\TestWith;
 use Tests\TestCase;
 
 class RootRedirectAndAccessRequestTest extends TestCase
@@ -29,7 +30,7 @@ class RootRedirectAndAccessRequestTest extends TestCase
     {
         $this->get('/admin/login')
             ->assertOk()
-            ->assertSee(__('Plan the service. Staff the order.'), false)
+            ->assertSee(__('Request access for your church'))
             ->assertSee(route('partner.create'), false);
     }
 
@@ -47,7 +48,11 @@ class RootRedirectAndAccessRequestTest extends TestCase
 
         $this->post(route('partner.store'), [
             'church_name' => 'Grace Fellowship',
-            'address' => '12 Oak Street, Springfield',
+            'street_address' => '12 Oak Street',
+            'city' => 'Springfield',
+            'postal_code' => '01234',
+            'admin_name' => 'Miriam Andersson',
+            'admin_position' => 'Church administrator',
             'country' => 'SE',
             'phone' => '+46 70 123 45 67',
             'email' => 'pastor@grace.test',
@@ -61,7 +66,12 @@ class RootRedirectAndAccessRequestTest extends TestCase
             return $mail->hasTo('ops@example.test')
                 && $mail->payload['church_name'] === 'Grace Fellowship'
                 && $mail->payload['expected_users'] === '11-30'
-                && $mail->payload['required_languages'] === 'Swedish, English';
+                && $mail->payload['required_languages'] === 'Swedish, English'
+                && $mail->payload['street_address'] === '12 Oak Street'
+                && $mail->payload['city'] === 'Springfield'
+                && $mail->payload['postal_code'] === '01234'
+                && $mail->payload['admin_name'] === 'Miriam Andersson'
+                && $mail->payload['admin_position'] === 'Church administrator';
         });
     }
 
@@ -74,7 +84,11 @@ class RootRedirectAndAccessRequestTest extends TestCase
         $this->from(route('partner.create'))
             ->post(route('partner.store'), [
                 'church_name' => 'Grace Fellowship',
-                'address' => '12 Oak Street',
+                'street_address' => '12 Oak Street',
+                'city' => 'Springfield',
+                'postal_code' => '01234',
+                'admin_name' => 'Miriam Andersson',
+                'admin_position' => 'Church administrator',
                 'country' => 'SE',
                 'phone' => '+46 70 123 45 67',
                 'email' => 'pastor@grace.test',
@@ -137,6 +151,76 @@ class RootRedirectAndAccessRequestTest extends TestCase
             && $mail->hasTo('ops@example.test'));
     }
 
+    #[TestWith(['street_address'])]
+    #[TestWith(['city'])]
+    #[TestWith(['postal_code'])]
+    #[TestWith(['admin_name'])]
+    #[TestWith(['admin_position'])]
+    #[TestWith(['special_requests'])]
+    public function test_partner_form_requires_each_new_required_detail(string $field): void
+    {
+        Mail::fake();
+        $payload = $this->validRequest();
+        unset($payload[$field]);
+
+        $this->from(route('partner.create'))
+            ->post(route('partner.store'), $payload)
+            ->assertRedirect(route('partner.create'))
+            ->assertSessionHasErrors([$field]);
+
+        Mail::assertNothingSent();
+    }
+
+    #[TestWith([null])]
+    #[TestWith([''])]
+    #[TestWith(['https://grace.test'])]
+    #[TestWith(['http://grace.test'])]
+    public function test_partner_form_accepts_an_optional_website(?string $website): void
+    {
+        Mail::fake();
+        config(['worshipplanning.church_access_request_to' => 'ops@example.test']);
+
+        $this->post(route('partner.store'), $this->validRequest() + ['website' => $website])
+            ->assertRedirect(route('partner.create'))
+            ->assertSessionHasNoErrors();
+
+        Mail::assertSent(ChurchAccessRequestMail::class, fn (ChurchAccessRequestMail $mail): bool => ($mail->payload['website'] ?? null) === ($website ?: null));
+    }
+
+    #[TestWith(['not a website'])]
+    #[TestWith(['ftp://grace.test'])]
+    #[TestWith(['javascript:alert(1)'])]
+    public function test_partner_form_rejects_invalid_websites(string $website): void
+    {
+        Mail::fake();
+
+        $this->from(route('partner.create'))
+            ->post(route('partner.store'), $this->validRequest() + ['website' => $website])
+            ->assertSessionHasErrors(['website']);
+
+        Mail::assertNothingSent();
+    }
+
+    public function test_access_request_email_includes_the_new_details(): void
+    {
+        $mail = new ChurchAccessRequestMail($this->validRequest() + ['website' => 'https://grace.test']);
+
+        $mail->assertSeeInText('12 Oak Street');
+        $mail->assertSeeInText('Springfield');
+        $mail->assertSeeInText('01234');
+        $mail->assertSeeInText('Miriam Andersson');
+        $mail->assertSeeInText('Church administrator');
+        $mail->assertSeeInText('https://grace.test');
+    }
+
+    public function test_access_request_email_renders_without_a_website(): void
+    {
+        $mail = new ChurchAccessRequestMail($this->validRequest());
+
+        $mail->assertSeeInText('Grace Fellowship');
+        $mail->assertDontSeeInText('Church website');
+    }
+
     private function enableTurnstile(): void
     {
         config([
@@ -153,12 +237,17 @@ class RootRedirectAndAccessRequestTest extends TestCase
     {
         return [
             'church_name' => 'Grace Fellowship',
-            'address' => '12 Oak Street',
+            'street_address' => '12 Oak Street',
+            'city' => 'Springfield',
+            'postal_code' => '01234',
+            'admin_name' => 'Miriam Andersson',
+            'admin_position' => 'Church administrator',
             'country' => 'SE',
             'phone' => '+46 70 123 45 67',
             'email' => 'pastor@grace.test',
             'expected_users' => '11-30',
             'required_languages' => 'Swedish',
+            'special_requests' => 'None',
         ];
     }
 }
