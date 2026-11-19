@@ -48,11 +48,17 @@ use function Filament\Support\original_request;
  */
 class PanelNavigation
 {
+    /** How many top-level destinations the phone tab bar shows. */
+    public const MOBILE_TAB_COUNT = 3;
+
+    /** Marks a sidebar item that the phone tab bar already shows, so the phone menu can hide it. */
+    public const IN_TAB_BAR_CLASS = 'wp-in-tabbar';
+
     public function __construct(private PanelAudience $audience) {}
 
     public function build(NavigationBuilder $builder): NavigationBuilder
     {
-        $builder->items($this->primaryItems());
+        $topLevelItems = $this->primaryItems();
 
         $groups = [
             $this->group(__('People & teams'), [
@@ -100,7 +106,7 @@ class PanelNavigation
 
             if (count($visible) === 1 && $visible[0]->getLabel() !== __('Service templates')) {
                 $item = $visible[0]->group(null);
-                $builder->item($collapsedLabel === null ? $item : $item->label($collapsedLabel));
+                $topLevelItems[] = $collapsedLabel === null ? $item : $item->label($collapsedLabel);
 
                 continue;
             }
@@ -108,7 +114,11 @@ class PanelNavigation
             $builder->group($group);
         }
 
-        return $builder;
+        foreach ($this->tabItems($topLevelItems) as $item) {
+            $item->extraAttributes(['class' => self::IN_TAB_BAR_CLASS], merge: true);
+        }
+
+        return $builder->items($topLevelItems);
     }
 
     /**
@@ -140,21 +150,28 @@ class PanelNavigation
      *
      * @return list<NavigationItem>
      */
-    public function mobileTabs(int $limit = 3): array
+    public function mobileTabs(): array
     {
         foreach ($this->build(new NavigationBuilder)->getNavigation() as $group) {
-            if ($group->getLabel() !== null) {
-                continue;
+            if ($group->getLabel() === null) {
+                return $this->tabItems($group->getItems());
             }
-
-            return array_slice(
-                array_values(array_filter($group->getItems(), fn (NavigationItem $item): bool => $item->isVisible())),
-                0,
-                $limit,
-            );
         }
 
         return [];
+    }
+
+    /**
+     * @param  list<NavigationItem>  $topLevelItems
+     * @return list<NavigationItem>
+     */
+    private function tabItems(array $topLevelItems): array
+    {
+        return array_slice(
+            array_values(array_filter($topLevelItems, fn (NavigationItem $item): bool => $item->isVisible())),
+            0,
+            self::MOBILE_TAB_COUNT,
+        );
     }
 
     /**

@@ -2498,6 +2498,11 @@ a.wp-schedule-event:hover {
         display: flex;
     }
 
+    /* The tab bar already shows these destinations. */
+    .fi-main-sidebar .wp-in-tabbar {
+        display: none;
+    }
+
     .fi-main,
     .fi-page,
     .fi-page-content,

@@ -89,6 +89,21 @@ class PanelNavigationTest extends TestCase
         $this->assertContains('Service templates', $navigation['groups']['Settings']);
     }
 
+    public function test_only_the_tab_bar_destinations_are_marked_for_hiding_in_the_phone_menu(): void
+    {
+        $this->actingAs($this->userWithRole('Event Planner'));
+        app(PermissionRegistrar::class)->forgetCachedPermissions();
+
+        $marked = collect(app(PanelNavigation::class)->build(new NavigationBuilder)->getNavigation()[0]->getItems())
+            ->filter(fn (NavigationItem $item): bool => str_contains((string) $item->getExtraAttributeBag()->get('class'), PanelNavigation::IN_TAB_BAR_CLASS))
+            ->map(fn (NavigationItem $item): string => (string) $item->getLabel())
+            ->values()
+            ->all();
+
+        $this->assertSame(['Tasks by service', 'Services', 'My schedule'], $marked);
+        $this->assertSame($marked, array_map(fn (NavigationItem $item): string => (string) $item->getLabel(), app(PanelNavigation::class)->mobileTabs()));
+    }
+
     public function test_volunteer_reaches_my_schedule_but_not_planning_or_settings(): void
     {
         $navigation = $this->navigationFor($this->userWithRole('Member'));

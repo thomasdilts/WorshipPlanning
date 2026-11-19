@@ -20,9 +20,10 @@
             x-data
             x-bind:aria-expanded="$store.sidebar.isOpen"
             x-on:click="
-                document.querySelectorAll('#fi-main-sidebar .fi-sidebar-group.fi-collapsible[data-group-label]').forEach(group => {
+                document.querySelectorAll('#fi-main-sidebar .fi-sidebar-group.fi-collapsible[data-group-label]:not([data-group-label=\'\'])').forEach(group => {
                     $store.sidebar.collapseGroup(group.dataset.groupLabel);
                 });
+                $store.sidebar.collapsedGroups = $store.sidebar.collapsedGroups.filter(label => label !== '');
                 $store.sidebar.open();
             "
         >
