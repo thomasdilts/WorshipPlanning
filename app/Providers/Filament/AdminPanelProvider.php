@@ -95,7 +95,6 @@ class AdminPanelProvider extends PanelProvider
             ])
             ->topNavigation()
             ->breadcrumbs(false)
-            ->renderHook(PanelsRenderHook::SIDEBAR_NAV_START, fn () => view('filament.navigation.mobile-profile'))
             ->renderHook(PanelsRenderHook::SIDEBAR_NAV_END, fn () => view('filament.navigation.mobile-account-menu'))
             ->renderHook(
                 TablesRenderHook::CONTENT_AFTER,

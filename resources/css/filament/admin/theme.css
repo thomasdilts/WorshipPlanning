@@ -2498,6 +2498,24 @@ a.wp-schedule-event:hover {
         display: flex;
     }
 
+    .wp-mobile-account-menu .fi-user-menu {
+        width: 100%;
+    }
+
+    .wp-mobile-account-menu .fi-user-menu-trigger {
+        justify-content: flex-start;
+    }
+
+    .wp-mobile-account-menu .fi-user-menu-trigger-text {
+        font-size: 0;
+    }
+
+    .wp-mobile-account-menu .fi-user-menu-trigger-text::before {
+        content: var(--wp-account-label);
+        font-size: 0.875rem;
+        line-height: 1.25rem;
+    }
+
     /* The tab bar already shows these destinations. */
     .fi-main-sidebar .wp-in-tabbar {
         display: none;
