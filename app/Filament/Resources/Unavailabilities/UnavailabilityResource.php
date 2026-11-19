@@ -30,17 +30,17 @@ class UnavailabilityResource extends Resource
 
     public static function getNavigationLabel(): string
     {
-        return __('Unavailabilities');
+        return __('Unavailable');
     }
 
     public static function getModelLabel(): string
     {
-        return __('unavailability');
+        return __('unavailable date');
     }
 
     public static function getPluralModelLabel(): string
     {
-        return __('Unavailabilities');
+        return __('Unavailable');
     }
 
     protected static ?string $slug = 'unavailabilities';

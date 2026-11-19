@@ -58,7 +58,7 @@ class PanelNavigation
             $this->group(__('People & teams'), [
                 $this->forClass(TeamResource::class, __('Teams')),
                 $this->forClass(UserResource::class, __('People')),
-                $this->forClass(UnavailabilityResource::class, __('Unavailabilities'), Heroicon::OutlinedCalendarDays),
+                $this->forClass(UnavailabilityResource::class, __('All unavailable'), Heroicon::OutlinedCalendarDays),
                 $this->forClass(TeamTypeResource::class, __('Team types')),
                 $this->forClass(MessageHistory::class, __('Message history')),
             ]),
@@ -126,7 +126,7 @@ class PanelNavigation
                 && ! original_request()->routeIs(TaskSpreadsheet::getRouteName())
                 && ! original_request()->routeIs(ListServiceTemplates::getRouteName()));
         $mySchedule = $this->forClass(MyTasks::class, __('My schedule'), Heroicon::OutlinedClipboardDocumentCheck);
-        $availability = $this->forClass(MyUnavailability::class, __('Availability'), Heroicon::OutlinedCalendarDateRange);
+        $availability = $this->forClass(MyUnavailability::class, __('Unavailable'), Heroicon::OutlinedCalendarDateRange);
         $myMessages = $this->forClass(MyMessages::class, __('My messages'), Heroicon::OutlinedInbox);
         $churches = $this->forClass(ChurchResource::class);
 

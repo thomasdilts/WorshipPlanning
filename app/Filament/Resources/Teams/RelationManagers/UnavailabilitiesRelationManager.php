@@ -26,7 +26,7 @@ class UnavailabilitiesRelationManager extends RelationManager
 
     public static function getTitle(Model $ownerRecord, string $pageClass): string
     {
-        return __('Unavailability');
+        return __('Unavailable');
     }
 
     public static function canViewForRecord($ownerRecord, string $pageClass): bool
@@ -81,9 +81,9 @@ class UnavailabilitiesRelationManager extends RelationManager
             ])
             ->headerActions([
                 Action::make('addUnavailability')
-                    ->label(__('Add unavailability'))
+                    ->label(__('Add unavailable dates'))
                     ->icon(Heroicon::OutlinedPlus)
-                    ->modalHeading(__('Add team unavailability'))
+                    ->modalHeading(__('Add team unavailable dates'))
                     ->visible($canManage)
                     ->schema($this->formSchema())
                     ->action(function (array $data) use ($team): void {
@@ -104,11 +104,11 @@ class UnavailabilitiesRelationManager extends RelationManager
                 DeleteAction::make()
                     ->visible($canManage),
             ])
-            ->emptyStateHeading(__('No team unavailability'))
+            ->emptyStateHeading(__('No team unavailable dates'))
             ->emptyStateDescription(__('Mark dates when this whole team cannot serve.'))
             ->emptyStateActions([
                 Action::make('addUnavailability')
-                    ->label(__('Add unavailability'))
+                    ->label(__('Add unavailable dates'))
                     ->icon(Heroicon::OutlinedPlus)
                     ->visible($canManage)
                     ->schema($this->formSchema())

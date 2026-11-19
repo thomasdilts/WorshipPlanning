@@ -35,7 +35,7 @@ class MyUnavailability extends Page implements HasTable
 
     public function getTitle(): string|Htmlable
     {
-        return __('My unavailability');
+        return __('My unavailable dates');
     }
 
     protected static ?string $slug = 'my-unavailability';
@@ -133,8 +133,8 @@ class MyUnavailability extends Page implements HasTable
     {
         return CreateAction::make()
             ->model(Unavailability::class)
-            ->label(__('Add unavailability'))
-            ->modalHeading(__('Add unavailability'))
+            ->label(__('Add unavailable dates'))
+            ->modalHeading(__('Add unavailable dates'))
             ->schema($this->formSchema())
             ->mutateDataUsing(function (array $data): array {
                 $user = auth()->user();
@@ -149,7 +149,7 @@ class MyUnavailability extends Page implements HasTable
             ->successNotification(
                 Notification::make()
                     ->success()
-                    ->title(__('Unavailability added'))
+                    ->title(__('Unavailable dates added'))
             );
     }
 

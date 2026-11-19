@@ -85,7 +85,7 @@ class PanelNavigationTest extends TestCase
         $this->assertContains('Tasks by service', $navigation['top']);
         $this->assertContains('Services', $navigation['top']);
         $this->assertContains('My schedule', $navigation['top']);
-        $this->assertContains('Availability', $navigation['top']);
+        $this->assertContains('Unavailable', $navigation['top']);
         $this->assertContains('Service templates', $navigation['groups']['Settings']);
     }
 
@@ -94,7 +94,7 @@ class PanelNavigationTest extends TestCase
         $navigation = $this->navigationFor($this->userWithRole('Member'));
 
         $this->assertContains('My schedule', $navigation['top']);
-        $this->assertContains('Availability', $navigation['top']);
+        $this->assertContains('Unavailable', $navigation['top']);
         $this->assertNotContains('Tasks by service', $navigation['top']);
         $this->assertArrayNotHasKey('Settings', $navigation['groups']);
     }

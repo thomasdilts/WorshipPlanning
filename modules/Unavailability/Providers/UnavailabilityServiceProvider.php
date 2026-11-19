@@ -19,7 +19,7 @@ class UnavailabilityServiceProvider extends ServiceProvider
     {
         $modules->register(new ModuleDefinition(
             key: 'unavailability',
-            name: 'Unavailability',
+            name: 'Unavailable',
             description: 'People mark dates they cannot serve. Planners see a warning when assigning someone who is away.',
             required: false,
         ));

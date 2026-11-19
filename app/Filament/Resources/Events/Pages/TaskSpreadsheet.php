@@ -512,7 +512,7 @@ class TaskSpreadsheet extends Page implements HasTable
             $columns[] = ColumnGroup::make(__('Program details'), $extraColumns);
         }
 
-        $columns[] = ColumnGroup::make(__('Availability'), [
+        $columns[] = ColumnGroup::make(__('Unavailable'), [
             TextColumn::make('unavailable')
                 ->label(__('Unavailable'))
                 ->extraCellAttributes(['class' => 'wp-ss-unavailable'])

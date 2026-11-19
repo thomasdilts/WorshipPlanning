@@ -46,7 +46,7 @@ class UnavailabilityModuleTest extends TestCase
         $this->actingAs($admin);
 
         Livewire::test(ListUnavailabilities::class)
-            ->assertSee('Unavailabilities')
+            ->assertSee('Unavailable')
             ->assertCanSeeTableRecords([$current, $upcoming])
             ->assertCanNotSeeTableRecords([$past, $foreign])
             ->filterTable('period', 'past')

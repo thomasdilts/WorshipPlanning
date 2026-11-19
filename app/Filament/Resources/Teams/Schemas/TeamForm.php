@@ -47,7 +47,7 @@ class TeamForm
                     ->rows(2)
                     ->columnSpanFull(),
                 Section::make(__('Roster'))
-                    ->description(__('Every team needs at least one leader. Leaders run their team: members, leaders, availability and files.'))
+                    ->description(__('Every team needs at least one leader. Leaders run their team: members, leaders, unavailable dates and files.'))
                     ->visibleOn('create')
                     ->schema([
                         Select::make('member_ids')
