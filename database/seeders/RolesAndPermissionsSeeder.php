@@ -116,7 +116,6 @@ class RolesAndPermissionsSeeder extends Seeder
         $member->syncPermissions($this->existingPermissions([
             'events.view',
             'task_templates.view',
-            'unavailability.view',
             'unavailability.manage_own',
             'pictures.view',
             'file_sharing.view',

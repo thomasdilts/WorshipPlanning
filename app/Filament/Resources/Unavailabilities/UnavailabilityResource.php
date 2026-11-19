@@ -91,6 +91,9 @@ class UnavailabilityResource extends Resource
         return $query->where('user_id', $user->id);
     }
 
+    /**
+     * The church-wide list is only for people who may see others' dates; own dates live on MyUnavailability.
+     */
     public static function canViewAny(): bool
     {
         $user = auth()->user();
@@ -100,6 +103,12 @@ class UnavailabilityResource extends Resource
         }
 
         if (! app(ChurchModuleManager::class)->isEnabled($user->church, 'unavailability')) {
+            return false;
+        }
+
+        app(PermissionRegistrar::class)->setPermissionsTeamId($user->church_id);
+
+        if (! $user->can('unavailability.view') && ! $user->can('unavailability.manage')) {
             return false;
         }
 

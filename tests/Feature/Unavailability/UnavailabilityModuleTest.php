@@ -128,7 +128,10 @@ class UnavailabilityModuleTest extends TestCase
         $this->actingAs($member);
 
         $this->assertFalse(UnavailabilityResource::shouldRegisterNavigation());
+        $this->assertFalse(UnavailabilityResource::canViewAny());
         $this->assertTrue(MyUnavailability::canAccess());
+
+        $this->get('/admin/unavailabilities')->assertForbidden();
     }
 
     public function test_admin_can_access_church_unavailability_via_panel_nav(): void
