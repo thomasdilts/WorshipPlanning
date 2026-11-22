@@ -55,7 +55,7 @@ class AssignedTasksListTest extends TestCase
             ->assertCanNotSeeTableRecords([$pastTask, $someoneElse]);
     }
 
-    public function test_my_schedule_lists_the_latest_service_date_first_by_default(): void
+    public function test_my_schedule_lists_the_nearest_service_date_first_by_default(): void
     {
         $church = Church::factory()->create();
         $this->seed(RolesAndPermissionsSeeder::class);
@@ -73,7 +73,7 @@ class AssignedTasksListTest extends TestCase
         $this->actingAs($member);
 
         Livewire::test(MyTasks::class)
-            ->assertCanSeeTableRecords([$laterTask, $soonerTask], inOrder: true);
+            ->assertCanSeeTableRecords([$soonerTask, $laterTask], inOrder: true);
     }
 
     public function test_my_schedule_includes_tasks_for_teams_the_user_leads(): void
