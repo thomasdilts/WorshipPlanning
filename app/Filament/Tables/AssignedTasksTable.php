@@ -39,9 +39,12 @@ class AssignedTasksTable
         $asSchedule = (bool) ($options['schedule'] ?? false);
 
         return $table
-            ->defaultSort($asSchedule
-                ? fn (Builder $query, string $direction): Builder => self::orderScheduleQuery($query, $direction)
-                : 'event.starts_at')
+            ->defaultSort(
+                $asSchedule
+                    ? fn (Builder $query, string $direction): Builder => self::orderScheduleQuery($query, $direction)
+                    : 'event.starts_at',
+                $asSchedule ? 'desc' : 'asc',
+            )
             ->columns($asSchedule ? self::scheduleColumns() : [
                 TextColumn::make('event.starts_at')
                     ->label(__('Service date'))
