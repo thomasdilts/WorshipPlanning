@@ -40,7 +40,7 @@ class AssignedTasksTable
 
         return $table
             ->defaultSort($asSchedule
-                ? fn (Builder $query, string $direction): Builder => self::orderScheduleQuery($query, $direction)
+                ? fn (Builder $query, string $direction): Builder => self::orderByServiceStart($query, $direction)
                 : 'event.starts_at')
             ->columns($asSchedule ? self::scheduleColumns() : [
                 TextColumn::make('event.starts_at')
@@ -228,31 +228,15 @@ class AssignedTasksTable
         ], true);
     }
 
-    protected static function orderScheduleQuery(Builder $query, string $direction): Builder
+    /**
+     * The schedule has no sortable date column, so order by the service start via a subquery.
+     */
+    protected static function orderByServiceStart(Builder $query, string $direction): Builder
     {
-        $pendingRank = <<<'SQL'
-            COALESCE((
-                SELECT CASE
-                    WHEN status = 'invited' THEN 0
-                    WHEN status = 'declined' THEN 1
-                    WHEN status = 'confirmed' THEN 3
-                    WHEN status = 'cancelled' THEN 4
-                    ELSE 2
-                END
-                FROM event_task_responses
-                WHERE event_task_id = event_tasks.id
-                  AND status IN ('invited', 'confirmed', 'declined', 'cancelled')
-                ORDER BY occurred_at DESC, id DESC
-                LIMIT 1
-            ), CASE WHEN event_tasks.assigned_user_id IS NOT NULL THEN 2 ELSE 3 END)
-            SQL;
-
-        return $query
-            ->orderByRaw($pendingRank.' ASC')
-            ->orderBy(
-                Event::query()->select('starts_at')->whereColumn('events.id', 'event_tasks.event_id')->limit(1),
-                $direction,
-            );
+        return $query->orderBy(
+            Event::query()->select('starts_at')->whereColumn('events.id', 'event_tasks.event_id')->limit(1),
+            $direction,
+        );
     }
 
     /**

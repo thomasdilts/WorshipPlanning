@@ -4,6 +4,7 @@ namespace Tests\Feature\AssignedTasks;
 
 use App\Core\Modules\ChurchModuleManager;
 use App\Core\Tenancy\CurrentChurch;
+use App\Enums\AssignmentResponseStatus;
 use App\Enums\AssignmentState;
 use App\Filament\Pages\MyTasks;
 use App\Filament\Resources\Events\EventResource;
@@ -12,6 +13,7 @@ use App\Filament\Resources\Teams\RelationManagers\AssignedTasksRelationManager;
 use App\Models\Church;
 use App\Models\Event;
 use App\Models\EventTask;
+use App\Models\EventTaskResponse;
 use App\Models\TaskTemplate;
 use App\Models\Team;
 use App\Models\TeamType;
@@ -55,7 +57,7 @@ class AssignedTasksListTest extends TestCase
             ->assertCanNotSeeTableRecords([$pastTask, $someoneElse]);
     }
 
-    public function test_my_schedule_lists_the_nearest_service_date_first_by_default(): void
+    public function test_my_schedule_sorts_by_service_date_only_with_the_nearest_first(): void
     {
         $church = Church::factory()->create();
         $this->seed(RolesAndPermissionsSeeder::class);
@@ -69,6 +71,14 @@ class AssignedTasksListTest extends TestCase
 
         $soonerTask = $this->taskForUser($church, $member, $template, now()->addDays(2), 'Sooner task');
         $laterTask = $this->taskForUser($church, $member, $template, now()->addDays(9), 'Later task');
+
+        EventTaskResponse::factory()->create([
+            'church_id' => $church->id,
+            'event_task_id' => $laterTask->id,
+            'assignee_user_id' => $member->id,
+            'status' => AssignmentResponseStatus::Invited,
+            'occurred_at' => now(),
+        ]);
 
         $this->actingAs($member);
 
